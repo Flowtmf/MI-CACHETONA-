@@ -13,6 +13,7 @@ overflow:hidden;
 font-family:Arial;
 color:white;
 text-align:center;
+transition:1s;
 }
 
 /* FONDO ESPACIAL */
@@ -44,6 +45,7 @@ align-items:center;
 /* IMAGEN */
 img{
 height:90vh;
+transition:1s;
 filter:drop-shadow(0 0 25px rgba(255,255,255,0.4));
 }
 
@@ -57,9 +59,11 @@ transform:translateX(-50%);
 font-size:22px;
 line-height:1.6;
 text-shadow:0 0 20px pink;
+opacity:0;
+transition:1s;
 }
 
-/* CORAZONES FLOTANDO */
+/* CORAZONES */
 .heart{
 position:fixed;
 color:#ff4da6;
@@ -73,9 +77,24 @@ opacity:.7;
 100%{transform:translateY(-10vh) scale(1.3);}
 }
 
+/* DESTELLO */
+.flash{
+position:fixed;
+width:100%;
+height:100%;
+background:white;
+opacity:0;
+pointer-events:none;
+animation:flashAnim 0.7s;
+}
+
+@keyframes flashAnim{
+0%{opacity:.8;}
+100%{opacity:0;}
+}
+
 /* ZONAS CLICK */
 
-/* OJOS */
 .eyes-zone{
 position:absolute;
 top:30%;
@@ -86,7 +105,6 @@ transform:translate(-50%,-50%);
 cursor:pointer;
 }
 
-/* BOCA */
 .mouth-zone{
 position:absolute;
 top:38%;
@@ -97,7 +115,6 @@ transform:translate(-50%,-50%);
 cursor:pointer;
 }
 
-/* MENTE */
 .mind-zone{
 position:absolute;
 top:18%;
@@ -108,7 +125,6 @@ transform:translate(-50%,-50%);
 cursor:pointer;
 }
 
-/* BRAZOS */
 .arms-zone{
 position:absolute;
 top:55%;
@@ -119,7 +135,6 @@ transform:translate(-50%,-50%);
 cursor:pointer;
 }
 
-/* PIES */
 .feet-zone{
 position:absolute;
 top:85%;
@@ -130,7 +145,6 @@ transform:translate(-50%,-50%);
 cursor:pointer;
 }
 
-/* CORAZÓN */
 .heart-zone{
 position:absolute;
 top:52%;
@@ -148,8 +162,7 @@ cursor:pointer;
 
 <div class="container">
 
-<!-- AQUI ESTA EL CAMBIO -->
-<img src="cuerpo.png">
+<img id="img" src="cuerpo.png">
 
 <div class="eyes-zone" onclick="enterEyes()"></div>
 <div class="mouth-zone" onclick="enterMouth()"></div>
@@ -165,8 +178,9 @@ cursor:pointer;
 <script>
 
 /* SONIDOS */
+
 let typingSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-typingSound.volume = 0.3;
+typingSound.volume = 0.25;
 
 let heartbeatSound = new Audio("https://assets.mixkit.co/active_storage/sfx/216/216-preview.mp3");
 heartbeatSound.loop = true;
@@ -176,21 +190,19 @@ let message="";
 let i=0;
 
 function typeWriter(){
-if(i < message.length){
-document.getElementById("text").innerHTML += message.charAt(i);
-typingSound.currentTime = 0;
-typingSound.play();
-i++;
-setTimeout(typeWriter,25);
-}
-}
 
-/* BORRAR TEXTO */
-function autoErase(){
-setTimeout(()=>{
-document.getElementById("text").innerHTML="";
-i=0;
-},14000);
+let textBox = document.getElementById("text");
+textBox.style.opacity=1;
+
+if(i < message.length){
+textBox.innerHTML += message.charAt(i);
+
+typingSound.currentTime=0;
+typingSound.play();
+
+i++;
+setTimeout(typeWriter,18);
+}
 }
 
 function resetText(){
@@ -198,126 +210,182 @@ document.getElementById("text").innerHTML="";
 i=0;
 }
 
-/* CORAZONES */
-setInterval(()=>{
-let heart=document.createElement("div");
-heart.className="heart";
-heart.innerHTML="♥";
-heart.style.left=Math.random()*100+"%";
-document.body.appendChild(heart);
+/* EFECTO FLASH */
+
+function flash(){
+let f=document.createElement("div");
+f.className="flash";
+document.body.appendChild(f);
+setTimeout(()=>{f.remove()},700);
+}
+
+/* ZOOM IMAGEN */
+
+function zoom(){
+let img=document.getElementById("img");
+img.style.transform="scale(1.08)";
+img.style.filter="drop-shadow(0 0 45px pink)";
 setTimeout(()=>{
-heart.remove();
-},5000);
-},700);
+img.style.transform="scale(1)";
+img.style.filter="drop-shadow(0 0 25px white)";
+},1400);
+}
 
 /* DISTORSION */
-function startDistortion(){
-document.body.style.filter="hue-rotate(40deg) blur(2px)";
+
+function distortion(){
+document.body.style.filter="hue-rotate(40deg) contrast(1.2)";
 setTimeout(()=>{
 document.body.style.filter="none";
-},1200);
+},1500);
 }
 
 /* VIBRAR */
+
 function vibrate(){
 if(navigator.vibrate){
 navigator.vibrate([200,100,200]);
 }
 }
 
-/* TEXTO PARTES */
+/* CORAZONES */
 
+setInterval(()=>{
+let heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="♥";
+heart.style.left=Math.random()*100+"%";
+document.body.appendChild(heart);
+setTimeout(()=>{heart.remove()},5000);
+},700);
+
+/* TEXTOS COMPLETOS */
+
+/* OJOS */
 let eyesMessage=`Con mis ojos te admiro, amor.
-Mis ojos aprendieron a buscarte incluso antes de entender cuánto significabas para mí...`;
 
+Mis ojos aprendieron a buscarte incluso antes de entender cuánto significabas para mí. Entre tantas personas, siempre terminan encontrándote, como si supieran que en ti está todo lo que me hace sentir tranquilo.
+
+Con mis ojos veo tu belleza, pero no solo la que todos notan, sino esa que aparece cuando sonríes sin darte cuenta, cuando hablas con ilusión o cuando eres simplemente tú. Me gusta observar cada detalle tuyo, porque en cada gesto encuentro algo nuevo que me enamora más.
+
+Mis ojos también guardan recuerdos contigo: momentos pequeños que para otros pueden ser simples, pero para mí son especiales, porque estabas ahí. Y cada vez que no estás cerca, cierro los ojos un momento y vuelvo a verte, como si mi mente se negara a olvidarte.
+
+Quiero que mis ojos siempre sean un lugar donde te sientas segura, donde puedas ver cariño, orgullo y amor sincero. Porque si algo tienen claro mis ojos… es que siempre van a elegir mirarte a ti.`;
+
+
+/* BRAZOS */
 let armsMessage=`Con mis brazos te encuentro, amor.
-Cada vez que te abrazo siento que todo se calma...`;
 
+Cada vez que te abrazo siento que todo se calma, como si el mundo bajara el ruido solo para dejarnos estar juntos. En tus abrazos entiendo que hay lugares que no son espacios, sino personas… y tú eres mi lugar favorito.
+
+Con mis brazos quiero rodearte siempre, no solo cuando estás feliz, sino también cuando necesitas sentirte segura. Porque cuando te siento cerca, cuando tu corazón late junto al mío, algo dentro de mí se llena de tranquilidad y sentido.
+
+Tus abrazos tienen esa magia que me hace olvidar el estrés, las preocupaciones y todo lo demás. Es como si, por un instante, todo estuviera exactamente donde debe estar.
+
+Y si pudiera elegir un momento para repetir mil veces, sería ese en el que te tengo entre mis brazos, porque ahí es donde más claro siento cuánto te amo.`;
+
+
+/* BOCA */
 let mouthMessage=`Con mi boca quiero decirte todo lo que siento, amor.
-Con mis palabras intento acercarme a lo que significas para mí...`;
 
+Con mis palabras intento acercarme a lo que significas para mí, aunque a veces siento que ninguna alcanza para explicarlo de verdad. Porque lo que siento por ti es más grande que cualquier frase que pueda decir.
+
+Quiero decirte cuánto te amo, cuánto me importas y lo especial que eres en mi vida. Quiero recordarte cada día lo valiosa que eres, lo orgulloso que me hace estar contigo y lo feliz que soy cuando escucho tu voz.
+
+Pero también sé que a veces mi boca se queda corta… que hay sentimientos tan profundos que no caben en palabras. En esos momentos, aunque no diga mucho, mi intención sigue siendo la misma: demostrarte todo lo que llevo dentro.
+
+Porque incluso cuando me faltan las frases perfectas, mi corazón siempre encuentra la manera de hablar por mí.`;
+
+
+/* PIES */
 let feetMessage=`Con mis pies quiero caminar contigo, amor.
-Quiero que cada paso que dé tenga tu compañía...`;
 
+Quiero que cada paso que dé tenga tu compañía, que nuestros caminos no solo se crucen, sino que decidan quedarse juntos. Contigo entendí que el futuro no es algo lejano, sino algo que empezamos a construir desde ahora, paso a paso.
+
+Quiero caminar a tu lado en los días fáciles y también en los difíciles, porque sé que avanzar juntos hace que cualquier camino valga la pena. No se trata de correr, sino de aprender, crecer y seguir adelante como equipo.
+
+Que cada paso sea una promesa silenciosa de que seguimos eligiéndonos, de que seguimos luchando por lo nuestro y de que, sin importar a dónde nos lleve la vida, quiero que sea contigo.
+
+Porque si voy contigo, cualquier camino se convierte en destino.`;
+
+
+/* MENTE */
 let mindMessage=`En mi mente estás tú.
-Pienso en nosotros, en todo lo que podemos ser...`;
 
+Pienso en nosotros más de lo que imaginas. En todo lo que somos y en todo lo que podemos llegar a construir juntos.
+
+Porque cuando alguien se vuelve importante, también se vuelve parte constante de los pensamientos.`;
+
+
+/* CORAZON */
 let heartMessage=`Con mi corazón te siento, amor.
-Contigo entendí que el corazón no solo late para vivir... Te amo con todo lo que soy.`;
+
+Contigo entendí que el corazón no solo late para vivir, sino también para encontrar a alguien que le dé sentido a cada latido.
+
+Antes de ti muchas emociones eran solo ideas… ahora contigo son realidad.
+
+Te amo con todo lo que soy.`;
+
+
+/* EFECTO GENERAL */
+
+function startEffect(){
+flash();
+zoom();
+distortion();
+}
 
 /* FUNCIONES CLICK */
 
 function enterEyes(){
 resetText();
-startDistortion();
+startEffect();
 message=eyesMessage;
 typeWriter();
-autoErase();
 }
 
 function enterArms(){
 resetText();
-startDistortion();
+startEffect();
 message=armsMessage;
 typeWriter();
-autoErase();
 }
 
 function enterMouth(){
 resetText();
-startDistortion();
+startEffect();
 message=mouthMessage;
 typeWriter();
-autoErase();
 }
 
 function enterFeet(){
 resetText();
-startDistortion();
+startEffect();
 message=feetMessage;
 typeWriter();
-autoErase();
 }
 
 function enterMind(){
 resetText();
-startDistortion();
+startEffect();
 message=mindMessage;
 typeWriter();
-autoErase();
 }
 
 function enterHeart(){
 
 resetText();
-startDistortion();
-
-heartbeatSound.play();
+startEffect();
 vibrate();
 
-let beats=0;
-
-let pulse=setInterval(()=>{
-
-document.body.style.backgroundColor="rgba(255,0,90,0.25)";
+heartbeatSound.play();
 
 setTimeout(()=>{
-document.body.style.backgroundColor="black";
-},200);
-
-beats++;
-
-if(beats>12){
-clearInterval(pulse);
 heartbeatSound.pause();
-}
-
-},800);
+},9000);
 
 message=heartMessage;
 typeWriter();
-autoErase();
-
 }
 
 </script>
