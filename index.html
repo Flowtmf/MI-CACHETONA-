@@ -5,34 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mi cachetona ♥️</title>
 
+<!-- Fuente estilo YouTube -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
 body{
     margin:0;
-    font-family: Roboto, Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background:#0f0f0f;
     color:white;
 }
 
-/* TOP BAR */
+/* ===== TOP BAR ===== */
 .topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:14px;
+    padding:12px 15px;
     background:#0f0f0f;
     font-size:18px;
     font-weight:500;
+    position:sticky;
+    top:0;
+    z-index:10;
 }
 
 .logo{
-    font-weight:bold;
+    font-weight:700;
     cursor:pointer;
 }
 
-/* VIDEO CARD */
+/* ===== CATEGORY CHIPS ===== */
+.categories{
+    display:flex;
+    gap:10px;
+    padding:10px 15px;
+    overflow-x:auto;
+}
+
+.chip{
+    background:#272727;
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:14px;
+    white-space:nowrap;
+}
+
+.chip.active{
+    background:white;
+    color:black;
+}
+
+/* ===== VIDEO CARD ===== */
 .video{
-    margin-bottom:18px;
+    margin-bottom:20px;
     cursor:pointer;
+    transition:0.2s;
+}
+
+.video:active{
+    transform:scale(0.98);
 }
 
 .thumbnail{
@@ -43,8 +75,7 @@ body{
 
 .video-info{
     display:flex;
-    padding:10px;
-    align-items:flex-start;
+    padding:10px 15px;
 }
 
 .text{
@@ -54,7 +85,7 @@ body{
 .title{
     font-size:15px;
     font-weight:500;
-    margin-bottom:4px;
+    margin-bottom:5px;
 }
 
 .meta{
@@ -63,11 +94,11 @@ body{
 }
 
 .menu{
-    font-size:20px;
     color:#aaa;
+    font-size:18px;
 }
 
-/* BOTTOM NAV */
+/* ===== BOTTOM NAV ===== */
 .nav{
     position:fixed;
     bottom:0;
@@ -77,7 +108,7 @@ body{
     display:flex;
     justify-content:space-around;
     padding:8px 0;
-    font-size:12px;
+    font-size:11px;
 }
 
 .nav div{
@@ -85,18 +116,19 @@ body{
     color:#aaa;
 }
 
-/* POPUP BLOQUEADO */
+/* ===== POPUP ===== */
 .popup{
     position:fixed;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    background:#1c1c1c;
+    background:#181818;
     padding:20px;
     border-radius:12px;
-    width:80%;
+    width:85%;
     text-align:center;
     display:none;
+    box-shadow:0 0 25px rgba(0,0,0,0.8);
 }
 
 .popup h2{
@@ -116,12 +148,21 @@ button{
 
 <body>
 
+<!-- TOP -->
 <div class="topbar">
-    <div class="logo" onclick="abrirSecreto()">Mi cachetona ♥️</div>
+    <div class="logo" onclick="zonaPrivada()">Mi cachetona ♥️</div>
     <div>🔍</div>
 </div>
 
-<!-- VIDEO 1 -->
+<!-- CATEGORIES -->
+<div class="categories">
+    <div class="chip active">Todo</div>
+    <div class="chip">Música</div>
+    <div class="chip">Mixes</div>
+    <div class="chip">Hip hop latino</div>
+</div>
+
+<!-- VIDEOS -->
 <div class="video">
     <img src="foto1.jpg" class="thumbnail">
     <div class="video-info">
@@ -133,7 +174,6 @@ button{
     </div>
 </div>
 
-<!-- VIDEO 2 -->
 <div class="video">
     <img src="foto2.jpg" class="thumbnail">
     <div class="video-info">
@@ -145,7 +185,6 @@ button{
     </div>
 </div>
 
-<!-- VIDEO 3 -->
 <div class="video">
     <img src="foto3.jpg" class="thumbnail">
     <div class="video-info">
@@ -157,7 +196,6 @@ button{
     </div>
 </div>
 
-<!-- VIDEO 4 -->
 <div class="video">
     <img src="foto4.jpg" class="thumbnail">
     <div class="video-info">
@@ -169,7 +207,6 @@ button{
     </div>
 </div>
 
-<!-- VIDEO 5 -->
 <div class="video">
     <img src="foto5.jpg" class="thumbnail">
     <div class="video-info">
@@ -181,7 +218,6 @@ button{
     </div>
 </div>
 
-<!-- VIDEO 6 -->
 <div class="video">
     <img src="foto6.jpg" class="thumbnail">
     <div class="video-info">
@@ -240,7 +276,7 @@ function cerrar(){
     document.getElementById("popup").style.display="none";
 }
 
-function abrirSecreto(){
+function zonaPrivada(){
     alert("Aquí irá la zona con contraseña 🔒");
 }
 </script>
