@@ -18,13 +18,14 @@
         .logo-container { display: flex; align-items: center; font-size: 20px; font-weight: 700; cursor: pointer; }
         .yt-icon { color: #ff0000; font-size: 24px; margin-right: 5px; }
         
-        .search-container { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #0f0f0f; align-items: center; padding: 0 15px; z-index: 110; }
-        .search-input { flex: 1; background: #272727; border: none; padding: 10px 15px; border-radius: 20px; color: white; outline: none; }
-        .search-close { margin-left: 10px; font-size: 20px; cursor: pointer; }
+        .search-container { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #0f0f0f; align-items: center; padding: 0 15px; z-index: 110; border-bottom: 1px solid #272727; }
+        .search-input { flex: 1; background: #272727; border: none; padding: 10px 15px; border-radius: 20px; color: white; outline: none; font-size: 14px; }
+        .search-close { margin-left: 10px; font-size: 20px; cursor: pointer; color: #aaa; }
 
         /* CHIPS */
-        .categories { display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto; background: #0f0f0f; }
-        .chip { background: #272727; padding: 7px 14px; border-radius: 8px; font-size: 14px; white-space: nowrap; cursor: pointer; }
+        .categories { display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto; background: #0f0f0f; position: sticky; top: 50px; z-index: 90; }
+        .categories::-webkit-scrollbar { display: none; }
+        .chip { background: #272727; padding: 7px 14px; border-radius: 8px; font-size: 14px; white-space: nowrap; cursor: pointer; color: #f1f1f1; }
         .chip.active { background: #fff; color: #000; }
 
         /* VIDEOS */
@@ -32,25 +33,28 @@
         .thumbnail-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; }
         .thumbnail { width: 100%; height: 100%; object-fit: cover; }
         .video-info { display: flex; padding: 12px 15px; gap: 12px; }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #ff4757; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #ff4757; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 16px; }
+        .text-box { flex: 1; }
+        .title { font-size: 14px; font-weight: 500; margin-bottom: 4px; line-height: 1.4; color: #f1f1f1; }
+        .meta { font-size: 12px; color: #aaa; }
 
         /* CARTAS Y EFECTO TEXTO */
         .content-area { padding: 20px; text-align: center; }
-        .carta-box { background: #181818; padding: 25px; border-radius: 15px; border: 1px solid #333; text-align: left; min-height: 200px; }
+        .carta-box { background: #181818; padding: 25px; border-radius: 15px; border: 1px solid #333; text-align: left; min-height: 150px; }
         .carta-titulo { color: #ff4757; font-size: 22px; margin-bottom: 15px; font-weight: 700; }
-        .carta-texto { font-size: 16px; line-height: 1.8; color: #eee; white-space: pre-wrap; }
-        .cursor { display: inline-block; width: 8px; height: 18px; background: #ff4757; margin-left: 3px; animation: blink 0.7s infinite; vertical-align: middle; }
+        .carta-texto { font-size: 16px; line-height: 1.8; color: #eee; white-space: pre-wrap; display: inline; }
+        .cursor { display: inline-block; width: 3px; height: 18px; background: #ff4757; margin-left: 3px; animation: blink 0.7s infinite; vertical-align: middle; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0f0f0f; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #272727; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #aaa; font-size: 10px; cursor: pointer; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #aaa; font-size: 10px; cursor: pointer; flex: 1; }
         .nav-item.active { color: #fff; }
         .nav-icon { font-size: 22px; margin-bottom: 3px; }
 
         /* POPUP */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; display: none; }
-        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #212121; padding: 30px; border-radius: 15px; width: 85%; text-align: center; z-index: 201; display: none; }
+        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #212121; padding: 30px; border-radius: 15px; width: 85%; text-align: center; z-index: 201; display: none; border: 1px solid #333; }
     </style>
 </head>
 <body>
@@ -60,7 +64,7 @@
             <span class="yt-icon">▶</span>
             <span>Mi Camii ♥️</span>
         </div>
-        <div onclick="toggleSearch()" style="cursor:pointer">🔍</div>
+        <div onclick="toggleSearch()" style="cursor:pointer; font-size: 20px;">🔍</div>
     </div>
 
     <div class="search-container" id="search-box">
@@ -70,30 +74,39 @@
 
     <div class="categories" id="cat-bar">
         <div class="chip active" onclick="irA('inicio')">Todo</div>
-        <div class="chip" onclick="abrirCarta('Nuestra Historia', 'Aquí escribes la carta de nuestra historia...')">Nuestra historia</div>
-        <div class="chip" onclick="abrirCarta('Recuerdos', 'Aquí escribes sobre los recuerdos...')">Recuerdos</div>
-        <div class="chip" onclick="abrirCarta('Especiales', 'Aquí escribes por qué eres especial...')">Especiales</div>
+        <div class="chip" onclick="abrirCarta('Nuestra Historia', 'Escribe aquí la historia de ustedes dos...')">Nuestra historia</div>
+        <div class="chip" onclick="abrirCarta('Recuerdos', 'Escribe aquí sobre tus recuerdos favoritos...')">Recuerdos</div>
+        <div class="chip" onclick="abrirCarta('Especiales', 'Escribe aquí por qué ella es tan especial...')">Especiales</div>
     </div>
 
     <div id="inicio" class="view active">
         <div class="video" onclick="abrirCarta('Carta #1', 'Contenido de la primera carta...')">
             <div class="thumbnail-container"><img src="foto1.jpg" class="thumbnail"></div>
-            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">Razón #1 para amarte</div><div class="meta">Hace 1 día</div></div></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text-box"><div class="title">Razón #1 para amarte</div><div class="meta">Hace 1 día</div></div></div>
         </div>
         <div class="video" onclick="abrirCarta('Carta #2', 'Contenido de la segunda carta...')">
             <div class="thumbnail-container"><img src="foto2.jpg" class="thumbnail"></div>
-            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">Lo que más me gusta de ti</div><div class="meta">Hace 2 días</div></div></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text-box"><div class="title">Lo que más me gusta de ti</div><div class="meta">Hace 2 días</div></div></div>
         </div>
         <div class="video" onclick="abrirCarta('Carta #3', 'Contenido de la tercera carta...')">
             <div class="thumbnail-container"><img src="foto3.jpg" class="thumbnail"></div>
-            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">Un mensaje para mi niña</div><div class="meta">Hace 3 días</div></div></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text-box"><div class="title">Un mensaje para mi niña</div><div class="meta">Hace 3 días</div></div></div>
         </div>
+        <div class="video" onclick="abrirCarta('Carta #4', 'Contenido de la cuarta carta...')">
+            <div class="thumbnail-container"><img src="foto4.jpg" class="thumbnail"></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text-box"><div class="title">Mi lugar favorito en el mundo</div><div class="meta">Hace 4 días</div></div></div>
+        </div>
+        <div class="video" onclick="abrirCarta('Carta #5', 'Contenido de la quinta carta...')">
+            <div class="thumbnail-container"><img src="foto5.jpg" class="thumbnail"></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text-box"><div class="title">Siempre estaré para ti</div><div class="meta">Hace 5 días</div></div></div>
+        </div>
+        
         <div class="video" onclick="mostrarBloqueado()">
             <div class="thumbnail-container" style="filter: grayscale(1) blur(3px);">
                 <img src="foto7.jpg" class="thumbnail">
-                <div style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold;">🔒 ESTRENO</div>
+                <div style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold; text-shadow: 0 0 10px black;">🔒 ESTRENO</div>
             </div>
-            <div class="video-info"><div class="avatar" style="background:#333">🔒</div><div class="text"><div class="title">Sorpresa: 13 de Marzo</div><div class="meta">Estreno programado</div></div></div>
+            <div class="video-info"><div class="avatar" style="background:#333">🔒</div><div class="text-box"><div class="title">Sorpresa: 13 de Marzo</div><div class="meta">Estreno programado</div></div></div>
         </div>
     </div>
 
@@ -110,14 +123,14 @@
     <div id="suscripciones" class="view">
         <div class="content-area">
             <h2 style="color:#ff4757; margin-top:50px;">Mis Suscripciones</h2>
-            <div class="avatar" style="width:100px; height:100px; font-size:40px; margin: 20px auto;">C</div>
-            <p style="font-size:18px;">"Solo te sigo a ti, porque eres mi único contenido favorito." ❤️</p>
+            <div class="avatar" style="width:100px; height:100px; font-size:40px; margin: 20px auto; background: #ff4757;">C</div>
+            <p style="font-size:18px; line-height: 1.5;">"Solo te sigo a ti, porque eres mi único contenido favorito." ❤️</p>
         </div>
     </div>
 
     <div id="notificaciones" class="view">
         <div class="content-area">
-            <img src="tu-notificacion.jpg" style="width:100%; border-radius:15px; margin-bottom:20px;">
+            <img src="tu-notificacion.jpg" style="width:100%; border-radius:15px; margin-bottom:20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
             <p style="font-style:italic; font-size:18px; color:#ccc;">"Es la notificación que siempre espero cuando cojo mi celular"</p>
         </div>
     </div>
@@ -141,8 +154,8 @@
     <div class="overlay" id="overlay" onclick="cerrarPopup()"></div>
     <div class="popup" id="popup">
         <h2>🔒 Video Privado</h2>
-        <div id="contador" style="font-size:22px; font-weight:bold; margin:15px 0;"></div>
-        <button onclick="cerrarPopup()" style="width:100%; padding:10px; border-radius:20px; border:none;">Entendido</button>
+        <div id="contador" style="font-size:22px; font-weight:bold; margin:15px 0; color: #ff4757;"></div>
+        <button onclick="cerrarPopup()" style="width:100%; padding:10px; border-radius:20px; border:none; background:#fff; font-weight:bold;">Entendido</button>
     </div>
 
     <script>
@@ -150,6 +163,13 @@
         function irA(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            
+            // Reset de botones nav
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            // Pequeño truco para iluminar el icono si coincide con el id
+            if(id === 'inicio' || id === 'suscripciones' || id === 'notificaciones' || id === 'perfil') {
+                // Aquí podrías añadir lógica para iluminar el actual
+            }
             window.scrollTo(0,0);
         }
 
@@ -171,7 +191,7 @@
             }
         });
 
-        // EFECTO ESCRITURA
+        // EFECTO ESCRITURA (TYPEWRITER)
         let typingTimer;
         function abrirCarta(titulo, texto) {
             irA('seccion-carta');
@@ -190,33 +210,44 @@
                     clearInterval(typingTimer);
                     document.getElementById('cursor-type').style.display = "none";
                 }
-            }, 50); // Velocidad de las letras
+            }, 40); // Velocidad: 40ms por letra
         }
 
-        // ACCESO PRIVADO (LOGO)
+        // ACCESO PRIVADO (AL TOCAR EL LOGO)
         function accesoPrivado() {
-            let pass = prompt("Dime la contraseña secreta:");
+            let pass = prompt("Dime la contraseña secreta, amor:");
             if(pass && pass.toLowerCase() === "teamo") {
-                abrirCarta('Zona Privada', 'Aquí está tu carta más secreta y especial... Eres lo mejor que me ha pasado.');
+                abrirCarta('Mi Carta Especial', 'Aquí puedes poner la carta privada más larga. \n\nGracias por ser mi Camii, por aguantarme y por amarme. \nEres mi sueño hecho realidad.');
             }
         }
 
-        // CONTADOR
+        // CONTADOR DE ESTRENO
         const fechaObj = new Date("March 13, 2026 00:00:00").getTime();
         function mostrarBloqueado() {
             document.getElementById("overlay").style.display = "block";
             document.getElementById("popup").style.display = "block";
-            setInterval(() => {
-                const ahora = new Date().getTime();
-                const d = fechaObj - ahora;
-                const dias = Math.floor(d / (1000*60*60*24));
-                const horas = Math.floor((d % (1000*60*60*24)) / (1000*60*60));
-                const mins = Math.floor((d % (1000*60*60)) / (1000*60));
-                const segs = Math.floor((d % (1000*60)) / 1000);
-                document.getElementById("contador").innerHTML = dias + "d " + horas + "h " + mins + "m " + segs + "s";
-            }, 1000);
+            actualizarReloj();
+            setInterval(actualizarReloj, 1000);
         }
-        function cerrarPopup() { document.getElementById("overlay").style.display = "none"; document.getElementById("popup").style.display = "none"; }
+
+        function actualizarReloj() {
+            const ahora = new Date().getTime();
+            const d = fechaObj - ahora;
+            if(d < 0) {
+                document.getElementById("contador").innerHTML = "¡DISPONIBLE!";
+                return;
+            }
+            const dias = Math.floor(d / (1000*60*60*24));
+            const horas = Math.floor((d % (1000*60*60*24)) / (1000*60*60));
+            const mins = Math.floor((d % (1000*60*60)) / (1000*60));
+            const segs = Math.floor((d % (1000*60)) / 1000);
+            document.getElementById("contador").innerHTML = dias + "d " + horas + "h " + mins + "m " + segs + "s";
+        }
+
+        function cerrarPopup() { 
+            document.getElementById("overlay").style.display = "none"; 
+            document.getElementById("popup").style.display = "none"; 
+        }
     </script>
 </body>
 </html>
