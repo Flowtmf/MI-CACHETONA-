@@ -1,395 +1,227 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>YouTube - Mi Cachetona</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mi Camii ♥️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Roboto', sans-serif; background: #0f0f0f; color: #ffffff; overflow-x: hidden; }
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        /* ===== NAVEGACIÓN ENTRE SECCIONES ===== */
+        .view { display: none; padding-bottom: 90px; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-<style>
-    * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-    }
+        /* ===== BARRA SUPERIOR ===== */
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #0f0f0f; position: sticky; top: 0; z-index: 100; }
+        .logo-container { display: flex; align-items: center; font-size: 20px; font-weight: 700; cursor: pointer; }
+        .yt-icon { color: #ff0000; font-size: 24px; margin-right: 5px; }
 
-    body {
-        margin: 0;
-        font-family: 'Roboto', sans-serif;
-        background: #0f0f0f;
-        color: #ffffff;
-        padding-bottom: 60px; /* Espacio para la barra inferior */
-    }
+        /* ===== CATEGORÍAS (CHIPS) ===== */
+        .categories { display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto; background: #0f0f0f; }
+        .categories::-webkit-scrollbar { display: none; }
+        .chip { background: #272727; padding: 7px 14px; border-radius: 8px; font-size: 14px; white-space: nowrap; cursor: pointer; }
+        .chip.active { background: #fff; color: #000; }
 
-    /* ===== TOP BAR ===== */
-    .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        background: #0f0f0f;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
+        /* ===== DISEÑO DE VIDEOS ===== */
+        .video { margin-bottom: 20px; cursor: pointer; }
+        .thumbnail-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; }
+        .thumbnail { width: 100%; height: 100%; object-fit: cover; }
+        .video-info { display: flex; padding: 12px 15px; gap: 12px; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #ff4757; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .title { font-size: 14px; font-weight: 500; margin-bottom: 4px; line-height: 1.4; }
+        .meta { font-size: 12px; color: #aaa; }
 
-    .logo-container {
-        display: flex;
-        align-items: center;
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        cursor: pointer;
-    }
+        /* ===== APARTADO DE CARTAS ===== */
+        .content-area { padding: 20px; }
+        .carta-box { background: #181818; padding: 25px; border-radius: 15px; border: 1px solid #333; }
+        .carta-titulo { color: #ff4757; font-size: 22px; margin-bottom: 15px; font-weight: 700; }
+        .carta-texto { font-size: 16px; line-height: 1.8; color: #eee; white-space: pre-wrap; }
+        .back-btn { background: #272727; border: none; color: #fff; padding: 10px 20px; border-radius: 20px; margin-bottom: 15px; cursor: pointer; }
 
-    .yt-icon {
-        color: #ff0000;
-        font-size: 24px;
-        margin-right: 5px;
-    }
+        /* ===== NOTIFICACIONES ===== */
+        .noti-screen { text-align: center; padding: 40px 20px; }
+        .noti-img { width: 100%; max-width: 350px; border-radius: 15px; margin-bottom: 20px; }
+        .noti-phrase { font-style: italic; color: #ccc; font-size: 18px; line-height: 1.4; }
 
-    .top-icons {
-        display: flex;
-        gap: 20px;
-        font-size: 20px;
-        color: #ffffff;
-    }
+        /* ===== BARRA INFERIOR ===== */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0f0f0f; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #272727; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #aaa; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: #fff; }
+        .nav-icon { font-size: 22px; margin-bottom: 3px; }
 
-    /* ===== CATEGORY CHIPS ===== */
-    .categories {
-        display: flex;
-        gap: 10px;
-        padding: 8px 15px 12px;
-        overflow-x: auto;
-        background: #0f0f0f;
-        position: sticky;
-        top: 48px;
-        z-index: 9;
-    }
-
-    .categories::-webkit-scrollbar {
-        display: none; /* Oculta la barra de scroll */
-    }
-
-    .chip {
-        background: #272727;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        white-space: nowrap;
-        color: #f1f1f1;
-    }
-
-    .chip.active {
-        background: #f1f1f1;
-        color: #0f0f0f;
-    }
-
-    /* ===== VIDEO CARD ===== */
-    .video {
-        margin-bottom: 15px;
-        cursor: pointer;
-    }
-
-    .thumbnail-container {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 16/9;
-        background: #222; /* Color de fondo por si la imagen tarda en cargar */
-    }
-
-    .thumbnail {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .duration {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        font-size: 12px;
-        font-weight: 500;
-        padding: 3px 4px;
-        border-radius: 4px;
-    }
-
-    .video-info {
-        display: flex;
-        padding: 12px 15px 0;
-        gap: 12px;
-    }
-
-    .avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: #ff0055;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 16px;
-        flex-shrink: 0;
-    }
-
-    .text {
-        flex: 1;
-        padding-right: 15px;
-    }
-
-    .title {
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 1.3;
-        margin-bottom: 4px;
-        color: #f1f1f1;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .meta {
-        font-size: 12px;
-        color: #aaaaaa;
-        line-height: 1.4;
-    }
-
-    .menu {
-        color: #aaaaaa;
-        font-size: 18px;
-        font-weight: bold;
-        line-height: 1;
-    }
-
-    /* ===== BOTTOM NAV ===== */
-    .bottom-nav {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background: #0f0f0f;
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 10px 10px;
-        border-top: 1px solid #272727;
-        z-index: 20;
-    }
-
-    .nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-        color: #aaaaaa;
-        font-size: 10px;
-        gap: 4px;
-    }
-
-    .nav-item.active {
-        color: #ffffff;
-    }
-
-    .nav-icon {
-        font-size: 20px;
-    }
-
-    /* ===== POPUP ===== */
-    .overlay {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.7);
-        z-index: 99;
-        display: none;
-    }
-
-    .popup {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #212121;
-        padding: 25px;
-        border-radius: 12px;
-        width: 85%;
-        max-width: 350px;
-        text-align: center;
-        z-index: 100;
-        display: none;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-
-    .popup h2 {
-        margin: 0 0 10px;
-        font-size: 18px;
-    }
-
-    .popup p {
-        color: #aaaaaa;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    #contador {
-        font-size: 16px;
-        color: #ffffff;
-        margin-top: 15px;
-    }
-
-    .popup-btn {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background: #ffffff;
-        border: none;
-        color: #0f0f0f;
-        font-weight: 500;
-        border-radius: 18px;
-        width: 100%;
-        font-size: 14px;
-        cursor: pointer;
-    }
-</style>
+        /* ===== POPUP BLOQUEO ===== */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; display: none; }
+        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #212121; padding: 30px; border-radius: 15px; width: 85%; text-align: center; z-index: 201; display: none; }
+    </style>
 </head>
 <body>
 
-<div class="topbar">
-    <div class="logo-container" onclick="zonaPrivada()">
-        <span class="yt-icon">▶</span>
-        <span>YouTube Pro</span>
-    </div>
-    <div class="top-icons">
-        <span>📶</span> <span>🔍</span>
-    </div>
-</div>
-
-<div class="categories">
-    <div class="chip" style="padding: 6px 10px;">🧭</div>
-    <div class="chip active">Todo</div>
-    <div class="chip">Nuestra historia</div>
-    <div class="chip">Recuerdos</div>
-    <div class="chip">Especiales</div>
-</div>
-
-<div class="video">
-    <div class="thumbnail-container">
-        <img src="foto1.jpg" class="thumbnail" alt="Miniatura">
-        <div class="duration">3:45</div>
-    </div>
-    <div class="video-info">
-        <div class="avatar">C</div>
-        <div class="text">
-            <div class="title">Nuestro primer recuerdo juntos, el día que todo empezó ❤️</div>
-            <div class="meta">Mi cachetona • Hace 1 año • 1 M de visualizaciones</div>
+    <div class="topbar">
+        <div class="logo-container" onclick="accesoPrivado()">
+            <span class="yt-icon">▶</span>
+            <span>Mi Camii ♥️</span>
         </div>
-        <div class="menu">⋮</div>
+        <div>🔍</div>
     </div>
-</div>
 
-<div class="video">
-    <div class="thumbnail-container">
-        <img src="foto2.jpg" class="thumbnail" alt="Miniatura">
-        <div class="duration">2:10</div>
+    <div class="categories" id="cat-bar">
+        <div class="chip active" onclick="irA('inicio')">Todo</div>
+        <div class="chip" onclick="abrirCarta('Nuestra Historia', 'Aquí escribes la carta de cómo empezó todo...')">Nuestra historia</div>
+        <div class="chip" onclick="abrirCarta('Recuerdos', 'Aquí escribes sobre tus recuerdos favoritos...')">Recuerdos</div>
+        <div class="chip" onclick="abrirCarta('Especiales', 'Aquí escribes por qué ella es tan especial para ti...')">Especiales</div>
     </div>
-    <div class="video-info">
-        <div class="avatar">C</div>
-        <div class="text">
-            <div class="title">Tu sonrisa favorita en cámara lenta</div>
-            <div class="meta">Mi cachetona • Hace 8 meses • 500 K visualizaciones</div>
+
+    <div id="inicio" class="view active">
+        <div class="video" onclick="abrirCarta('Carta #1', 'Contenido de la primera carta...')">
+            <div class="thumbnail-container"><img src="foto1.jpg" class="thumbnail"></div>
+            <div class="video-info">
+                <div class="avatar">C</div>
+                <div class="text">
+                    <div class="title">Una razón para amarte cada día más</div>
+                    <div class="meta">Mi Camii • Hace 1 día</div>
+                </div>
+            </div>
         </div>
-        <div class="menu">⋮</div>
-    </div>
-</div>
-
-<div class="video" onclick="mostrarBloqueado()">
-    <div class="thumbnail-container" style="filter: grayscale(80%) blur(2px);">
-        <img src="foto7.jpg" class="thumbnail" alt="Miniatura">
-        <div class="duration" style="background: #cc0000;">ESTRENO</div>
-    </div>
-    <div class="video-info">
-        <div class="avatar" style="background: #333;">🔒</div>
-        <div class="text">
-            <div class="title">Sorpresa del 13 de marzo (No abrir todavía) 🎁</div>
-            <div class="meta">YouTube Pro • Estreno programado</div>
+        <div class="video" onclick="abrirCarta('Carta #2', 'Contenido de la segunda carta...')">
+            <div class="thumbnail-container"><img src="foto2.jpg" class="thumbnail"></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">Lo que sentí la primera vez</div><div class="meta">Hace 2 días</div></div></div>
         </div>
-        <div class="menu">⋮</div>
+        <div class="video" onclick="abrirCarta('Carta #3', 'Contenido de la tercera carta...')">
+            <div class="thumbnail-container"><img src="foto3.jpg" class="thumbnail"></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">Tu risa es mi sonido favorito</div><div class="meta">Hace 3 días</div></div></div>
+        </div>
+        <div class="video" onclick="abrirCarta('Carta #4', 'Contenido de la cuarta carta...')">
+            <div class="thumbnail-container"><img src="foto4.jpg" class="thumbnail"></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">Gracias por ser tú</div><div class="meta">Hace 4 días</div></div></div>
+        </div>
+        <div class="video" onclick="abrirCarta('Carta #5', 'Contenido de la quinta carta...')">
+            <div class="thumbnail-container"><img src="foto5.jpg" class="thumbnail"></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">A tu lado todo es mejor</div><div class="meta">Hace 5 días</div></div></div>
+        </div>
+        <div class="video" onclick="abrirCarta('Carta #6', 'Contenido de la sexta carta...')">
+            <div class="thumbnail-container"><img src="foto6.jpg" class="thumbnail"></div>
+            <div class="video-info"><div class="avatar">C</div><div class="text"><div class="title">Nuestro futuro juntos</div><div class="meta">Hace 6 días</div></div></div>
+        </div>
+
+        <div class="video" onclick="mostrarBloqueado()">
+            <div class="thumbnail-container" style="filter: grayscale(1) blur(3px);">
+                <img src="foto7.jpg" class="thumbnail">
+                <div style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold;">🔒 ESTRENO</div>
+            </div>
+            <div class="video-info">
+                <div class="avatar" style="background:#333">🔒</div>
+                <div class="text">
+                    <div class="title">Sorpresa del 13 de marzo</div>
+                    <div class="meta">Estreno programado</div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="bottom-nav">
-    <div class="nav-item active">
-        <div class="nav-icon">🏠</div>
-        <span>Inicio</span>
+    <div id="seccion-carta" class="view">
+        <div class="content-area">
+            <button class="back-btn" onclick="irA('inicio')">← Volver</button>
+            <div class="carta-box">
+                <div id="carta-titulo" class="carta-titulo"></div>
+                <div id="carta-texto" class="carta-texto"></div>
+            </div>
+        </div>
     </div>
-    <div class="nav-item">
-        <div class="nav-icon">⚡</div>
-        <span>Shorts</span>
+
+    <div id="notificaciones" class="view">
+        <div class="noti-screen">
+            <img src="tu-notificacion.jpg" class="noti-img" alt="Notificación">
+            <p class="noti-phrase">"Es la notificación que siempre espero cuando cojo mi celular"</p>
+        </div>
     </div>
-    <div class="nav-item">
-        <div class="nav-icon">📺</div>
-        <span>Suscripciones</span>
+
+    <div id="perfil" class="view">
+        <div class="content-area" style="text-align:center; padding-top:50px;">
+            <div class="avatar" style="width:100px; height:100px; font-size:40px; margin: 0 auto 20px;">♥️</div>
+            <h2>Mi Camii</h2>
+            <p>El amor de mi vida</p>
+            <button class="back-btn" onclick="accesoPrivado()" style="margin-top:30px; border: 1px solid #ff4757;">Ver Carta Secreta 🔒</button>
+        </div>
     </div>
-    <div class="nav-item">
-        <div class="nav-icon">🔔</div>
-        <span>Notificaciones</span>
+
+    <div id="seccion-privada" class="view">
+        <div class="content-area">
+            <button class="back-btn" onclick="irA('perfil')">← Salir</button>
+            <div class="carta-box" style="border-color: #ff4757;">
+                <div class="carta-titulo">Para mi cachetona...</div>
+                <div class="carta-texto">
+Aqui escribe la carta mas especial de todas. 
+Esta es la que ella vera despues de poner la contraseña.
+Dile todo lo que sientes sin limites.
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="nav-item">
-        <div class="nav-icon">👤</div>
-        <span>Tú</span>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="irA('inicio')"><span class="nav-icon">🏠</span><span>Inicio</span></div>
+        <div class="nav-item"><span class="nav-icon">⚡</span><span>Shorts</span></div>
+        <div class="nav-item" onclick="irA('perfil')"><span class="nav-icon">📺</span><span>Suscripciones</span></div>
+        <div class="nav-item" onclick="irA('notificaciones')"><span class="nav-icon">🔔</span><span>Notificaciones</span></div>
+        <div class="nav-item" onclick="irA('perfil')"><span class="nav-icon">👤</span><span>Tú ♥️</span></div>
     </div>
-</div>
 
-<div class="overlay" id="overlay" onclick="cerrar()"></div>
-<div class="popup" id="popup">
-    <h2>🔒 Video Privado</h2>
-    <p>Este recuerdo aún no está listo para verse. La paciencia tiene su recompensa.</p>
-    <div id="contador"></div>
-    <button class="popup-btn" onclick="cerrar()">Entendido</button>
-</div>
+    <div class="overlay" id="overlay" onclick="cerrarPopup()"></div>
+    <div class="popup" id="popup">
+        <h2>🔒 Video Privado</h2>
+        <div id="contador" style="font-size: 20px; font-weight: bold; margin: 15px 0;"></div>
+        <button onclick="cerrarPopup()" style="width:100%; padding:10px; border-radius:20px; border:none; background:#fff; font-weight:bold;">Entendido</button>
+    </div>
 
-<script>
-// Configura la fecha de tu aniversario o fecha sorpresa aquí
-const fechaObjetivo = new Date("March 13, 2026 00:00:00").getTime();
-let intervalo;
+    <script>
+        // Función para cambiar entre apartados
+        function irA(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
+        }
 
-function mostrarBloqueado() {
-    actualizarContador();
-    intervalo = setInterval(actualizarContador, 1000);
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("popup").style.display = "block";
-}
+        // Función para abrir cualquier carta
+        function abrirCarta(titulo, texto) {
+            document.getElementById('carta-titulo').innerText = titulo;
+            document.getElementById('carta-texto').innerText = texto;
+            irA('seccion-carta');
+        }
 
-function actualizarContador() {
-    const ahora = new Date().getTime();
-    const distancia = fechaObjetivo - ahora;
+        // Función para la contraseña
+        function accesoPrivado() {
+            let pass = prompt("Dime la contraseña secreta:");
+            if(pass && pass.toLowerCase() === "teamo") { // <--- CAMBIA LA CONTRASEÑA AQUÍ
+                irA('seccion-privada');
+            } else if(pass !== null) {
+                alert("Contraseña incorrecta... písta: lo que siento por ti.");
+            }
+        }
 
-    if (distancia < 0) {
-        document.getElementById("contador").innerHTML = "<b>¡Ya está disponible! ❤️</b>";
-        clearInterval(intervalo);
-        return;
-    }
-
-    const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-    const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-
-    document.getElementById("contador").innerHTML =
-    "Se desbloquea en:<br><b>" + dias + "d " + horas + "h " + minutos + "m " + segundos + "s</b>";
-}
-
-function cerrar() {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("popup").style.display = "none";
-    clearInterval(intervalo);
-}
-
-function zonaPrivada() {
-    alert("Aquí puedes programar un Easter Egg o pedirle una contraseña 😉");
-}
-</script>
-
+        // Temporizador para el video bloqueado
+        const fechaObjetivo = new Date("March 13, 2026 00:00:00").getTime();
+        function mostrarBloqueado() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("popup").style.display = "block";
+            actualizarContador();
+        }
+        function actualizarContador() {
+            const ahora = new Date().getTime();
+            const d = fechaObjetivo - ahora;
+            const dias = Math.floor(d / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
+            const segs = Math.floor((d % (1000 * 60)) / 1000);
+            document.getElementById("contador").innerHTML = dias + "d " + horas + "h " + mins + "m " + segs + "s";
+        }
+        setInterval(actualizarContador, 1000);
+        function cerrarPopup() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("popup").style.display = "none";
+        }
+    </script>
 </body>
 </html>
