@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Segunda Pista 🧩</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Roboto', sans-serif; background: #0f0f0f; color: #ffffff; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; overflow-x: hidden; }
+
+        .header { text-align: center; margin-bottom: 20px; animation: fadeIn 1s ease; width: 100%; max-width: 400px; }
+        .header h1 { color: #ff4757; font-size: 24px; margin-bottom: 5px; }
+        .header p { color: #eee; font-size: 14px; line-height: 1.6; }
+
+        /* Controles de Juego */
+        .input-container { display: flex; width: 100%; max-width: 400px; gap: 10px; margin-bottom: 15px; }
+        input { flex: 1; background: #272727; border: 1px solid #444; padding: 12px 15px; border-radius: 20px; color: white; outline: none; font-size: 16px; }
+        button { background: #ff4757; color: white; border: none; padding: 12px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        button:active { transform: scale(0.95); }
+        .btn-pista { background: #272727; border: 1px solid #ff4757; color: #ff4757; width: 100%; max-width: 400px; margin-bottom: 20px; }
+
+        /* Lista de intentos */
+        .intentos-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 8px; }
+        .intento { display: flex; justify-content: space-between; padding: 12px 15px; border-radius: 10px; font-weight: bold; animation: slideIn 0.3s ease; }
+        .barra-progreso { height: 4px; border-radius: 2px; margin-top: 5px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
+        .progreso-fill { height: 100%; position: absolute; left: 0; top: 0; }
+
+        /* Colores de cercanía */
+        .verde { background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; }
+        .verde .progreso-fill { background: #2ecc71; }
+        .amarillo { background: rgba(241, 196, 15, 0.2); border: 1px solid #f1c40f; }
+        .amarillo .progreso-fill { background: #f1c40f; }
+        .rojo { background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; }
+        .rojo .progreso-fill { background: #e74c3c; width: 5%; } /* Siempre cortito para los rojos */
+
+        /* Animación de la Carta de Pista */
+        #overlay-carta { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 150; display: none; }
+        .carta-pista { position: fixed; top: -100%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: #ebdcb2; color: #3e2723; padding: 30px 25px; border-radius: 5px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 200; text-align: center; font-family: 'Georgia', serif; transition: top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .carta-pista.abierta { top: 50%; transform: translate(-50%, -50%); }
+        .carta-pista::before { content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: #ff4757; border-radius: 50%; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
+        .poema-texto { font-size: 16px; line-height: 1.6; font-style: italic; margin-bottom: 20px; }
+
+        /* Pantalla de victoria */
+        #pantalla-victoria { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 300; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        .frase-final { font-size: 20px; line-height: 1.6; color: #fff; font-style: italic; margin: 20px 0; max-width: 400px; }
+        .palabra-destacada { color: #ff4757; font-weight: bold; font-size: 24px; text-transform: uppercase; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Contexto Secreto ♥️</h1>
+        <p>Encuentra la palabra oculta. Si escribes palabras que tengan un significado parecido, el número será más bajo (verde). Si no tienen nada que ver, el número será alto (rojo).<br><b>Pista:</b> Es el lugar donde quiero quedarme mi amor.</p>
+    </div>
+
+    <div class="input-container">
+        <input type="text" id="input-palabra" placeholder="Escribe una palabra..." autocomplete="off">
+        <button onclick="adivinar()">Enviar</button>
+    </div>
+
+    <button class="btn-pista" onclick="mostrarPista()">✉️ Abrir una pista</button>
+
+    <div class="intentos-container" id="lista-intentos">
+        </div>
+
+    <div id="overlay-carta" onclick="cerrarPista()"></div>
+
+    <div class="carta-pista" id="carta-pista">
+        <h3 style="margin-top: 10px; border-bottom: 1px solid #3e2723; padding-bottom: 10px;">Para ti</h3>
+        <div class="poema-texto" id="texto-pista"></div>
+        <button onclick="cerrarPista()" style="background: #3e2723; border-radius: 5px; width: 100%;">Guardar carta</button>
+    </div>
+
+    <div id="pantalla-victoria">
+        <h2 style="color: #ff4757; font-size: 30px; margin-bottom: 10px;">¡Lo encontraste 🥺</h2>
+        <p>Has adivinado la palabra secreta número 1.</p>
+        <div class="frase-final">
+            "Eres la casualidad más bonita que iluminó por completo mi <span class="palabra-destacada">UNIVERSO</span>"
+        </div>
+        <p style="color: #aaa; font-size: 15px; max-width: 350px;">Ya tienes la frase completa, mi amor. Guárdala bien, porque será la llave para abrir la sorpresa que te espera.</p>
+        <button onclick="volverAInicio()" style="margin-top: 25px; width: 80%; max-width: 300px;">Volver a Mi Camii</button>
+    </div>
+
+    <script>
+        // Diccionario simulado de cercanía semántica
+        const diccionario = {
+            "universo": 1,
+            "cosmos": 2, "galaxia": 3, "espacio": 4, "infinito": 5, "todo": 6, "mundo": 7, "creacion": 8, "cielo": 9, "firmamento": 10,
+            "estrellas": 15, "estrella": 16, "planeta": 20, "constelacion": 25, "vacio": 30, "sistema": 40, "tierra": 50, "astro": 60, "sol": 70, "luna": 80, "amor": 90,
+            "vida": 100, "corazon": 120, "alma": 150, "tiempo": 200, "lugar": 250, "hogar": 300, "naturaleza": 400, "energia": 500, "materia": 600, "luz": 700
+        };
+
+        const poemas = [
+            "Soy el lienzo oscuro donde la luz decidió bordar su eternidad, pero no tengo principio ni final.",
+            "Guardo en mi vientre todas las esferas que giran, pero no soy un reloj.",
+            "Me expando en el silencio, devorando la nada para convertirla en todo.",
+            "Soy la cuna de los astros y el cementerio de las supernovas.",
+            "Contengo todas las distancias, pero si intentas medirme, tu mente se perderá en el intento.",
+            "En mi piel de vacío flotan islas de polvo y gas que ustedes llaman hogares.",
+            "Soy el libro negro donde la materia escribe su historia con tinta de gravedad.",
+            "No respiro, pero me sigo expandiendo desde el primer latido de la creación.",
+            "Los filósofos me buscan, los telescopios me arañan, pero solo los enamorados dicen tenerme en sus manos.",
+            "Soy el tejido invisible que sostiene todo lo que existe, desde una lágrima hasta una galaxia."
+        ];
+
+        let intentosRealizados = [];
+        let pistasUsadas = 0;
+
+        // Permitir usar "Enter" para enviar
+        document.getElementById("input-palabra").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                adivinar();
+            }
+        });
+
+        function normalizarPalabra(str) {
+            return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        }
+
+        function adivinar() {
+            const inputEl = document.getElementById('input-palabra');
+            const palabraCruda = inputEl.value;
+            const palabra = normalizarPalabra(palabraCruda);
+            
+            if (palabra === "") return;
+
+            // Si ya la intentó, no hacer nada
+            if (intentosRealizados.some(i => i.palabra === palabra)) {
+                inputEl.value = "";
+                return;
+            }
+
+            let posicion = 0;
+            
+            // Buscar en diccionario
+            if (diccionario[palabra]) {
+                posicion = diccionario[palabra];
+            } else {
+                // Si no existe, darle un número aleatorio muy alto y lejano
+                posicion = Math.floor(Math.random() * (80000 - 5000) + 5000);
+            }
+
+            intentosRealizados.push({ palabra: palabraCruda.toLowerCase(), posicion: posicion });
+            
+            // Ordenar para que las más cercanas (número menor) queden arriba
+            intentosRealizados.sort((a, b) => a.posicion - b.posicion);
+            
+            renderizarIntentos();
+            inputEl.value = "";
+
+            // ¿Ganó?
+            if (posicion === 1) {
+                setTimeout(() => {
+                    document.getElementById('pantalla-victoria').style.display = 'flex';
+                }, 800);
+            }
+        }
+
+        function renderizarIntentos() {
+            const contenedor = document.getElementById('lista-intentos');
+            contenedor.innerHTML = "";
+
+            intentosRealizados.forEach(intento => {
+                let claseColor = "rojo";
+                let porcentaje = "5%";
+
+                if (intento.posicion <= 100) {
+                    claseColor = "verde";
+                    porcentaje = Math.max(10, 100 - (intento.posicion)) + "%";
+                } else if (intento.posicion <= 1000) {
+                    claseColor = "amarillo";
+                    porcentaje = Math.max(10, 50 - (intento.posicion / 20)) + "%";
+                }
+
+                const div = document.createElement('div');
+                div.className = `intento ${claseColor}`;
+                div.innerHTML = `
+                    <div style="width: 100%;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="text-transform: capitalize;">${intento.palabra}</span>
+                            <span>${intento.posicion}</span>
+                        </div>
+                        <div class="barra-progreso">
+                            <div class="progreso-fill" style="width: ${porcentaje};"></div>
+                        </div>
+                    </div>
+                `;
+                contenedor.appendChild(div);
+            });
+        }
+
+        function mostrarPista() {
+            const overlay = document.getElementById('overlay-carta');
+            const carta = document.getElementById('carta-pista');
+            const textoPoema = document.getElementById('texto-pista');
+
+            if (pistasUsadas < poemas.length) {
+                textoPoema.innerText = '"' + poemas[pistasUsadas] + '"';
+                pistasUsadas++;
+            } else {
+                textoPoema.innerHTML = "No hay más amor.<br><br>Ya deberías de saber porque siempre te lo digo.<br><br><b>'cuando te veo a los ojos veo un ______ completo'</b>";
+            }
+
+            overlay.style.display = 'block';
+            // Pequeño delay para que la transición CSS funcione correctamente
+            setTimeout(() => {
+                carta.classList.add('abierta');
+            }, 10);
+        }
+
+        function cerrarPista() {
+            const overlay = document.getElementById('overlay-carta');
+            const carta = document.getElementById('carta-pista');
+            
+            carta.classList.remove('abierta');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 500); // Espera a que termine la animación de subida
+        }
+
+        function volverAInicio() {
+            // Reemplaza esto con el nombre de tu archivo principal
+            window.location.href = 'index.html'; 
+        }
+    </script>
+</body>
+</html>
