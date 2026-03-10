@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -54,9 +52,19 @@
         .nav-item.active { color: #fff; }
         .nav-icon { font-size: 22px; margin-bottom: 4px; }
 
-        /* POPUP */
+        /* POPUP DEL 13 DE MARZO */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; display: none; }
-        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #212121; padding: 30px; border-radius: 15px; width: 85%; text-align: center; z-index: 201; display: none; border: 1px solid #444; }
+        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #212121; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; z-index: 201; display: none; border: 1px solid #444; }
+
+        /* ANIMACIÓN TE AMO SECRETA */
+        .pantalla-te-amo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f0f0f; z-index: 300; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .texto-gigante { font-size: 5em; color: #ff4757; animation: animTeAmo 3.5s ease forwards; text-align: center; margin: 0; }
+        @keyframes animTeAmo { 
+            0% { opacity: 0; transform: scale(0.5); } 
+            20% { opacity: 1; transform: scale(1.1); } 
+            80% { opacity: 1; transform: scale(1); } 
+            100% { opacity: 0; transform: scale(1.5); } 
+        }
     </style>
 </head>
 <body>
@@ -74,7 +82,6 @@
         <span onclick="toggleSearch()" style="margin-left:10px; cursor:pointer;">✕</span>
     </div>
 
-    <!-- VISTA INICIO -->
     <div id="inicio" class="view active">
         <div class="categories">
             <div class="chip active" onclick="irA('inicio')">Todo</div>
@@ -134,7 +141,36 @@
                     </div>
                 </div>
             </div>
-            <div class="video" onclick="mostrarBloqueado()">
+
+            <div class="video" onclick="window.location.href='pista1.html'">
+                <div class="thumbnail-container">
+                    <img src="foto-pista1.jpg" class="thumbnail" style="filter: brightness(0.7);">
+                    <div style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.8); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">🧩 Jugar</div>
+                </div>
+                <div class="video-info">
+                    <img src="persona-amada.jpg" class="avatar-foto">
+                    <div class="v-text">
+                        <div class="title">(Pista 1 Sopa de letras)</div>
+                        <div class="meta">Minijuego interactivo • Toca para ir</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video" onclick="window.location.href='pista2.html'">
+                <div class="thumbnail-container">
+                    <img src="foto-pista2.jpg" class="thumbnail" style="filter: brightness(0.7);">
+                    <div style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.8); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">🧩 Jugar</div>
+                </div>
+                <div class="video-info">
+                    <img src="persona-amada.jpg" class="avatar-foto">
+                    <div class="v-text">
+                        <div class="title">(Pista 2 Contexto)</div>
+                        <div class="meta">Minijuego interactivo • Toca para ir</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video" onclick="abrirSorpresaGranFinal()">
                 <div class="thumbnail-container" style="filter: grayscale(1) blur(3px);">
                     <img src="foto7.jpg" class="thumbnail">
                     <div style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold; color:white; font-size:18px;">🔒 ESTRENO</div>
@@ -150,7 +186,6 @@
         </div>
     </div>
 
-    <!-- VISTA CARTA GENÉRICA -->
     <div id="seccion-carta" class="view">
         <div class="content-area">
             <button onclick="irA('inicio')" style="background:#272727; border:none; color:white; padding:10px 20px; border-radius:20px; margin-bottom:15px; cursor:pointer;">← Volver</button>
@@ -161,7 +196,6 @@
         </div>
     </div>
 
-    <!-- VISTA NOTIFICACIONES -->
     <div id="notificaciones" class="view">
         <div class="content-area" style="text-align:center;">
             <img src="tu-notificacion.jpg" style="width:100%; border-radius:15px; margin-bottom:20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
@@ -171,7 +205,6 @@
         </div>
     </div>
 
-    <!-- VISTA SUSCRIPCIONES -->
     <div id="suscripciones" class="view">
         <div class="content-area" style="text-align:center; padding-top:50px;">
             <img src="persona-amada.jpg" class="avatar-foto" style="width:120px; height:120px; margin: 0 auto 20px; border: 2px solid #ff4757; display: block;">
@@ -182,7 +215,6 @@
         </div>
     </div>
 
-    <!-- VISTA TÚ -->
     <div id="perfil" class="view">
         <div class="content-area" style="text-align:center;">
             <img src="persona-amada.jpg" style="width:200px; height:200px; border-radius:50%; object-fit:cover; border: 4px solid #ff4757; margin-top:40px;">
@@ -193,7 +225,6 @@
         </div>
     </div>
 
-    <!-- NAVEGACIÓN INFERIOR -->
     <div class="bottom-nav">
         <div class="nav-item active" id="btn-inicio" onclick="irA('inicio')"><span class="nav-icon">🏠</span><span>Inicio</span></div>
         <div class="nav-item"><span class="nav-icon">⚡</span><span>Shorts</span></div>
@@ -204,47 +235,81 @@
 
     <div class="overlay" id="overlay" onclick="cerrarPopup()"></div>
     <div class="popup" id="popup">
-        <h2 style="color:#ff4757;">🔒 Estreno programado</h2>
-        <div id="contador" style="font-size:24px; font-weight:bold; margin:20px 0;"></div>
-        <button onclick="cerrarPopup()" style="width:100%; padding:12px; border-radius:20px; border:none; background:#fff; font-weight:bold;">Cerrar</button>
+        <h2 style="color:#ff4757; margin-top: 0;">🔒 Sorpresa Final</h2>
+        <p id="instruccion-popup" style="font-size: 14px; color: #aaa; margin-bottom: 15px;">Ingresa la frase secreta de tus pistas:</p>
+        
+        <input type="text" id="pass-13marzo" placeholder="Escribe la frase completa..." style="width:100%; padding:12px; border-radius:10px; border:1px solid #444; background:#222; color:#fff; margin-bottom:10px; outline:none;">
+        <p id="error-13marzo" style="color:#ff4757; font-size:12px; display:none; margin-top: 0;">Esa no es la frase correcta 🥺</p>
+        
+        <button id="btn-verificar" onclick="verificarFraseFinal()" style="width:100%; padding:12px; border-radius:20px; border:none; background:#ff4757; color:#fff; font-weight:bold; margin-bottom:10px;">Desbloquear</button>
+        <button onclick="cerrarPopup()" style="width:100%; padding:12px; border-radius:20px; border:none; background:#444; color:#fff; font-weight:bold;">Cerrar</button>
+        
+        <div id="reloj-container" style="display:none; margin-top: 20px;">
+            <div id="contador" style="font-size:24px; font-weight:bold; color:#ff4757;"></div>
+        </div>
+    </div>
+
+    <div id="pantalla-te-amo" class="pantalla-te-amo">
+        <h1 class="texto-gigante">Te amo</h1>
     </div>
 
     <script>
+        // -----------------------------------------------------
+        // 1. SISTEMA ESPÍA: REGISTRO OCULTO DE ACCESOS
+        // -----------------------------------------------------
+        function registrarAccesoOculto() {
+            const ua = navigator.userAgent;
+            let dispositivo = "Computadora / Otro";
+            let marca = "Desconocida";
+
+            if (/android/i.test(ua)) {
+                dispositivo = "Celular Android";
+                const matchMarca = ua.match(/\b(Samsung|SM-|Motorola|Moto|Xiaomi|Redmi|Poco|Huawei|Oppo|Vivo|Realme|OnePlus|Pixel)\b/i);
+                if (matchMarca) marca = matchMarca[0].replace('SM-', 'Samsung ');
+            } else if (/iPad|iPhone|iPod/.test(ua)) {
+                dispositivo = "iPhone / iPad";
+                marca = "Apple";
+            } else if (/Windows/.test(ua)) {
+                dispositivo = "PC Windows";
+            } else if (/Mac/.test(ua)) {
+                dispositivo = "PC Mac";
+            }
+
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString('es-CO');
+            const hora = ahora.toLocaleTimeString('es-CO');
+
+            let historial = JSON.parse(localStorage.getItem('historial_secreto_camii') || '[]');
+            historial.push({ fecha, hora, dispositivo, marca });
+            localStorage.setItem('historial_secreto_camii', JSON.stringify(historial));
+        }
+
+        function mostrarHistorialAdmin() {
+            let historial = JSON.parse(localStorage.getItem('historial_secreto_camii') || '[]');
+            let texto = "🕵️ HISTORIAL DE ACCESOS:\n\n";
+            if(historial.length === 0) {
+                texto += "Nadie ha entrado aún.";
+            } else {
+                historial.forEach((h, i) => {
+                    texto += `${i+1}. ${h.fecha} a las ${h.hora}\n   📱 ${h.dispositivo} (${h.marca})\n\n`;
+                });
+            }
+            alert(texto);
+        }
+
+        // Ejecutar el espía apenas cargue la página
+        window.onload = registrarAccesoOculto;
+
+        // -----------------------------------------------------
+        // 2. TEXTOS Y CONTENIDOS DE LAS CARTAS
+        // -----------------------------------------------------
         const textos = {
-            v1: { t: "Feliz cumpleaños mi cachetona", c: `Feliz cumpleaños mi niña hemocha. De verdad valoro tantos momentos pasados a tu lado. Esas risas, esos momentos donde te saco una sonrisa y puedo ver lo más hermoso de este mundo. Verte a esos ojitos es ir de dimensión en dimensión tratando de hallar por qué tus ojos brillan tan hermoso. Porque esa luz que emiten es única, como si dentro de ti viviera una estrella que decidió tomar forma humana para enseñarme lo que es amar de verdad. A veces me quedo mirándote sin que te des cuenta, intentando memorizar cada detalle tuyo. La forma en que mueves tus manos cuando hablas, cómo cambias el tono cuando algo te emociona, esa manera tan tuya de reírte que hace que todo alrededor deje de importar y en esos pequeños momentos entiendo que no necesito nada más extraordinario en mi vida, porque lo extraordinario ya lo tengo cuando estoy contigo.
-
-Hoy cumples años, pero el regalo realmente lo recibí yo el día que tú llegaste a mi vida. Porque desde que apareciste, mis días tienen otro color, mis problemas pesan menos y mis sueños se sienten más posibles. Tú me enseñaste que el amor no es solo decir “te amo”, sino demostrarlo diario, en los detalles pequeños, en el "ya comiste?” en el “avísame cuando llegues”, en el simple hecho de estar. Quiero que este nuevo año que comienzas esté lleno de todo lo bonito que mereces. Que cada meta que tengas se acerque un poco más a tus manos. Que nunca se apague esa chispa que tienes, esa ternura que me desarma y esa fuerza que a veces ni tú misma notas. Porque eres más capaz de lo que crees, más fuerte de lo que imaginas y más especial de lo que cualquier palabra podría describir. Si algún día dudas de ti, mírame porque yo veo en ti a una mujer increíble, valiente, inteligente y hermosa por dentro y por fuera. Veo a alguien que ilumina sin darse cuenta, que abraza y sana, que sonríe y cambia mi mundo entero.
-
-Gracias por existir mi niña pechocha. Gracias por cada abrazo, cada conversación larga, cada mirada. Gracias por dejarme ser parte de tu historia. Yo no sé qué nos depare el futuro, pero sí sé que hoy celebro tu vida con el corazón lleno de orgullo por tenerte. Feliz cumpleaños, mi amor. Que este año esté lleno de sueños cumplidos, de días felices y de momentos donde podamos seguir construyendo recuerdos que algún día miraremos atrás y diremos: “qué bonito fue vivirlo juntos”.
-
-Y si pudiera pedir un deseo hoy, pediría seguir viendo esa luz en tus ojos muchos años más…porque esa luz, mi niña hermosa, es el lugar donde yo quiero quedarme ♥️` },
-            v2: { t: "Lo que más me gusta de ti", c: `Lo que más me gusta de ti no es solo lo que todos pueden ver. No es solamente tu sonrisa hermosa ni la forma en que iluminas un lugar cuando llegas. Lo que más me gusta de ti es algo que va mucho más allá de lo físico mi amor, es esa esencia tuya que no se puede copiar ni explicar fácilmente. Me gusta tu manera de ser. Esa mezcla tan perfecta entre ternura y carácter. Me gusta que tengas una sonrisa tan brillante, pero también una mirada firme cuando algo no te parece justo. Me gusta que seas fuerte, incluso cuando dices que no lo eres. Porque he visto cómo enfrentas cosas en silencio y aun así sigues adelante. Me gusta tu risa.. esa que a veces intentas controlar y no puedes. Esa que me contagia aunque yo esté en un mal día. Me gusta cómo arrugas un poquito la nariz cuando algo te da risa de verdad. Me gusta cuando te emocionas hablando de algo que te gusta y tus ojos brillan como si el mundo entero cupiera en ellos.
-
-Me gusta que tengas metas, sueños, planes. Que no te conformes con poco. Que quieras crecer. Que quieras ser mejor. Eso me inspira. Me hace querer crecer yo también, para estar a la altura de la mujer que eres y de la mujer que estás construyendo mi amorchito. Me gusta tu corazón. Porque aunque a veces te enojes, aunque tengas tus momentos difíciles, siempre hay bondad en ti. Siempre hay algo bonito en lo que haces. Te preocupas por los demás, quieres que las personas estén bien, y eso dice demasiado de quién eres.
-
-Y si soy sincero… lo que más me gusta de ti es cómo me haces sentir. Porque contigo me siento tranquilo. Me siento querido. Me siento importante. Me siento capaz. Contigo puedo ser yo, sin miedo. Y eso no pasa con cualquiera. Me gusta que no seas perfecta, porque tus pequeñas “imperfecciones” son las que te hacen real, única, humana. Me gusta que tengas tus manías, tus caprichos, tus momentos sensibles. Todo eso te hace tú ♥️. Y yo no cambiaría nada. Lo que más me gusta de ti.. es que eres tú. Auténtica. Diferente. Especial. Y que, entre tantas personas en este mundo, el destino decidió cruzar nuestros caminos. Y créeme… eso es algo que valoro más de lo que imaginas mi niña 🥺` },
-            v3: { t: "Mi niña hemocha", c: `Mi niña hemocha.. 
-Solo quería escribirte algo que salga directo de lo que siento, sin nada forzados, sin palabras vacías. Quiero que sepas que tú eres una parte muy importante de mi vida. Desde que llegaste, muchas cosas cambiaron en mí. Cambió mi manera de pensar, de sentir, de mirar lo que viene. Porque ahora cuando imagino mis días felices, tú siempre estás ahí. Me encanta la forma en que sonríes, la manera en que me miras, cómo haces que hasta los momentos más simples se vuelvan especiales. Contigo entendí que el amor no siempre necesita grandes escenarios. a veces solo necesita dos personas que se elijan todos los días (Y yo te elijo siempre mi amorshito bello). Quiero que nunca dudes de lo que significas para mí. No eres una costumbre, no eres algo efímero. Eres esa persona que pienso cuando despierto y también cuando me voy a dormir. Eres la que me da tranquilidad en medio del caos y felicidad en medio de la todo. Si algún día te sientes insegura, mírame con los ojos con los que yo te miro a ti. Porque yo veo a una mujer valiosa, fuerte, hermosa por dentro y por fuera. Veo a alguien que merece un amor sano, leal y verdadero. Y yo quiero darte eso. Gracias por existir mi amorrr. Gracias por tu cariño, por tus abrazos, por tu paciencia, por tu risa y por tus palabras. Gracias por ser mi niña. Y pase lo que pase, quiero que siempre recuerdes algo..aquí tienes a alguien que te quiere de verdad, que te respeta y que te elige ♥️` },
-            v4: { t: "Mi lugar favorito en el mundo", c: `Mi lugar favorito en el mundo no aparece en ningún mapa No tiene coordenadas, ni direcciónes, ni nombre escrito en grande. Mi lugar favorito en el mundo eres tú Mi Camii. Porque cuando estoy contigo, todo se siente diferente. El ruido merma, las preocupaciones pesan menos y el tiempo parece ir más lento, como si quisiera que ese momento durara mucho más. Mi lugar favorito es el espacio que se forma cuando me abrazas y por unos segundos nada más importa.
-
-Es tu risa cuando me miras. Es tu mirada cuando te quedas en silencio. Es tu voz cuando me dices "Mi niño". Es tu pecho cuando apoyo mi cabeza y siento que estoy exactamente donde debo estar. Ahí, en ese pequeño universo que se crea entre tú y yo, es donde quiero quedarme amor. Mi lugar favorito en el mundo es verte feliz. Es saber que estoy a tu lado cuando sonríes. Es caminar contigo sin rumbo fijo, hablar de cualquier cosa y aun así sentir que estoy viviendo algo importante. Porque contigo lo basico se vuelve grande y deja de ser básico y se vuelve especial.
-
-Si me preguntaran dónde me siento en casa, no diría una ciudad ni una dirección. Diría.. “cuando estoy con mi niña”. Porque tú eres mi calma y mi emoción al mismo tiempo. Eres mi refugio y mi aventura. Eres esa paz y también ese latido rápido que me recuerda que estoy vivo. Y si algún día el mundo se vuelve pesado, solo quiero buscarte. Porque mi lugar favorito siempre será ese instante en el que nuestras miradas se saludan y entiendo que, sin importar dónde estemos, mientras sea contigo… ya estoy en el mejor lugar del mundo..🥺♥️` },
-            v5: { t: "Siempre estaré contigo", c: `"Siempre estaré contigo"
-
-No como una frase bonita que se dice y se la lleva el viento. No como una promesa vacía que suena bien en el momento. Siempre estaré para ti mi amor, de verdad. Estaré en tus días buenos, celebrando cada logro como si fuera mío. Aplaudiendo tus logros, apoyando tus sueños y recordándote lo capaz que eres cuando a veces tú misma olvides eso. Pero también estaré en los días grises. En esos momentos donde todo pesa más de lo normal. Cuando tengas dudas, cuando sientas miedo, cuando necesites simplemente a alguien que te escuche sin juzgar. Quiero ser ese lugar seguro para ti, esa persona a la que puedas acudir sin pensar dos veces. Siempre estaré para ti cuando necesites un consejo.. y también cuando no quieras consejos, solo compañía. Cuando quieras hablar por horas..y cuando prefieras quedarte en silencio. Porque a veces amar también es saber acompañar sin invadir. Estaré para cuidarte, respetarte y apoyarte en tu crecimiento. No para limitarte, no para frenarte, sino para caminar contigo tomados de la mano mientras construyes la mejor versión de ti misma. No te prometo que todo será perfecto, porque el amor real no es perfecto. Pero sí te prometo algo más fuerte. La constancia. La presencia. Intención. Elegirte incluso cuando haya días complicados. Siempre estaré para ti mi amor.. no solo porque te amo, sino porque quiero ser parte de tu tranquilidad, de tu paz y de tu vida y mientras tú me permitas estar a tu lado, aquí me quedo mi niña pechocha ♥️` },
-            search: { t: "Encontré todo", c: `(“No busco nada”… eso decía antes. 
-Decía que no estaba buscando a nadie, que estaba tranquilo así, que no necesitaba estar intranquilo con sentimientos. Decía que todo estaba bien como estaba. Y tal vez era verdad… hasta que apareciste tú. 
-
-Porque uno puede decir que no busca nada, pero el corazón a veces sí está esperando algo sin saberlo. Y cuando llegaste, entendí que no estaba buscando… simplemente estaba esperando encontrarte 🥺 
-
-No te estaba buscando en redes, ni en lugares específicos, ni en planes calculados. Pero la vida, de alguna manera tan extraña y tan perfecta, decidió cruzarnos. Y desde ese momento algo cambió. 
-
-Ya no era “no busco nada”. Era “ya encontré todo”. 
-
-Encontré paz en tu forma de hablar. Encontré alegría en tu risa. Encontré emoción en tu mirada. Encontré tranquilidad en tus abrazos. Y lo más bonito es que no fue forzado. No fue planeado. No fue una necesidad vacía. Fue natural. Fue de esos encuentros que no se explican. Porque cuando alguien llega y te hace sentir cómodo siendo tú mismo.. cuando alguien te inspira a ser mejor sin exigírtelo… cuando alguien se vuelve pensamiento constante sin esfuerzo. ahí entiendes que no estabas buscando, pero sí estabas destinado a encontrarlo. 
-
-Y si me preguntan ahora qué busco, la respuesta es simple.. seguir construyendo contigo. Porque yo no buscaba nada.. hasta que la vida me mostró que lo mejor que podía pasarme eras tú ♥️` },
+            v1: { t: "Feliz cumpleaños mi cachetona", c: `Feliz cumpleaños mi niña hemocha. De verdad valoro tantos momentos pasados a tu lado. Esas risas, esos momentos donde te saco una sonrisa y puedo ver lo más hermoso de este mundo. Verte a esos ojitos es ir de dimensión en dimensión tratando de hallar por qué tus ojos brillan tan hermoso. Porque esa luz que emiten es única, como si dentro de ti viviera una estrella que decidió tomar forma humana para enseñarme lo que es amar de verdad. A veces me quedo mirándote sin que te des cuenta, intentando memorizar cada detalle tuyo. La forma en que mueves tus manos cuando hablas, cómo cambias el tono cuando algo te emociona, esa manera tan tuya de reírte que hace que todo alrededor deje de importar y en esos pequeños momentos entiendo que no necesito nada más extraordinario en mi vida, porque lo extraordinario ya lo tengo cuando estoy contigo.\n\nHoy cumples años, pero el regalo realmente lo recibí yo el día que tú llegaste a mi vida. Porque desde que apareciste, mis días tienen otro color, mis problemas pesan menos y mis sueños se sienten más posibles. Tú me enseñaste que el amor no es solo decir “te amo”, sino demostrarlo diario, en los detalles pequeños, en el "ya comiste?” en el “avísame cuando llegues”, en el simple hecho de estar. Quiero que este nuevo año que comienzas esté lleno de todo lo bonito que mereces. Que cada meta que tengas se acerque un poco más a tus manos. Que nunca se apague esa chispa que tienes, esa ternura que me desarma y esa fuerza que a veces ni tú misma notas. Porque eres más capaz de lo que crees, más fuerte de lo que imaginas y más especial de lo que cualquier palabra podría describir. Si algún día dudas de ti, mírame porque yo veo en ti a una mujer increíble, valiente, inteligente y hermosa por dentro y por fuera. Veo a alguien que ilumina sin darse cuenta, que abraza y sana, que sonríe y cambia mi mundo entero.\n\nGracias por existir mi niña pechocha. Gracias por cada abrazo, cada conversación larga, cada mirada. Gracias por dejarme ser parte de tu historia. Yo no sé qué nos depare el futuro, pero sí sé que hoy celebro tu vida con el corazón lleno de orgullo por tenerte. Feliz cumpleaños, mi amor. Que este año esté lleno de sueños cumplidos, de días felices y de momentos donde podamos seguir construyendo recuerdos que algún día miraremos atrás y diremos: “qué bonito fue vivirlo juntos”.\n\nY si pudiera pedir un deseo hoy, pediría seguir viendo esa luz en tus ojos muchos años más…porque esa luz, mi niña hermosa, es el lugar donde yo quiero quedarme ♥️` },
+            v2: { t: "Lo que más me gusta de ti", c: `Lo que más me gusta de ti no es solo lo que todos pueden ver. No es solamente tu sonrisa hermosa ni la forma en que iluminas un lugar cuando llegas. Lo que más me gusta de ti es algo que va mucho más allá de lo físico mi amor, es esa esencia tuya que no se puede copiar ni explicar fácilmente. Me gusta tu manera de ser. Esa mezcla tan perfecta entre ternura y carácter. Me gusta que tengas una sonrisa tan brillante, pero también una mirada firme cuando algo no te parece justo. Me gusta que seas fuerte, incluso cuando dices que no lo eres. Porque he visto cómo enfrentas cosas en silencio y aun así sigues adelante. Me gusta tu risa.. esa que a veces intentas controlar y no puedes. Esa que me contagia aunque yo esté en un mal día. Me gusta cómo arrugas un poquito la nariz cuando algo te da risa de verdad. Me gusta cuando te emocionas hablando de algo que te gusta y tus ojos brillan como si el mundo entero cupiera en ellos.\n\nMe gusta que tengas metas, sueños, planes. Que no te conformes con poco. Que quieras crecer. Que quieras ser mejor. Eso me inspira. Me hace querer crecer yo también, para estar a la altura de la mujer que eres y de la mujer que estás construyendo mi amorchito. Me gusta tu corazón. Porque aunque a veces te enojes, aunque tengas tus momentos difíciles, siempre hay bondad en ti. Siempre hay algo bonito en lo que haces. Te preocupas por los demás, quieres que las personas estén bien, y eso dice demasiado de quién eres.\n\nY si soy sincero… lo que más me gusta de ti es cómo me haces sentir. Porque contigo me siento tranquilo. Me siento querido. Me siento importante. Me siento capaz. Contigo puedo ser yo, sin miedo. Y eso no pasa con cualquiera. Me gusta que no seas perfecta, porque tus pequeñas “imperfecciones” son las que te hacen real, única, humana. Me gusta que tengas tus manías, tus caprichos, tus momentos sensibles. Todo eso te hace tú ♥️. Y yo no cambiaría nada. Lo que más me gusta de ti.. es que eres tú. Auténtica. Diferente. Especial. Y que, entre tantas personas en este mundo, el destino decidió cruzar nuestros caminos. Y créeme… eso es algo que valoro más de lo que imaginas mi niña 🥺` },
+            v3: { t: "Mi niña hemocha", c: `Mi niña hemocha.. \nSolo quería escribirte algo que salga directo de lo que siento, sin nada forzados, sin palabras vacías. Quiero que sepas que tú eres una parte muy importante de mi vida. Desde que llegaste, muchas cosas cambiaron en mí. Cambió mi manera de pensar, de sentir, de mirar lo que viene. Porque ahora cuando imagino mis días felices, tú siempre estás ahí. Me encanta la forma en que sonríes, la manera en que me miras, cómo haces que hasta los momentos más simples se vuelvan especiales. Contigo entendí que el amor no siempre necesita grandes escenarios. a veces solo necesita dos personas que se elijan todos los días (Y yo te elijo siempre mi amorshito bello). Quiero que nunca dudes de lo que significas para mí. No eres una costumbre, no eres algo efímero. Eres esa persona que pienso cuando despierto y también cuando me voy a dormir. Eres la que me da tranquilidad en medio del caos y felicidad en medio de la todo. Si algún día te sientes insegura, mírame con los ojos con los que yo te miro a ti. Porque yo veo a una mujer valiosa, fuerte, hermosa por dentro y por fuera. Veo a alguien que merece un amor sano, leal y verdadero. Y yo quiero darte eso. Gracias por existir mi amorrr. Gracias por tu cariño, por tus abrazos, por tu paciencia, por tu risa y por tus palabras. Gracias por ser mi niña. Y pase lo que pase, quiero que siempre recuerdes algo..aquí tienes a alguien que te quiere de verdad, que te respeta y que te elige ♥️` },
+            v4: { t: "Mi lugar favorito en el mundo", c: `Mi lugar favorito en el mundo no aparece en ningún mapa No tiene coordenadas, ni direcciónes, ni nombre escrito en grande. Mi lugar favorito en el mundo eres tú Mi Camii. Porque cuando estoy contigo, todo se siente diferente. El ruido merma, las preocupaciones pesan menos y el tiempo parece ir más lento, como si quisiera que ese momento durara mucho más. Mi lugar favorito es el espacio que se forma cuando me abrazas y por unos segundos nada más importa.\n\nEs tu risa cuando me miras. Es tu mirada cuando te quedas en silencio. Es tu voz cuando me dices "Mi niño". Es tu pecho cuando apoyo mi cabeza y siento que estoy exactamente donde debo estar. Ahí, en ese pequeño universo que se crea entre tú y yo, es donde quiero quedarme amor. Mi lugar favorito en el mundo es verte feliz. Es saber que estoy a tu lado cuando sonríes. Es caminar contigo sin rumbo fijo, hablar de cualquier cosa y aun así sentir que estoy viviendo algo importante. Porque contigo lo basico se vuelve grande y deja de ser básico y se vuelve especial.\n\nSi me preguntaran dónde me siento en casa, no diría una ciudad ni una dirección. Diría.. “cuando estoy con mi niña”. Porque tú eres mi calma y mi emoción al mismo tiempo. Eres mi refugio y mi aventura. Eres esa paz y también ese latido rápido que me recuerda que estoy vivo. Y si algún día el mundo se vuelve pesado, solo quiero buscarte. Porque mi lugar favorito siempre será ese instante en el que nuestras miradas se saludan y entiendo que, sin importar dónde estemos, mientras sea contigo… ya estoy en el mejor lugar del mundo..🥺♥️` },
+            v5: { t: "Siempre estaré contigo", c: `"Siempre estaré contigo"\n\nNo como una frase bonita que se dice y se la lleva el viento. No como una promesa vacía que suena bien en el momento. Siempre estaré para ti mi amor, de verdad. Estaré en tus días buenos, celebrando cada logro como si fuera mío. Aplaudiendo tus logros, apoyando tus sueños y recordándote lo capaz que eres cuando a veces tú misma olvides eso. Pero también estaré en los días grises. En esos momentos donde todo pesa más de lo normal. Cuando tengas dudas, cuando sientas miedo, cuando necesites simplemente a alguien que te escuche sin juzgar. Quiero ser ese lugar seguro para ti, esa persona a la que puedas acudir sin pensar dos veces. Siempre estaré para ti cuando necesites un consejo.. y también cuando no quieras consejos, solo compañía. Cuando quieras hablar por horas..y cuando prefieras quedarte en silencio. Porque a veces amar también es saber acompañar sin invadir. Estaré para cuidarte, respetarte y apoyarte en tu crecimiento. No para limitarte, no para frenarte, sino para caminar contigo tomados de la mano mientras construyes la mejor versión de ti misma. No te prometo que todo será perfecto, porque el amor real no es perfecto. Pero sí te prometo algo más fuerte. La constancia. La presencia. Intención. Elegirte incluso cuando haya días complicados. Siempre estaré para ti mi amor.. no solo porque te amo, sino porque quiero ser parte de tu tranquilidad, de tu paz y de tu vida y mientras tú me permitas estar a tu lado, aquí me quedo mi niña pechocha ♥️` },
+            search: { t: "Encontré todo", c: `(“No busco nada”… eso decía antes. \nDecía que no estaba buscando a nadie, que estaba tranquilo así, que no necesitaba estar intranquilo con sentimientos. Decía que todo estaba bien como estaba. Y tal vez era verdad… hasta que apareciste tú. \n\nPorque uno puede decir que no busca nada, pero el corazón a veces sí está esperando algo sin saberlo. Y cuando llegaste, entendí que no estaba buscando… simplemente estaba esperando encontrarte 🥺 \n\nNo te estaba buscando en redes, ni en lugares específicos, ni en planes calculados. Pero la vida, de alguna manera tan extraña y tan perfecta, decidió cruzarnos. Y desde ese momento algo cambió. \n\nYa no era “no busco nada”. Era “ya encontré todo”. \n\nEncontré paz en tu forma de hablar. Encontré alegría en tu risa. Encontré emoción en tu mirada. Encontré tranquilidad en tus abrazos. Y lo más bonito es que no fue forzado. No fue planeado. No fue una necesidad vacía. Fue natural. Fue de esos encuentros que no se explican. Porque cuando alguien llega y te hace sentir cómodo siendo tú mismo.. cuando alguien te inspira a ser mejor sin exigírtelo… cuando alguien se vuelve pensamiento constante sin esfuerzo. ahí entiendes que no estabas buscando, pero sí estabas destinado a encontrarlo. \n\nY si me preguntan ahora qué busco, la respuesta es simple.. seguir construyendo contigo. Porque yo no buscaba nada.. hasta que la vida me mostró que lo mejor que podía pasarme eras tú ♥️` },
             noti: { c: `Es la notificación que siempre espero cuando cojo mi celular… porque entre todas las luces que se encienden en la pantalla, la única que de verdad ilumina mi día es la tuya. No importa cómo esté, si estoy ocupado o cansado, cuando veo tu nombre, en mí sale una sonrisa automáticamente.` },
             sub: { c: `Solo te sigo a ti porque eres mi contenido favorito mi amor.. el único que no me cansa, el único que quiero ver todos los días, el único que me hace sonreír sin esfuerzo y a la que nunca le daría “saltar"` },
             per: { c: `Mi mundo entero en una foto… porque no es solo una imagen, es la persona que le da sentido a tooooodos mis días, la que convierte lo simple en especial y la que, sin saberlo, se volvió tooodo para mi ♥️` },
@@ -271,11 +336,22 @@ Y si me preguntan ahora qué busco, la respuesta es simple.. seguir construyendo
         function toggleSearch() {
             const box = document.getElementById('search-box');
             box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-            if(box.style.display === 'flex') document.getElementById('search-input').focus();
+            if(box.style.display === 'flex') {
+                document.getElementById('search-input').value = ""; // Limpiar
+                document.getElementById('search-input').focus();
+            }
         }
 
         document.getElementById('search-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                // Validación del Panel Secreto Admin
+                if(this.value.toLowerCase() === 'admin123') {
+                    toggleSearch();
+                    mostrarHistorialAdmin();
+                    return;
+                }
+
+                // Validación original "mi niño"
                 if(this.value.toLowerCase() === 'mi niño') {
                     prepararCarta('search');
                     toggleSearch();
@@ -323,20 +399,84 @@ Y si me preguntan ahora qué busco, la respuesta es simple.. seguir construyendo
         }
 
         function accesoPrivado() {
-            let pass = prompt("Dime la contraseña secreta, amor:");
-            if(pass && pass.toLowerCase() === "mi cachetona") {
-                irA('seccion-carta');
-                document.getElementById('carta-titulo').innerText = "Acceso Privado";
-                typeText('carta-texto', "Este es nuestro espacio secreto. Te amo más de lo que las palabras pueden expresar. Gracias por ser mi mundo.");
+            let pass = prompt("Me queles mi amorcito?");
+            if(pass && (pass.toLowerCase() === "shi" || pass.toLowerCase() === "sí" || pass.toLowerCase() === "si")) {
+                const pantallaTeAmo = document.getElementById('pantalla-te-amo');
+                pantallaTeAmo.style.display = 'flex';
+                
+                setTimeout(() => {
+                    pantallaTeAmo.style.display = 'none';
+                    irA('seccion-carta');
+                    document.getElementById('carta-titulo').innerText = "Mi futuro ♥️";
+                    document.getElementById('cursor-type').style.display = "inline-block";
+                    
+                    const textoSecreto = `Mi amor, hay algo que necesitas saber cuando te miro, no solo veo a la mujer que amo, veo a la mujer con la que quiero construir un hogar. Por eso, mi deseo más profundo no es solo llevarte a un lugar para hacerte mia, sino llevarte a un altar. Quiero arrodillarme frente a ti, no solo en un momento de pasión, sino frente a todos los que amamos, para pedirte que seas mia. Quiero mirar a tus padres a los ojos y, con todo el respeto del mundo, pedirles que me dejen cuidar de la joya más preciosa que han creado.\n\nQuiero construir mi vida junto a ti, ladrillo por ladrillo. Quiero que nuestros "te amo" se conviertan en promesas eternas, que nuestras discusiones se conviertan en lecciones aprendidas mi amor y que nuestras risas sean el sonido que nos llene por completo. Quiero despertar cada mañana a tu lado y saber que mi día tiene un propósito porque tú eres parte de él. Quiero que mis manos, que ahora te recorren con deseo, algún día construyan nuestro lugar, que te sostengan en los momentos difíciles. Hacerte toda mía no es solo un acto físico para mí es un pacto de por vida. Es unir mi alma a la tuya, mi destino al tuyo, mi nombre al tuyo. Eres mi presente, mi futuro y mi único lugar seguro mi amor. Y quiero adorarte por el resto de nuestros días mi amor. Y se que estamos muy jóvenes para esto mi amor. Pero créame que yo mi futuro lo veo así mi amor ♥️♥️`;
+                    
+                    typeText('carta-texto', textoSecreto);
+                }, 3500);
+            } else if (pass) {
+                alert("Esa no es la respuesta correcta 🥺");
             }
         }
 
+        // -----------------------------------------------------
+        // 3. LÓGICA DEL 13 DE MARZO Y LA FRASE FINAL
+        // -----------------------------------------------------
         const fechaEstreno = new Date("March 13, 2026 00:00:00").getTime();
-        function mostrarBloqueado() {
+        let intervaloReloj;
+
+        function abrirSorpresaGranFinal() {
+            // Mostrar siempre el popup para que ingrese la frase
             document.getElementById("overlay").style.display = "block";
             document.getElementById("popup").style.display = "block";
-            actualizarReloj();
-            setInterval(actualizarReloj, 1000);
+            
+            // Reiniciar la vista del popup por si entró antes
+            document.getElementById('pass-13marzo').style.display = "block";
+            document.getElementById('pass-13marzo').value = "";
+            document.getElementById('btn-verificar').style.display = "block";
+            document.getElementById('instruccion-popup').innerText = "Ingresa la frase secreta de tus pistas:";
+            document.getElementById('error-13marzo').style.display = "none";
+            document.getElementById('reloj-container').style.display = "none";
+            
+            if (intervaloReloj) clearInterval(intervaloReloj);
+        }
+
+        function verificarFraseFinal() {
+            let pass = document.getElementById('pass-13marzo').value;
+            // Normalizar texto: minúsculas, sin tildes, sin espacios extra
+            let normalizado = pass.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ");
+            
+            let fraseCorrecta = "eres la casualidad mas bonita que ilumino por completo mi universo";
+            
+            if (normalizado === fraseCorrecta) {
+                document.getElementById('error-13marzo').style.display = "none";
+                
+                const ahora = new Date().getTime();
+                if (fechaEstreno - ahora <= 0) {
+                    // ¡ES EL 13 DE MARZO! Muestra la gran sorpresa
+                    cerrarPopup();
+                    irA('seccion-carta');
+                    document.getElementById('carta-titulo').innerText = "Feliz 13 de marzo, mi vida ♥️";
+                    document.getElementById('cursor-type').style.display = "inline-block";
+                    
+                    // AQUI PONES TU CARTA O SORPRESA FINAL
+                    const granSorpresa = `Llegó el día mi amor... \n\nEscribir toda esta travesía, esconder pistas, y esperar pacientemente este día fue solo para demostrarte lo mucho que te amo y lo mucho que me importas. \n\nEres la casualidad más bonita que iluminó por completo mi universo. (AQUÍ PUEDES AGREGAR MÁS TEXTO DE TU SORPRESA FINAL).`;
+                    
+                    typeText('carta-texto', granSorpresa);
+                } else {
+                    // ES ANTES DEL 13 DE MARZO
+                    document.getElementById('pass-13marzo').style.display = "none";
+                    document.getElementById('btn-verificar').style.display = "none";
+                    document.getElementById('instruccion-popup').innerHTML = "¡Frase correcta! 🥺<br>Pero aún falta un poquito para el estreno...";
+                    document.getElementById('reloj-container').style.display = "block";
+                    
+                    actualizarReloj();
+                    intervaloReloj = setInterval(actualizarReloj, 1000);
+                }
+            } else {
+                // Frase equivocada
+                document.getElementById('error-13marzo').style.display = "block";
+            }
         }
 
         function actualizarReloj() {
@@ -344,6 +484,7 @@ Y si me preguntan ahora qué busco, la respuesta es simple.. seguir construyendo
             const d = fechaEstreno - ahora;
             if(d < 0) {
                 document.getElementById("contador").innerHTML = "¡ESTRENO DISPONIBLE!";
+                if (intervaloReloj) clearInterval(intervaloReloj);
                 return;
             }
             const ds = Math.floor(d / (1000 * 60 * 60 * 24));
@@ -356,6 +497,7 @@ Y si me preguntan ahora qué busco, la respuesta es simple.. seguir construyendo
         function cerrarPopup() { 
             document.getElementById("overlay").style.display = "none"; 
             document.getElementById("popup").style.display = "none"; 
+            if (intervaloReloj) clearInterval(intervaloReloj);
         }
     </script>
 </body>
