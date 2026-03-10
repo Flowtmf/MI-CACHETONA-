@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Primera Pista 🧩</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Roboto', sans-serif; background: #0f0f0f; color: #ffffff; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-x: hidden; user-select: none; }
+
+        .header { text-align: center; margin-bottom: 10px; animation: fadeIn 1s ease; }
+        .header h1 { color: #ff4757; font-size: 24px; margin-bottom: 5px; }
+        .header p { color: #eee; font-size: 14px; line-height: 1.5; max-width: 400px; margin: 0 auto; }
+
+        /* Temporizador */
+        .timer-container { font-size: 22px; font-weight: bold; margin: 10px 0; padding: 10px 20px; background: #181818; border-radius: 20px; border: 2px solid #333; transition: 0.3s; }
+        .timer-container.urgente { border-color: #ff4757; color: #ff4757; animation: latido 1s infinite; }
+
+        /* Contenedor de la Sopa de Letras */
+        #grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; width: 100%; max-width: 380px; margin: 10px auto; background: #181818; padding: 10px; border-radius: 10px; border: 1px solid #333; }
+        
+        .cell { background: #272727; border-radius: 6px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #fff; cursor: pointer; transition: all 0.2s ease; }
+        
+        /* Efectos al tocar las celdas */
+        .cell.selected { background: #555; transform: scale(1.05); }
+        .cell.found { background: #ff4757; color: #fff; box-shadow: 0 0 8px rgba(255, 71, 87, 0.6); }
+        .cell.found.selected { background: #ff7682; transform: scale(1.05); } /* Si cruza con otra palabra */
+
+        /* Botón deshacer */
+        .controls { display: flex; width: 100%; max-width: 380px; margin-bottom: 10px; }
+        .btn-deshacer { background: #272727; border: 1px solid #444; width: 100%; }
+
+        /* Lista de Palabras */
+        .word-list { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 400px; margin-top: 5px; }
+        .word { background: #181818; padding: 6px 12px; border-radius: 15px; font-size: 13px; border: 1px solid #444; color: #aaa; transition: 0.3s; }
+        .word.found-word { text-decoration: line-through; color: #ff4757; border-color: #ff4757; background: rgba(255, 71, 87, 0.1); }
+
+        /* Popups (Victoria y Derrota) */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; display: none; align-items: center; justify-content: center; flex-direction: column; padding: 20px; text-align: center; }
+        .popup-box { background: #181818; padding: 30px; border-radius: 15px; border: 1px solid #ff4757; max-width: 400px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .popup-box h2 { color: #ff4757; margin-top: 0; }
+        .frase-final { font-size: 18px; line-height: 1.6; color: #fff; font-style: italic; margin: 20px 0; }
+        .palabra-faltante { color: #ff4757; font-weight: bold; border-bottom: 2px dashed #ff4757; padding-bottom: 2px; }
+        button { background: #ff4757; color: white; border: none; padding: 12px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 16px; width: 100%; margin-top: 15px; }
+        button:active { transform: scale(0.95); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes latido { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Descubre el mensaje 🧩</h1>
+        <p>Toca letra por letra para formar las palabras ocultas. Tienes 90 segundos antes de que todo se vuelva a mezclar.</p>
+    </div>
+
+    <div class="timer-container" id="timer-display">⏱️ 90s</div>
+
+    <div id="grid-container"></div>
+
+    <div class="controls">
+        <button class="btn-deshacer" onclick="limpiarSeleccion()">Deshacer selección</button>
+    </div>
+
+    <div class="word-list" id="word-list"></div>
+
+    <div class="overlay" id="pantalla-victoria">
+        <div class="popup-box">
+            <h2>¡Lo lograste, mi amor! 🥺</h2>
+            <p>Has encontrado todas las palabras a tiempo. Al unirlas, forman esta frase:</p>
+            <div class="frase-final">
+                "Eres la casualidad más bonita que iluminó por completo mi <span class="palabra-faltante">________</span>"
+            </div>
+            <p style="color: #aaa; font-size: 14px;">Guarda esa palabra en tu corazón... la necesitarás pronto para nuestra sorpresa.</p>
+            <button onclick="volverAInicio()">Volver a Mi Camii</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="pantalla-derrota">
+        <div class="popup-box" style="border-color: #555;">
+            <h2 style="color: #fff;">¡Se acabó el tiempo! ⏳</h2>
+            <p style="color: #aaa;">El reloj llegó a cero y las letras se han vuelto a mezclar. Yo sé que tú puedes, mi niña.</p>
+            <button onclick="reiniciarJuego()" style="background: #272727; border: 1px solid #fff;">Intentar de nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const tamañoGrid = 10;
+        const palabrasBuscadas = ["CASUALIDAD", "COMPLETO", "ILUMINO", "BONITA", "ERES", "QUE", "POR", "MAS", "LA", "MI"];
+        const letrasAlfabeto = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        
+        let grid = [];
+        let palabrasAEncontrar = [];
+        let encontradas = 0;
+        let celdasSeleccionadas = [];
+
+        let tiempoRestante = 90;
+        let timerInterval;
+
+        const gridContainer = document.getElementById('grid-container');
+
+        // ---- FUNCIÓN PARA DESORDENAR ARREGLOS ----
+        function mezclarArreglo(arreglo) {
+            let mezclado = [...arreglo];
+            for (let i = mezclado.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [mezclado[i], mezclado[j]] = [mezclado[j], mezclado[i]];
+            }
+            return mezclado;
+        }
+
+        // ---- GENERADOR DE SOPA DE LETRAS ----
+        function generarGrid() {
+            grid = Array.from({ length: tamañoGrid }, () => Array(tamañoGrid).fill(''));
+            palabrasAEncontrar = [...palabrasBuscadas]; 
+            
+            palabrasAEncontrar.forEach(palabra => {
+                let colocada = false;
+                let intentos = 0;
+                while (!colocada && intentos < 200) {
+                    let dir = Math.floor(Math.random() * 3); // 0: Horiz, 1: Vert, 2: Diag
+                    let row = Math.floor(Math.random() * tamañoGrid);
+                    let col = Math.floor(Math.random() * tamañoGrid);
+                    let dRow = dir === 1 || dir === 2 ? 1 : 0;
+                    let dCol = dir === 0 || dir === 2 ? 1 : 0;
+
+                    if (puedeColocar(palabra, row, col, dRow, dCol)) {
+                        for (let i = 0; i < palabra.length; i++) {
+                            grid[row + i * dRow][col + i * dCol] = palabra[i];
+                        }
+                        colocada = true;
+                    }
+                    intentos++;
+                }
+            });
+
+            // Rellenar vacíos
+            for (let r = 0; r < tamañoGrid; r++) {
+                for (let c = 0; c < tamañoGrid; c++) {
+                    if (grid[r][c] === '') {
+                        grid[r][c] = letrasAlfabeto[Math.floor(Math.random() * letrasAlfabeto.length)];
+                    }
+                }
+            }
+        }
+
+        function puedeColocar(palabra, r, c, dRow, dCol) {
+            if (r + palabra.length * dRow > tamañoGrid || c + palabra.length * dCol > tamañoGrid) return false;
+            for (let i = 0; i < palabra.length; i++) {
+                let letraActual = grid[r + i * dRow][c + i * dCol];
+                if (letraActual !== '' && letraActual !== palabra[i]) return false;
+            }
+            return true;
+        }
+
+        function dibujarGrid() {
+            gridContainer.innerHTML = '';
+            for (let r = 0; r < tamañoGrid; r++) {
+                for (let c = 0; c < tamañoGrid; c++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.innerText = grid[r][c];
+                    cell.onclick = () => tocarCelda(cell);
+                    gridContainer.appendChild(cell);
+                }
+            }
+
+            // Dibujar lista de palabras DESORDENADA
+            const listContainer = document.getElementById('word-list');
+            listContainer.innerHTML = '';
+            
+            const ordenAleatorio = mezclarArreglo(palabrasBuscadas);
+            
+            ordenAleatorio.forEach(p => {
+                let div = document.createElement('div');
+                div.className = 'word';
+                div.id = 'word-' + p;
+                div.innerText = p;
+                listContainer.appendChild(div);
+            });
+        }
+
+        // ---- LÓGICA DE TOCAR CELDAS (Una por una) ----
+        function tocarCelda(cell) {
+            if (cell.classList.contains('selected')) {
+                cell.classList.remove('selected');
+                celdasSeleccionadas = celdasSeleccionadas.filter(c => c !== cell);
+                return;
+            }
+
+            cell.classList.add('selected');
+            celdasSeleccionadas.push(cell);
+
+            verificarPalabra();
+        }
+
+        function limpiarSeleccion() {
+            celdasSeleccionadas.forEach(c => c.classList.remove('selected'));
+            celdasSeleccionadas = [];
+        }
+
+        function verificarPalabra() {
+            let palabraActual = celdasSeleccionadas.map(c => c.innerText).join('');
+            let palabraInversa = palabraActual.split('').reverse().join('');
+
+            let coincidencia = palabrasAEncontrar.find(p => p === palabraActual || p === palabraInversa);
+
+            if (coincidencia) {
+                // Marcar como encontradas
+                celdasSeleccionadas.forEach(c => {
+                    c.classList.remove('selected');
+                    c.classList.add('found');
+                });
+                
+                // Tachar de la lista
+                let wordDiv = document.getElementById('word-' + coincidencia);
+                if (wordDiv && !wordDiv.classList.contains('found-word')) {
+                    wordDiv.classList.add('found-word');
+                    encontradas++;
+                    palabrasAEncontrar = palabrasAEncontrar.filter(p => p !== coincidencia);
+                }
+
+                celdasSeleccionadas = []; // Reiniciar selección
+
+                if (encontradas === palabrasBuscadas.length) {
+                    ganarJuego();
+                }
+            }
+        }
+
+        // ---- CRONÓMETRO ----
+        function iniciarReloj() {
+            clearInterval(timerInterval);
+            tiempoRestante = 90; // 90 segundos porque es uno por uno
+            actualizarDisplayReloj();
+            document.getElementById('timer-display').classList.remove('urgente');
+
+            timerInterval = setInterval(() => {
+                tiempoRestante--;
+                actualizarDisplayReloj();
+
+                if (tiempoRestante <= 10) {
+                    document.getElementById('timer-display').classList.add('urgente');
+                }
+
+                if (tiempoRestante <= 0) {
+                    perderJuego();
+                }
+            }, 1000);
+        }
+
+        function actualizarDisplayReloj() {
+            document.getElementById('timer-display').innerText = `⏱️ ${tiempoRestante}s`;
+        }
+
+        function perderJuego() {
+            clearInterval(timerInterval);
+            document.getElementById('pantalla-derrota').style.display = 'flex';
+        }
+
+        function ganarJuego() {
+            clearInterval(timerInterval);
+            setTimeout(() => {
+                document.getElementById('pantalla-victoria').style.display = 'flex';
+            }, 500);
+        }
+
+        function reiniciarJuego() {
+            document.getElementById('pantalla-derrota').style.display = 'none';
+            iniciarJuegoCompleto();
+        }
+
+        function iniciarJuegoCompleto() {
+            encontradas = 0;
+            celdasSeleccionadas = [];
+            generarGrid();
+            dibujarGrid();
+            iniciarReloj();
+        }
+
+        function volverAInicio() {
+            window.location.href = 'index.html'; 
+        }
+
+        // Iniciar al cargar la página
+        window.onload = iniciarJuegoCompleto;
+    </script>
+</body>
+</html>
