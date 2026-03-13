@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Para cuando me necesites</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Satisfy&family=Montserrat:wght@300;400;600&display=swap');
+
+  * { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+  }
+  
+  body, html {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background-color: #050505; 
+    font-family: 'Montserrat', sans-serif; color: white;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    overflow: hidden; 
+    position: fixed;
+    touch-action: none; /* Bloqueo general */
+  }
+
+  /* EFECTO DE RESPIRACIÓN */
+  .respiracion {
+    position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vw; margin-top: -75vw; margin-left: -75vw;
+    background: radial-gradient(circle, rgba(30, 58, 138, 0.3) 0%, rgba(142, 36, 170, 0.15) 25%, rgba(0,0,0,0) 60%);
+    pointer-events: none; z-index: 0; animation: respirar 8s ease-in-out infinite;
+  }
+  @keyframes respirar { 0%, 100% { transform: scale(0.8); opacity: 0.3; } 50% { transform: scale(1.1); opacity: 0.8; } }
+
+  #velo-negro {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 9999; opacity: 1; transition: opacity 0.8s; pointer-events: none;
+  }
+  #velo-negro.oculto { opacity: 0; }
+
+  .btn-volver {
+    position: fixed; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
+    background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer; z-index: 100; backdrop-filter: blur(5px); font-size: 0.85rem;
+    touch-action: auto;
+  }
+
+  #menu-emociones {
+    text-align: center; width: 92%; max-width: 500px; z-index: 5;
+    transition: all 0.5s ease;
+    touch-action: auto;
+  }
+  #menu-emociones.oculto { opacity: 0; transform: scale(0.9); pointer-events: none; position: absolute; }
+
+  .titulo-emociones {
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.2rem;
+    color: #e0f7fa; text-shadow: 0 0 15px rgba(0,229,255,0.5); margin-bottom: 10px;
+  }
+  .subtitulo-emociones {
+    font-size: 0.85rem; color: #b3e5fc; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 35px;
+  }
+
+  .btn-emocion {
+    display: block; width: 100%; background: rgba(15, 15, 25, 0.8);
+    border: 1px solid rgba(213, 0, 249, 0.4); color: #fff;
+    padding: 18px; margin-bottom: 15px; border-radius: 15px;
+    font-family: 'Montserrat', sans-serif; font-size: 1.05rem;
+    cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s;
+  }
+  .btn-emocion:active { transform: scale(0.95); background: rgba(0, 229, 255, 0.2); border-color: #00e5ff; }
+
+  #contenedor-carta {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+    opacity: 0; visibility: hidden; transition: 0.5s; z-index: 200;
+  }
+  #contenedor-carta.activo { opacity: 1; visibility: visible; }
+
+  .flecha {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 45px; height: 45px; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 300;
+    touch-action: auto;
+  }
+  .flecha:active { background: rgba(0, 229, 255, 0.3); border-color: #00e5ff; scale: 0.9; }
+  .flecha-izq { left: 10px; }
+  .flecha-der { right: 10px; }
+
+  #carta-consuelo {
+    width: 85%; max-width: 400px; height: 60vh; background: #fffdf5; 
+    padding: 40px 10px 40px 25px; border-radius: 6px; position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    display: flex; flex-direction: column;
+    touch-action: auto; /* LIBERA EL TOQUE AQUÍ */
+  }
+
+  #carta-consuelo::before {
+    content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border: 1px solid #d4af37; border-radius: 2px; opacity: 0.2; pointer-events: none;
+  }
+
+  /* EL ÁREA CRÍTICA DEL SCROLL */
+  .scroll-texto {
+    flex-grow: 1; 
+    overflow-y: scroll; /* Forzamos scroll vertical */
+    padding-right: 15px;
+    touch-action: pan-y !important; /* PERMITE DESLIZAR ARRIBA/ABAJO */
+    -webkit-overflow-scrolling: touch; 
+  }
+  .scroll-texto::-webkit-scrollbar { width: 3px; }
+  .scroll-texto::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+
+  .cuerpo-carta {
+    font-family: 'Satisfy', cursive; font-size: 1.5rem; line-height: 1.6;
+    color: #333; text-align: center; padding-bottom: 20px;
+    pointer-events: none; /* Deja que el toque pase al contenedor de scroll */
+  }
+  
+  .firma-carta {
+    font-family: 'Satisfy', cursive; font-size: 1.4rem; color: #b71c1c;
+    border-top: 1px solid #eee; padding-top: 15px; text-align: center; margin-top: 10px;
+    padding-right: 15px;
+  }
+
+  .btn-cerrar {
+    background: transparent; border: 1px solid #ccc; color: #777;
+    padding: 10px 25px; border-radius: 25px; cursor: pointer;
+    font-size: 0.8rem; margin: 20px auto 0 auto;
+    touch-action: auto;
+  }
+</style>
+</head>
+<body>
+
+  <div id="velo-negro"></div>
+  <div class="respiracion"></div>
+
+  <button class="btn-volver" onclick="volver()">← Página anterior</button>
+
+  <div id="menu-emociones">
+    <div class="titulo-emociones">¿Qué pasa, mi amor?</div>
+    <div class="subtitulo-emociones">Toca lo que sientes en este momento</div>
+
+    <button class="btn-emocion" onclick="abrirCategoria('tristeza')">Me siento triste / Quiero llorar 🥺</button>
+    <button class="btn-emocion" onclick="abrirCategoria('ansiedad')">Tengo ansiedad o estrés 🌧️</button>
+    <button class="btn-emocion" onclick="abrirCategoria('inseguridad')">Me siento insegura 🥀</button>
+    <button class="btn-emocion" onclick="abrirCategoria('extrano')">Te extraño mucho ❤️</button>
+  </div>
+
+  <div id="contenedor-carta">
+    <div class="flecha flecha-izq" onclick="cambiarCarta(-1)">‹</div>
+    <div id="carta-consuelo">
+      <div class="scroll-texto" id="scrollContainer">
+        <div class="cuerpo-carta" id="texto-mensaje"></div>
+      </div>
+      <div class="firma-carta">Con todo mi amor ♥️</div>
+      <button class="btn-cerrar" onclick="cerrarCarta()">Cerrar</button>
+    </div>
+    <div class="flecha flecha-der" onclick="cambiarCarta(1)">›</div>
+  </div>
+
+<script>
+  // (Aquí van tus mismos 20 mensajes de antes, los omito por espacio pero tú mantenlos completos)
+  const misMensajes = {
+    tristeza: [
+      "Mi amor… sé que hoy no te sientes muy bien y de verdad me duele no poder estar ahí contigo para abrazarte fuerte. Pero quiero que recuerdes algo muy importante: no estás sola. Aquí estoy yo, pensando en ti, apoyándote y queriéndote muchísimo. Eres una persona increíble, fuerte y muy especial para mí. Un momento triste no define lo grande que eres ni todo lo bonito que llevas dentro. Yo siempre voy a estar contigo, en los días buenos y también en los días difíciles. Te amo muchísimo, mi niña dinda.",
+      "Mi niña dinda hermosa, si hoy te sientes triste quiero que te tomes un momento para respirar y recordar lo valiosa que eres. A veces la vida trae momentos difíciles, pero eso no significa que no seas fuerte o capaz. Para mí eres una persona muy especial, alguien que admiro mucho y que quiero con todo mi corazón. Si pudiera, iría ahora mismo a darte un abrazo largo y decirte que todo va a estar bien. Recuerda que siempre puedes contar conmigo para lo que sea. Te amo mucho, mi amorcito.",
+      "Mi cachetoncita hermosa, sé que hoy tal vez las cosas no están saliendo como quisieras y eso puede hacerte sentir triste. Pero quiero que recuerdes que incluso en esos momentos sigues siendo una persona maravillosa. No tienes que ser perfecta ni estar bien todo el tiempo. Está bien sentirse así a veces. Yo estoy aquí para escucharte, para acompañarte y para recordarte lo mucho que vales. Para mí eres alguien muy importante y siempre voy a querer verte sonreír. Te amo muchísimo, mi amor.",
+      "Mi amor, cuando te sientas triste quiero que recuerdes algo: siempre voy a estar de tu lado. No importa lo que pase, no importa si el día se siente pesado o si las cosas parecen difíciles. Tú no tienes que cargar con todo sola. Puedes contar conmigo para hablar, desahogarte o simplemente para sentir que alguien está contigo. Eres una persona muy especial para mí y verte triste también me hace querer cuidarte más. Te amo muchísimo, mi niña dinda.",
+      "Mi niña dinda preciosa, si hoy tu corazón se siente un poquito triste quiero que sepas que el mío está aquí contigo. A veces todos tenemos días difíciles, pero eso no cambia lo increíble que eres ni lo mucho que significas para mí. Ojalá pudiera estar ahí para darte un abrazo y hacerte sentir mejor. Mientras tanto, quiero que recuerdes que siempre hay alguien que piensa en ti, que te quiere y que cree en ti: yo. Te amo demasiado, mi cachetoncita."
+    ],
+    ansiedad: [
+      "Mi amor, sé que a veces la ansiedad puede hacer que todo se sienta más pesado de lo que realmente es. Pero quiero que recuerdes algo muy importante: no estás sola en esto. Aquí estoy yo para ti, para escucharte, para acompañarte y para recordarte lo fuerte que eres. Respira con calma, poco a poco, todo va a pasar. Eres una persona muy valiente y especial para mí. Aunque no pueda estar ahí abrazándote ahora mismo, quiero que sientas mi cariño y mi apoyo contigo siempre. Te amo muchísimo, mi niña dinda.",
+      "Mi niña dinda hermosa, si en este momento sientes que tu mente va muy rápido o que todo te abruma, intenta respirar despacito y recuerda que esto es solo un momento que va a pasar. Tú eres más fuerte que esos pensamientos y no tienes que enfrentarlos sola. Yo estoy aquí contigo, incluso si es a la distancia, acompañándote con todo mi cariño. Ojalá pudiera darte un abrazo largo para que te sintieras más tranquila. Te amo muchísimo mi amor, y siempre voy a estar para ti.",
+      "Mi cachetoncita hermosa, cuando sientas ansiedad quiero que recuerdes que está bien tomarte un momento para calmarte. Respira profundo, cierra los ojos un momento y piensa en cosas que te hacen sentir paz. Y si necesitas hablar, desahogarte o simplemente sentir que alguien está contigo, aquí estoy yo. Para mí eres una persona muy importante y me importa mucho cómo te sientes. No tienes que cargar con todo sola, mi amor. Te amo demasiado.",
+      "Mi amorcito, sé que cuando la ansiedad aparece puede siente muy fuerte, como si todo estuviera fuera de control. Pero quiero que recuerdes que esto no define quién eres. Tú eres una persona increíble, fuerte y llena de cosas bonitas. Tómate tu tiempo, respira, y recuerda que estoy aquí contigo, apoyándote en cada momento. Me importas mucho y siempre voy a querer que te sientas bien y tranquila. Te amo muchísimo, mi niña dinda.",
+      "Mi niña dinda preciosa, si en este momento tu corazón está un poco acelerado o tu mente llena de pensamientos, quiero que sepas que está bien tomarte una pausa. Respira profundo, poco a poco, y recuerda que todo esto va a pasar. Yo estoy aquí para ti, para acompañarte y para recordarte lo mucho que vales. Eres muy importante para mí y siempre voy a estar a tu lado, en los momentos felices y también en los difíciles. Te amo demasiado, mi cachetoncita."
+    ],
+    inseguridad: [
+      "Mi amor, si alguna vez te sientes insegura o piensas que no eres suficiente, quiero que recuerdes algo muy importante: para mí eres más que suficiente, eres todo lo que quiero. Eres una persona hermosa por dentro y por fuera, con un corazón increíble y una forma de ser que me enamora cada día más. No dejes que esos pensamientos te hagan olvidar lo especial que eres. Yo te quiero tal y como eres, con cada detalle que te hace única. Mi niña dinda, te amo muchísimo y siempre voy a recordarte lo valiosa que eres para mí.",
+      "Mi niña dinda hermosa, sé que a veces la mente puede llenarse de dudas o inseguridades, pero quiero que sepas que cuando yo te miro solo veo a una persona maravillosa. Veo a alguien que me hace feliz, que me hace sonreír y que llegó a mi vida para hacerla más bonita. No tienes que cambiar nada de ti para que yo te quiera más, porque ya te quiero muchísimo tal como eres. Para mí eres perfecta a tu manera. Te amo demasiado, mi amor.",
+      "Mi cachetoncita hermosa, si alguna vez dudas de ti misma quiero que recuerdes que hay alguien que te mira y ve algo muy especial en ti. Para mí no eres solo alguien más, eres una persona muy importante en mi vida. Tu forma de ser, tu corazón y todo lo que eres me encanta. No dejes que las inseguridades te hagan pensar que vales menos, porque vales muchísimo. Yo siempre voy a estar aquí para recordarte lo increíble que eres. Te amo mucho, mi amor.",
+      "Mi amorcito, quiero que sepas que no tienes que compararte con nadie ni sentir que no eres suficiente. Para mí eres única, y eso es lo que te hace tan especial. Tu forma de hablar, de pensar, de querer… todo eso es lo que hace que te quiera tanto. A veces todos tenemos momentos de inseguridad, pero eso no cambia lo maravillosa que eres. Yo estoy aquí para ti, para apoyarte y para recordarte siempre lo mucho que vales. Te amo muchísimo, mi niña dinda.",
+      "Mi niña dinda preciosa, si hoy te sientes un poquito insegura quiero que recuerdes algo: hay alguien que te quiere muchísimo exactamente como eres. No necesitas ser perfecta ni cambiar nada para que yo te ame. Para mí ya eres una persona increíble, con un corazón hermoso y una forma de ser que me hace sentir muy afortunado de tenerte en mi vida. Siempre voy a estar para ti, recordándote lo especial que eres. Te amo demasiado, mi cachetoncita."
+    ],
+    extrano: [
+      "Mi amor… yo también te extraño muchísimo. A veces me pongo a pensar en ti y en todos los momentos lindos que hemos vivido, y me dan unas ganas enormes de abrazarte y no soltarte nunca. Extraño tu voz, tu risa, tus palabras bonitas y hasta esas pequeñas cosas que solo tú haces y que me hacen sentir tan feliz. Pero aunque la distancia a veces se sienta fuerte, quiero que sepas que mi amor por ti es aún más fuerte. Siempre estás en mi mente y en mi corazón, mi niña dinda hermosa. Te amo demasiado, mi amorcito.",
+      "Mi niña dinda… cuando me dices que me extrañas, créeme que mi corazón también siente lo mismo. Yo también te extraño demasiado, extraño poder hablar contigo y sentirte cerquita, extraño poder decirte lo mucho que te amo mientras te abrazo. A veces quisiera poder aparecer de repente frente a ti solo para verte sonreír y decirte que todo está bien porque estamos juntos. Tú eres alguien muy especial en mi vida y cada día que pasa me doy cuenta de lo importante que eres para mí. Te amo muchísimo, mi amor.",
+      "Mi amorcito hermoso, yo también te extraño demasiado. A veces cierro los ojos y me imagino que estás aquí conmigo, que puedo abrazarte, mirarte a los ojos y decirte lo mucho que te amo. Porque la verdad es que tú te has vuelto una parte muy importante de mi vida, alguien que me hace feliz incluso cuando solo pienso en ella. No importa la distancia o el momento, siempre llevo tu recuerdo conmigo y eso me hace sentir cerca de ti. Te amo muchísimo mi niña dinda, nunca lo olvides.",
+      "Mi cachetoncita hermosa… yo también te extraño muchísimo, más de lo que a veces puedo explicar con palabras. Extraño tu cariño, tu forma de hablarme, y todo lo que haces que me hace sentir tan especial. A veces quisiera detener el tiempo cuando estamos juntos para que esos momentos duren para siempre. Pero mientras llega el momento de volver a verte, quiero que sepas que siempre estoy pensando en ti y en lo feliz que me haces. Te amo demasiado mi amor, de verdad eres alguien muy importante para mí.",
+      "Mi niña dinda preciosa… yo también te extraño muchísimo, amor. Cuando no estamos juntos siento ese vacío de no poder abrazarte o escucharte tan cerca, pero al mismo tiempo pensar en ti me hace sonreír. Porque tú eres alguien que llegó a mi vida y la hizo más bonita, más especial. Y aunque a veces tengamos que extrañarnos, eso solo demuestra lo mucho que nos queremos. Prometo que cuando estemos juntos otra vez te voy a dar un abrazo larguísimo y no te voy a soltar. Te amo demasiado, mi cachetoncita."
+    ]
+  };
+
+  let categoriaActual = "";
+  let indiceActual = 0;
+
+  function abrirCategoria(cat) {
+    categoriaActual = cat;
+    indiceActual = 0;
+    actualizarTexto();
+    document.getElementById('contenedor-carta').classList.add('activo');
+  }
+
+  function cambiarCarta(dir) {
+    const total = misMensajes[categoriaActual].length;
+    indiceActual = (indiceActual + dir + total) % total;
+    actualizarTexto();
+  }
+
+  function actualizarTexto() {
+    const texto = misMensajes[categoriaActual][indiceActual];
+    const el = document.getElementById('texto-mensaje');
+    el.style.opacity = 0;
+    setTimeout(() => {
+        el.innerText = texto;
+        el.style.opacity = 1;
+        document.getElementById('scrollContainer').scrollTop = 0;
+    }, 200);
+  }
+
+  function cerrarCarta() {
+    document.getElementById('contenedor-carta').classList.remove('activo');
+  }
+
+  function volver() {
+    document.getElementById('velo-negro').classList.remove('oculto');
+    setTimeout(() => { window.location.href = 'ajedrez.html?p=menu'; }, 600);
+  }
+
+  window.onload = () => {
+    setTimeout(() => document.getElementById('velo-negro').classList.add('oculto'), 300);
+  };
+</script>
+</body>
+</html>
