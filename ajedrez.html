@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para mi Reina</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@1,600&family=Satisfy&family=Montserrat:ital,wght@0,400;1,400&display=swap');
+
+  * { box-sizing: border-box; }
+
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    background-color: #000; color: white; 
+    overflow: hidden; font-family: 'Montserrat', sans-serif;
+  }
+
+  /* VELO DE TRANSICIÓN */
+  #velo-negro {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #000; z-index: 9999;
+    opacity: 1; 
+    transition: opacity 0.8s ease-in-out;
+    pointer-events: none;
+  }
+  #velo-negro.oculto { opacity: 0; }
+  #velo-negro.oscuro { opacity: 1; pointer-events: all; }
+
+  /* SISTEMA DE PANTALLAS */
+  .pantalla {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; visibility: hidden; transition: opacity 0.5s ease; overflow: hidden;
+  }
+  .pantalla.activa { opacity: 1; visibility: visible; }
+
+  /* --- PANTALLA 1: AJEDREZ --- */
+  #pantalla-ajedrez { background: radial-gradient(circle at center, #110526 0%, #010613 100%); }
+  #particulas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .orbe {
+    position: absolute; bottom: -20px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.8) 0%, rgba(213, 0, 249, 0) 70%);
+    animation: flotar linear infinite; will-change: transform, opacity; opacity: 0;
+  }
+  @keyframes flotar {
+    0% { transform: translate3d(0, 0, 0) scale(0.5); opacity: 0; }
+    10% { opacity: 0.8; }
+    80% { opacity: 0.6; }
+    100% { transform: translate3d(0, -120vh, 0) scale(1.2); opacity: 0; } 
+  }
+
+  .grupo-titulos-flotantes { position: fixed; top: 10%; width: 100%; text-align: center; z-index: 5; transition: opacity 1.5s ease; pointer-events: none; }
+  .titulo-flotante { font-family: 'Cinzel Decorative', serif; font-size: 3.5rem; color: #e0f7fa; letter-spacing: 8px; margin-bottom: 10px; text-shadow: 0 0 15px #00e5ff, 0 0 30px #d500f9; }
+  .subtitulo-flotante { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; color: #b3e5fc; font-style: italic; letter-spacing: 2px; text-shadow: 0 0 10px #00b0ff; }
+
+  .escena-3d { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1000px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; }
+  .tablero {
+    --tamano-casilla: min(10vw, 7vh, 42px); display: grid;
+    grid-template-columns: repeat(8, var(--tamano-casilla)); grid-template-rows: repeat(8, var(--tamano-casilla));
+    border: 1px solid rgba(0, 229, 255, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(213, 0, 249, 0.3);
+    transform: rotateX(55deg) rotateZ(-45deg) scale(1.0); transform-style: preserve-3d;
+    transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.8s, filter 1.8s;
+  }
+  .tablero.revelado { transform: rotateX(15deg) rotateZ(0deg) scale(0.9); opacity: 0.25; filter: blur(3px); pointer-events: none; }
+  .casilla { width: var(--tamano-casilla); height: var(--tamano-casilla); display: flex; justify-content: center; align-items: center; font-size: min(5.5vw, 22px); position: relative; }
+  .oscura-sharon { background-color: rgba(20, 8, 36, 0.85); } .clara-tú { background-color: rgba(26, 75, 140, 0.75); } 
+  .pieza { transform: rotateZ(45deg) rotateX(-55deg) translateY(-6px); text-shadow: 2px 2px 6px rgba(0,0,0,0.9); transition: transform 1.8s ease; pointer-events: none; color: rgba(255,255,255,0.9); }
+  .tablero.revelado .pieza { transform: rotateZ(0) rotateX(0) translateY(0); }
+  
+  .vacia-reina { box-shadow: inset 0 0 15px #00e5ff, 0 0 30px #d500f9; animation: latido-neon 1.5s infinite alternate; border: 2px solid #00e5ff; cursor: pointer; z-index: 10; }
+  @keyframes latido-neon { 0% { filter: brightness(0.8); } 100% { filter: brightness(1.3); } }
+
+  .instruccion { 
+    position: fixed; bottom: 40px; left: 0; width: 100%; 
+    font-family: 'Montserrat', sans-serif; font-size: 0.95rem; 
+    color: #b3e5fc; font-style: italic; letter-spacing: 2px; 
+    text-shadow: 0 0 10px #00b0ff; text-align: center; z-index: 5; 
+    transition: opacity 0.5s ease;
+    animation: fade 2s infinite alternate;
+  }
+  @keyframes fade { from { opacity: 0.3; } to { opacity: 1; } }
+
+  .contenedor-scroll { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: hidden; z-index: 10; pointer-events: none; scroll-behavior: smooth; }
+  .mensaje-contenedor { position: relative; margin: 15vh auto 150px auto; text-align: center; width: 90%; max-width: 650px; pointer-events: none; }
+  .linea-texto { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s ease; margin-bottom: 30px; }
+  .titulo-ajedrez { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 600; font-size: 2.2rem; color: #e0f7fa; text-shadow: 0 0 15px #00b0ff, 0 0 25px #d500f9; margin-bottom: 40px; }
+  .texto-poema { font-family: 'Satisfy', cursive; font-size: 1.8rem; line-height: 1.5; color: #fdfcff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+  .mensaje-contenedor.activo .delay-1 { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+  .mensaje-contenedor.activo .delay-2 { opacity: 1; transform: translateY(0); transition-delay: 2.5s; }
+  .mensaje-contenedor.activo .delay-3 { opacity: 1; transform: translateY(0); transition-delay: 4.5s; }
+  .mensaje-contenedor.activo .delay-4 { opacity: 1; transform: translateY(0); transition-delay: 9.5s; }
+  .btn-continuar { position: relative; display: block; margin: 40px auto; font-family: 'Cinzel Decorative', serif; font-size: 1.5rem; color: #fff; background: transparent; border: 1px solid rgba(0,229,255,0.5); padding: 10px 30px; border-radius: 30px; cursor: pointer; opacity: 0; pointer-events: none; transition: all 1.5s ease; }
+  .btn-continuar.visible { opacity: 1; pointer-events: auto; }
+
+  /* --- PANTALLA 2: MENÚ WARDEN --- */
+  #pantalla-menu { background-color: #050505; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .respiracion-warden {
+    position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vw; margin-top: -75vw; margin-left: -75vw;
+    background: radial-gradient(circle, rgba(30, 58, 138, 0.4) 0%, rgba(142, 36, 170, 0.2) 20%, rgba(0,0,0,0) 60%);
+    pointer-events: none; z-index: 0; animation: respirar 8s ease-in-out infinite;
+  }
+  @keyframes respirar { 0%, 100% { transform: scale(0.8); opacity: 0.3; } 50% { transform: scale(1.2); opacity: 0.9; } }
+  .menu-contenedor { display: flex; flex-direction: column; gap: 20px; width: 90%; max-width: 500px; text-align: center; z-index: 5; }
+  .menu-titulo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.5rem; color: #fff; margin-bottom: 30px; }
+  .btn-menu {
+    background: rgba(10, 10, 15, 0.85); border: 1px solid rgba(213, 0, 249, 0.4); color: #e0f7fa; font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem; padding: 18px 20px; border-radius: 12px; cursor: pointer; transition: all 0.4s ease;
+  }
+  .btn-menu:hover { background: rgba(213, 0, 249, 0.2); border-color: #00e5ff; box-shadow: 0 0 25px rgba(0, 229, 255, 0.4); transform: translateY(-3px); }
+
+</style>
+</head>
+<body>
+
+  <div id="velo-negro"></div>
+
+  <section id="pantalla-ajedrez" class="pantalla activa">
+    <div id="particulas"></div>
+    <div class="grupo-titulos-flotantes" id="textosFlotantes">
+        <div class="titulo-flotante">Amor</div>
+        <div class="subtitulo-flotante">¿Sabes qué ficha me falta?</div>
+    </div>
+    <div class="escena-3d">
+      <div class="tablero" id="tablero"></div>
+    </div>
+    
+    <div class="instruccion" id="instruccion">Toca la casilla que brilla...</div>
+
+    <div class="contenedor-scroll" id="zonaScroll">
+      <div class="mensaje-contenedor" id="mensaje">
+        <div class="linea-texto delay-1 titulo-ajedrez">En este tablero de ajedrez...</div>
+        <div class="linea-texto delay-2 texto-poema">Me falta la pieza más importante, y esa eres tú, mi Reina.</div>
+        <div class="linea-texto delay-3 texto-poema">Sin ti, las casillas pierden su gravedad. Mi mundo solo tiene sentido cuando decides reinar en el centro exacto de mi pecho.</div>
+        <div class="linea-texto delay-4" style="font-size:3rem;">♥️</div>
+        <button class="btn-continuar" id="btnContinuar" onclick="cambiarSeccion('pantalla-menu')">Continuar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="pantalla-menu" class="pantalla">
+    <div class="respiracion-warden"></div> 
+    <div class="menu-contenedor">
+        <div class="menu-titulo">Para mi niña dinda</div>
+        <button class="btn-menu" onclick="seccionBloqueada()" style="opacity: 0.5; filter: grayscale(100%); cursor: not-allowed;">IA de tu niño dindo 🔒</button>
+        <button class="btn-menu" onclick="irAPagina('cartas.html')">Cartas infinitassss para mi niña hermosa</button>
+        <button class="btn-menu" onclick="irAPagina('porque.html')">¿Por qué te amo?</button>
+        <button class="btn-menu" onclick="irAPagina('emociones.html')">Léeme cuando te sientas mal</button>
+    </div>
+  </section>
+
+<script>
+  // 1. MEMORIA DE NAVEGACIÓN
+  const urlParams = new URLSearchParams(window.location.search);
+  const vVieneDeRegreso = urlParams.get('p') === 'menu';
+
+  window.onload = () => {
+    const velo = document.getElementById('velo-negro');
+    if (vVieneDeRegreso) {
+        // Salta directo al menú si viene de regresar de otra página
+        document.querySelector('.pantalla.activa').classList.remove('activa');
+        document.getElementById('pantalla-menu').classList.add('activa');
+    }
+    velo.classList.add('oculto');
+  };
+
+  // 2. LUCIÉRNAGAS
+  const cp = document.getElementById('particulas');
+  for(let i=0; i<30; i++) {
+    let o = document.createElement('div'); o.className = 'orbe';
+    o.style.width = o.style.height = (Math.random()*8+2)+'px';
+    o.style.left = Math.random()*100+'vw';
+    o.style.animationDuration = (Math.random()*8+8)+'s';
+    o.style.animationDelay = '-'+(Math.random()*15)+'s';
+    cp.appendChild(o);
+  }
+
+  // 3. TABLERO DE AJEDREZ
+  const t = document.getElementById('tablero');
+  const bP = ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'];
+  for (let f=0; f<8; f++) {
+    for (let c=0; c<8; c++) {
+      const cas = document.createElement('div');
+      cas.className = 'casilla ' + ((f+c)%2===0 ? 'clara-tú' : 'oscura-sharon');
+      let p = '';
+      if(f===0) p=bP[c]; if(f===1) p='♟︎'; if(f===6) p='♙';
+      if(f===7) { if(c===3) { cas.className += ' vacia-reina'; cas.id='q'; } else p=['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'][c]; }
+      if(p) { let dP = document.createElement('div'); dP.className='pieza'; dP.innerText=p; cas.appendChild(dP); }
+      t.appendChild(cas);
+    }
+  }
+
+  // 4. EVENTO CLIC EN LA REINA
+  let mS;
+  document.getElementById('q').addEventListener('click', () => {
+    const inst = document.getElementById('instruccion');
+    const txtF = document.getElementById('textosFlotantes');
+    
+    // Ocultar textos iniciales e instrucción
+    txtF.style.opacity = '0';
+    inst.style.opacity = '0';
+    setTimeout(() => { 
+        txtF.style.display = 'none'; 
+        inst.style.display = 'none';
+    }, 1000);
+
+    t.classList.add('revelado'); 
+    document.getElementById('mensaje').classList.add('activo');
+    
+    // Autoscroll del poema
+    setTimeout(() => { document.getElementById('zonaScroll').style.pointerEvents = 'auto'; }, 500);
+    setTimeout(() => { mS = setInterval(() => { document.getElementById('zonaScroll').scrollBy(0, 1); }, 15); }, 4000);
+    setTimeout(() => { clearInterval(mS); document.getElementById('btnContinuar').classList.add('visible'); }, 11500);
+  });
+
+  // 5. NAVEGACIÓN Y BOTONES
+  function cambiarSeccion(id) {
+    const velo = document.getElementById('velo-negro');
+    velo.classList.remove('oculto');
+    velo.classList.add('oscuro');
+    setTimeout(() => {
+        document.querySelector('.pantalla.activa').classList.remove('activa');
+        document.getElementById(id).classList.add('activa');
+        velo.classList.remove('oscuro');
+        velo.classList.add('oculto');
+    }, 800);
+  }
+
+  function irAPagina(url) {
+    const velo = document.getElementById('velo-negro');
+    velo.classList.remove('oculto');
+    velo.classList.add('oscuro');
+    setTimeout(() => { window.location.href = url; }, 800);
+  }
+
+  function seccionBloqueada() {
+    alert( "Mi niña dinda, esta sección todavía está en mantenimiento por tu niño dindo. 🤫 Pronto estará lista para ti.");
+  }
+</script>
+</body>
+</html>
