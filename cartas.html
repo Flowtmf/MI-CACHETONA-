@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartas Infinitas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Satisfy&family=Montserrat:wght@300;400;600&display=swap');
+
+  * { box-sizing: border-box; }
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    /* AQUÍ BUSCA LA IMAGEN DE FONDO */
+    background: url('fondo-estrellas.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* VELO DE SEGURIDAD */
+  #velo-negro {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 9999; opacity: 1; transition: opacity 0.8s;
+    pointer-events: none;
+  }
+  #velo-negro.oculto { opacity: 0; }
+
+  .escena {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    perspective: 1000px;
+  }
+
+  /* CARTA CENTRAL */
+  .carta-central {
+    width: 90%; max-width: 420px;
+    background: #fffdf5; padding: 50px 35px 40px 35px;
+    border-radius: 4px; border: 1px solid #eee;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    position: relative; text-align: center;
+    transition: opacity 0.4s;
+  }
+
+  .carta-central::before {
+    content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
+    border: 1px solid #d4af37; border-radius: 2px; opacity: 0.15;
+  }
+
+  .cuerpo { font-family: 'Satisfy', cursive; font-size: 1.6rem; line-height: 1.6; color: #444; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+  .firma { font-family: 'Satisfy', cursive; font-size: 1.4rem; color: #b71c1c; margin-top: 30px; border-top: 1px solid #f0f0f0; padding-top: 20px; letter-spacing: 1px; }
+
+  /* ANIMACIONES HACIA ADELANTE (Deslizar Arriba) */
+  .salida-arriba { transform: translateY(-120vh) rotate(-5deg); opacity: 0; transition: transform 0.5s ease-in, opacity 0.4s; }
+  .entrada-abajo { animation: entrarAbajo 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+  @keyframes entrarAbajo {
+    from { transform: translateY(100vh) rotate(5deg); opacity: 0; }
+    to { transform: translateY(0) rotate(0); opacity: 1; }
+  }
+
+  /* ANIMACIONES HACIA ATRÁS (Deslizar Abajo) */
+  .salida-abajo { transform: translateY(120vh) rotate(5deg); opacity: 0; transition: transform 0.5s ease-in, opacity 0.4s; }
+  .entrada-arriba { animation: entrarArriba 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+  @keyframes entrarArriba {
+    from { transform: translateY(-100vh) rotate(-5deg); opacity: 0; }
+    to { transform: translateY(0) rotate(0); opacity: 1; }
+  }
+
+  /* INDICADOR DE 7 SEGUNDOS */
+  #hint {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+    color: #fff; text-align: center; opacity: 0; transition: opacity 0.5s;
+  }
+  .flecha { font-size: 2rem; animation: saltar 1.5s infinite; }
+  @keyframes saltar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  .animar-sugerencia { animation: sugerir 1.2s ease-in-out; }
+  @keyframes sugerir { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+
+  /* BOTÓN PÁGINA ANTERIOR */
+  .btn-volver {
+    position: fixed; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
+    background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer; z-index: 100; backdrop-filter: blur(5px);
+    font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+  }
+</style>
+</head>
+<body onwheel="scrollWheel(event)" ontouchstart="tInicio(event)" ontouchend="tFin(event)">
+
+  <div id="velo-negro"></div>
+  <button class="btn-volver" onclick="volverAPaginaAnterior()">← Página anterior</button>
+
+  <div class="escena">
+    <div class="carta-central" id="carta">
+      <div class="cuerpo" id="cuerpo"></div>
+      <div class="firma">Con todo mi amor ♥️</div>
+    </div>
+  </div>
+
+  <div id="hint">
+    <div class="flecha">↑</div>
+    <div style="font-size: 0.7rem; letter-spacing: 2px;">DESLIZA PARA LEER MÁS</div>
+  </div>
+
+<script>
+  // --- TUS CARTAS Y LAS NUEVAS COMBINADAS ---
+  const textosReales = [
+    // TUS 20 CARTAS ORIGINALES
+    "Mi niña dinda, solo quería recordarte lo mucho que te amo. A veces no encuentro las palabras exactas para decir todo lo que siento por ti, pero créeme que en mi corazón siempre estás tú. Mi amor, gracias por existir en mi vida y por hacerme sentir tan feliz. Te amo muchísimo, mi cachetona hermosa.",
+    "Mi amor, mi niña dinda preciosa, hoy pensé mucho en ti y en lo afortunado que soy de tenerte. Tu sonrisa me da paz y tu forma de ser me enamora cada día más. Gracias por estar conmigo, por tu cariño y por tu paciencia. Te amo muchísimo, mi cachetona linda.",
+    "Mi cachetona hermosa, mi amorchito lindo, quería decirte que eres una de las cosas más bonitas que me han pasado en la vida. Cuando hablo contigo todo parece más tranquilo y mi corazón se siente feliz. Mi niña dinda, te amo muchísimo.",
+    "Mi niña dinda, cada vez que pienso en ti me nace una sonrisa. Tu forma de hablar, tu manera de ser y lo especial que eres conmigo hacen que mi corazón se llene de alegría. Mi amor, te amo muchísimo y siempre voy a cuidar de ti.",
+    "Mi amor, mi cachetona hermosa, gracias por estar conmigo incluso en los días en que no estoy tan bien. Tu cariño significa mucho para mí. Mi niña dinda, te amo muchísimo y me haces muy feliz.",
+    "Mi niña dinda preciosa, quiero que sepas que eres muy importante para mí. Cada conversación contigo, cada risa y cada momento me hace quererte más. Mi amor, te amo muchísimo, mi cachetona linda.",
+    "Mi cachetona, mi amorchito, solo quería decirte que cuando hablo contigo siento una tranquilidad muy bonita. Tu presencia en mi vida me hace sentir acompañado y feliz. Mi niña dinda, te amo muchísimo.",
+    "Mi amor, mi niña dinda hermosa, gracias por ser tan especial conmigo. Tu forma de tratarme me hace sentir querido y valorado. Mi cachetona linda, te amo muchísimo.",
+    "Mi niña dinda, a veces me pongo a pensar en lo bonito que es tenerte en mi vida. Eres una persona increíble y me encanta compartir momentos contigo. Mi amor, te amo muchísimo, mi cachetona.",
+    "Mi cachetona hermosa, mi amor, cada día me doy cuenta de lo mucho que te quiero. Tu dulzura, tu forma de hablar y tu cariño hacen que mi corazón se enamore más de ti. Mi niña dinda, te amo muchísimo.",
+    "Mi niña dinda, mi amorcito lindo, gracias por cada palabra bonita que me dices y por cada momento que compartimos. Todo eso lo guardo en mi corazón. Mi cachetona hermosa, te amo muchísimo.",
+    "Mi amor, mi cachetona preciosa, quiero que sepas que siempre voy a estar para ti. Me importa tu felicidad y tu bienestar. Mi niña dinda, te amo muchísimo.",
+    "Mi niña dinda, hablar contigo siempre mejora mi día. Incluso cuando estoy cansado o pensativo, tú logras hacerme sentir mejor. Mi amor, te amo muchísimo, mi cachetona linda.",
+    "Mi cachetona hermosa, mi amor, quiero que sepas que tu sonrisa tiene un poder muy especial en mí. Me alegra el corazón y me hace sentir muy feliz. Mi niña dinda, te amo muchísimo.",
+    "Mi niña dinda, cada vez que recuerdo nuestras conversaciones me da mucha ternura. Eres una persona muy especial para mí. Mi amor, te amo muchísimo, mi cachetona.",
+    "Mi amorchito, mi cachetona hermosa, quiero agradecerte por tu cariño y por tu forma de ser conmigo. Me haces sentir muy afortunado. Mi niña dinda, te amo muchísimo.",
+    "Mi niña dinda, mi amor, a veces no digo todo lo que siento, pero quiero que sepas que mi corazón te quiere muchísimo. Mi cachetona hermosa, te amo mucho.",
+    "Mi amor, mi cachetona linda, tu forma de ser me encanta. Eres dulce, especial y muy importante para mí. Mi niña dinda, te amo muchísimo.",
+    "Mi niña dinda, cuando hablo contigo siento que todo está bien. Tu compañía me hace sentir tranquilo y feliz. Mi amor, te amo muchísimo, mi cachetona.",
+    "Mi cachetona hermosa, mi amorchito, quiero que sepas que siempre pienso en ti con mucho cariño. Eres una parte muy bonita de mi vida. Mi niña dinda, te amo muchísimo.",
+
+    // LAS CARTAS ADICIONALES
+    "Mi futuro eterno, cada paso que doy es pensando en nosotros. Quiero que sepas que mi intención es firme: construir nuestra felicidad juntos hasta que estemos juntos por siempre. Te amo infinito, mi niña dinda.",
+    "Mi Camí, eres la mujer con la que quiero despertar todos los días. No busco a nadie más, porque en ti encontré todo lo que mi corazón necesitaba para estar en paz.",
+    "Mi Reina, llevarte al altar no es solo un sueño, es la meta de mi vida. Quiero prometerte amor eterno frente a todos, porque te mereces un amor de verdad. 😍",
+    "Amor de mi vida, cada momento de nuestra historia lo construyo con paciencia y dedicación. No tengo prisa, porque sé que lo que estamos creando es para toda la vida. ♥️",
+    "Mi lugar seguro, contigo el futuro no me da miedo. Al contrario, me emociona saber que cada meta que cumpla será para darte lo mejor a ti, mi niña dinda. 🥺",
+    "Mi Camí hermosa, quiero ser el hombre que te cuide y te respete siempre. Mi mayor orgullo será decir que formamos nuestro hogar con amor y mucho esfuerzo. ♥️",
+    "Mi cachetoncita, gracias por confiar en mí y en este camino que estamos trazando. Te prometo que cada esfuerzo valdrá la pena cuando estemos en nuestra propia casa. 😍",
+    "Mi niña dinda, me hace muy feliz saber que tu mamá me tiene presente. Mi meta es ser un hombre del que tú y tu familia se sientan orgullosos cada día. 🥺",
+    "Amor, valoro muchísimo la relación que tienes con tu familia. Quiero que sepas que yo también los respeto y que deseo ser parte de tu mundo de la forma más bonita posible. ♥️",
+    "Mi estrella guía, prometo cuidar de ti con la misma dedicación con la que tus padres te criaron. Eres el tesoro más grande de tu familia y ahora eres el mío también. 🥺",
+    "Mi lugar seguro, si algún día te sientes cansada o el mundo te pesa, recuerda que aquí estoy yo. No tienes que cargar con nada sola, somos un equipo inseparable. ♥️",
+    "Mi cachetoncita, tu paz es mi prioridad. Si tú estás bien, mi mundo está en orden. Aquí tienes siempre un hombro para descansar y un corazón que te escucha sin juzgar. 🥺",
+    "Mi niña dinda, no importa lo difícil que sea el día, hablar contigo siempre me devuelve la calma. Gracias por ser mi refugio constante en medio de cualquier tormenta. 😍",
+    "Mi estrella guía, hay universos enteros en tus ojos. Me encanta perderme en tu mirada y descubrir que eres mucho más de lo que siempre soñé. Te amo mi Camí. 😍",
+    "Mi cachetoncita hermosa, amo tu risa, tus gestos y hasta tus silencios. Todo en ti me parece perfecto porque eres tú, mi Camí, la dueña absoluta de mi vida. ♥️"
+  ];
+
+  // --- HISTORIAL PARA SCROLL INFINITO REAL ---
+  let historialCartas = [];
+  let indiceActual = -1;
+  let contadorGlobal = 0; // Para recorrer tus textos en orden
+  let animando = false; 
+  let yStart = 0;
+  let timerHint;
+
+  function crearNuevaCarta() {
+    const texto = textosReales[contadorGlobal % textosReales.length];
+    contadorGlobal++;
+    return texto;
+  }
+
+  function mostrarCarta(direccion) {
+    if (animando) return; 
+    if (direccion === 'anterior' && indiceActual <= 0) return; 
+
+    animando = true;
+    const carta = document.getElementById('carta');
+    
+    carta.className = 'carta-central'; 
+    if (direccion === 'siguiente') carta.classList.add('salida-arriba');
+    else carta.classList.add('salida-abajo');
+
+    setTimeout(() => {
+      // Lógica de Historial
+      if (direccion === 'siguiente') {
+        if (indiceActual === historialCartas.length - 1) {
+          historialCartas.push(crearNuevaCarta());
+        }
+        indiceActual++;
+      } else {
+        indiceActual--;
+      }
+
+      // Escribir texto
+      document.getElementById('cuerpo').innerText = historialCartas[indiceActual];
+
+      // Efecto de entrada
+      carta.className = 'carta-central';
+      if (direccion === 'siguiente') carta.classList.add('entrada-abajo');
+      else carta.classList.add('entrada-arriba');
+
+      reiniciarTimer();
+
+      setTimeout(() => {
+        carta.className = 'carta-central';
+        animando = false;
+      }, 600);
+
+    }, 400); 
+  }
+
+  // --- CONTROLES TÁCTILES Y SCROLL ---
+  function tInicio(e) { yStart = e.touches[0].clientY; }
+  function tFin(e) { 
+    let yEnd = e.changedTouches[0].clientY;
+    if (yStart - yEnd > 50) mostrarCarta('siguiente'); 
+    else if (yEnd - yStart > 50) mostrarCarta('anterior'); 
+  }
+  function scrollWheel(e) { 
+    if (e.deltaY > 0) mostrarCarta('siguiente'); 
+    else mostrarCarta('anterior'); 
+  }
+
+  // --- RECORDATORIO VISUAL (7 SEGUNDOS) ---
+  function reiniciarTimer() {
+    clearTimeout(timerHint);
+    document.getElementById('hint').style.opacity = "0";
+    document.getElementById('carta').classList.remove('animar-sugerencia');
+    
+    timerHint = setTimeout(() => {
+      document.getElementById('hint').style.opacity = "1";
+      document.getElementById('carta').classList.add('animar-sugerencia');
+    }, 7000);
+  }
+
+  // --- BOTÓN VOLVER ATRÁS DIRECTO AL MENÚ ---
+  function volverAPaginaAnterior() {
+    const velo = document.getElementById('velo-negro');
+    velo.classList.remove('oculto');
+    setTimeout(() => {
+        // Redirige directo a las opciones sin pasar por la animación del ajedrez
+        window.location.href = 'index.html?p=menu'; 
+    }, 600);
+  }
+
+  // --- INICIAR ---
+  window.onload = () => {
+    // Iniciar desde un punto aleatorio para que sea sorpresa
+    contadorGlobal = Math.floor(Math.random() * textosReales.length); 
+    mostrarCarta('siguiente'); 
+    setTimeout(() => document.getElementById('velo-negro').classList.add('oculto'), 500);
+  };
+</script>
+</body>
+</html>
+
