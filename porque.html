@@ -7,20 +7,21 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Satisfy&family=Montserrat:wght@300;400;600&display=swap');
 
+  /* QUITAMOS EL TOUCH-ACTION DE AQUÍ PARA NO BLOQUEAR LA LISTA */
   * { 
     box-sizing: border-box; 
-    touch-action: none; 
     -webkit-tap-highlight-color: transparent; 
     user-select: none; 
   }
   
-  /* BLOQUEO TOTAL DE PANTALLA */
+  /* BLOQUEO TOTAL DE PANTALLA SOLO EN EL FONDO */
   body, html {
     margin: 0; padding: 0; width: 100vw; height: 100vh;
     background-color: #050505; 
     font-family: 'Montserrat', sans-serif; 
     overflow: hidden; color: white;
     position: fixed; 
+    touch-action: none; /* El fondo no se mueve */
   }
 
   /* EFECTO DE RESPIRACIÓN (MÍSTICO) */
@@ -41,14 +42,18 @@
   }
   #velo-negro.oculto { opacity: 0; }
 
-  /* BOTÓN VOLVER */
-  .btn-volver {
-    position: absolute; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
+  /* BOTONES SUPERIORES */
+  .btn-volver, .btn-recuerdos {
+    position: absolute; top: 20px; padding: 10px 15px; border-radius: 30px;
     background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
-    cursor: pointer; z-index: 100; backdrop-filter: blur(5px); font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+    cursor: pointer; z-index: 100; backdrop-filter: blur(5px); font-family: 'Montserrat', sans-serif; font-size: 0.8rem;
+    transition: 0.3s;
   }
+  .btn-volver { left: 15px; }
+  .btn-recuerdos { right: 15px; border-color: rgba(0,229,255,0.5); color: #00e5ff; }
+  .btn-volver:active, .btn-recuerdos:active { transform: scale(0.95); background: rgba(255,255,255,0.2); }
 
-  /* --- UI CLAVADA (NO SE MUEVE) --- */
+  /* --- UI CLAVADA --- */
   .seccion-titulos {
     position: absolute; top: 12%; width: 100%; text-align: center; z-index: 10; pointer-events: none;
   }
@@ -66,8 +71,7 @@
     background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
     border-radius: 20px; font-size: 0.85rem; padding: 8px 0;
     margin: 10px auto 0 auto; 
-    width: 260px; /* ANCHO FIJO PARA QUE NO TIEMBLE */
-    display: block; font-family: monospace; font-variant-numeric: tabular-nums;
+    width: 260px; display: block; font-family: monospace; font-variant-numeric: tabular-nums;
   }
   .gota-lista { color: #00e5ff; font-weight: bold; animation: titilar 1.5s infinite; }
   @keyframes titilar { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -75,9 +79,10 @@
   /* CANVAS DEL ÁRBOL */
   #canvas-arbol {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; cursor: pointer;
+    touch-action: none; /* Aquí sí bloqueamos para que los toques no muevan la pantalla */
   }
 
-  /* MODAL DE LA HOJA */
+  /* MODAL DE LA HOJA (CUANDO CAE LA GOTA) */
   #modal-hoja {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
@@ -101,10 +106,58 @@
   .texto-razon {
     font-family: 'Satisfy', cursive; font-size: 1.6rem; color: #fffdf5; line-height: 1.4; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
-  .btn-cerrar-hoja {
+  .btn-accion {
     margin-top: 25px; background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 10px 25px;
-    border-radius: 20px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: bold;
+    border-radius: 20px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: bold; transition: 0.3s;
   }
+  .btn-accion:active { background: rgba(255,255,255,0.2); }
+
+  /* --- MODAL DE RECUERDOS --- */
+  #modal-recuerdos {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 150; opacity: 0; visibility: hidden; transition: 0.4s ease;
+    touch-action: auto; /* Permite interacciones dentro del modal */
+  }
+  #modal-recuerdos.activo { opacity: 1; visibility: visible; }
+
+  .caja-recuerdos {
+    width: 90%; max-width: 400px; max-height: 80vh;
+    background: rgba(15, 15, 15, 0.95); border: 1px solid rgba(0, 229, 255, 0.4);
+    border-radius: 20px; padding: 25px; display: flex; flex-direction: column;
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+    transform: scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  #modal-recuerdos.activo .caja-recuerdos { transform: scale(1); }
+
+  .titulo-recuerdos {
+    font-family: 'Playfair Display', serif; font-style: italic; color: #00e5ff;
+    text-align: center; margin-top: 0; font-size: 1.6rem; margin-bottom: 20px;
+  }
+
+  /* LISTA DESBLOQUEADA PARA SCROLL FLUIDO */
+  #lista-recuerdos {
+    overflow-y: auto; 
+    flex-grow: 1; 
+    margin-bottom: 20px; 
+    padding-right: 5px;
+    touch-action: pan-y !important; /* Fuerza permiso de scroll vertical */
+    overscroll-behavior: contain; /* Evita que el scroll se pase al fondo */
+    -webkit-overflow-scrolling: touch; /* Suavidad en iPhone */
+  }
+  
+  #lista-recuerdos::-webkit-scrollbar { width: 5px; }
+  #lista-recuerdos::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.5); border-radius: 10px; }
+
+  .item-recuerdo {
+    background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 12px;
+    font-family: 'Satisfy', cursive; font-size: 1.3rem; line-height: 1.4; color: #e0f7fa;
+    border-left: 3px solid #d500f9;
+    touch-action: pan-y !important; /* También en los items por si acaso */
+  }
+  .mensaje-vacio { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: #aaa; margin-top: 30px; }
+
 </style>
 </head>
 <body>
@@ -112,7 +165,8 @@
   <div id="velo-negro"></div>
   <div class="respiracion"></div>
 
-  <button class="btn-volver" onclick="volver()">← Página anterior</button>
+  <button class="btn-volver" onclick="volver()">← Volver</button>
+  <button class="btn-recuerdos" onclick="abrirRecuerdos()">📖 Recuerdos</button>
 
   <div class="seccion-titulos">
     <div class="titulo">Razones por las que te amo</div>
@@ -130,7 +184,16 @@
     <div class="hoja-papel">
       <div class="subtitulo-hoja">Te amo</div>
       <div class="texto-razon" id="texto-razon">...</div>
-      <button class="btn-cerrar-hoja" onclick="cerrarHoja()">Ver cómo crece</button>
+      <button class="btn-accion" onclick="cerrarHoja()">Ver cómo crece</button>
+    </div>
+  </div>
+
+  <div id="modal-recuerdos">
+    <div class="caja-recuerdos">
+      <h3 class="titulo-recuerdos">Razones Descubiertas</h3>
+      <div id="lista-recuerdos">
+        </div>
+      <button class="btn-accion" style="border-color:#00e5ff; color:#00e5ff; margin-top:0;" onclick="cerrarRecuerdos()">Cerrar</button>
     </div>
   </div>
 
@@ -152,15 +215,8 @@
   let nextReadyTime = 0;
   let treeLevel = 0;
 
-  // Variables ACTUALES en cero para que brote al cargar la página
-  let currentLen = 0;
-  let currentDepth = 0; 
-  let currentGrosor = 0;
-  
-  // Variables OBJETIVO (El primer nivel es una semillita)
-  let targetLen = 25;
-  let targetDepth = 1;
-  let targetGrosor = 3;
+  let currentLen = 0; let currentDepth = 0; let currentGrosor = 0;
+  let targetLen = 25; let targetDepth = 1; let targetGrosor = 3;
 
   function cargarProgreso() {
       const dataGuardada = JSON.parse(localStorage.getItem('arbol_fractal_camii'));
@@ -171,8 +227,6 @@
           targetGrosor = dataGuardada.targetGrosor;
           nextReadyTime = dataGuardada.nextReadyTime;
 
-          // YA NO IGUALAMOS LAS VARIABLES AQUÍ. 
-          // Esto hará que el árbol crezca animado desde cero cada vez que ella entre.
           if (Date.now() < nextReadyTime) isDropReady = false;
       }
   }
@@ -196,7 +250,6 @@
         document.getElementById('timer-display').className = "temporizador gota-lista";
         return;
     }
-
     const faltan = nextReadyTime - Date.now();
     const txt = document.getElementById('timer-display');
 
@@ -219,10 +272,7 @@
   let width, height;
   let dropAnim = { active: false, y: 0 };
 
-  function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  }
+  function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
   window.addEventListener('resize', resize);
   resize();
 
@@ -231,18 +281,11 @@
     ctx.beginPath(); ctx.arc(width / 2, dropAnim.y, 14, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.fill();
     ctx.beginPath(); ctx.arc(width / 2, dropAnim.y, 6, 0, Math.PI * 2); ctx.fillStyle = '#00e5ff'; ctx.fill();
     dropAnim.y += 18;
-    
     if (dropAnim.y > height - 100) { dropAnim.active = false; crecerArbol(); }
   }
 
-  // --- LÓGICA DE BROTE DE LAS RAMAS MEJORADA ---
   function dibujarRama(startX, startY, len, angle, depth, grosor) {
-    ctx.save();
-    ctx.translate(startX, startY);
-    ctx.rotate(angle * Math.PI / 180);
-    
-    // Si la rama apenas está naciendo (es decir, el nivel de profundidad no es un número entero),
-    // su longitud se recorta para que se vea cómo va saliendo de la rama principal.
+    ctx.save(); ctx.translate(startX, startY); ctx.rotate(angle * Math.PI / 180);
     let actualLen = (depth > 0 && depth < 1) ? len * depth : len;
 
     ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -actualLen);
@@ -250,11 +293,9 @@
     ctx.lineWidth = grosor; ctx.lineCap = 'round'; ctx.stroke();
 
     if (depth > 1) {
-      // Dibujar sub-ramas enteras
       dibujarRama(0, -actualLen, len * 0.78, angle - 22, depth - 1, grosor * 0.7);
       dibujarRama(0, -actualLen, len * 0.78, angle + 22, depth - 1, grosor * 0.7);
     } else if (depth > 0) {
-      // Punta de la rama que está naciendo: Las hojas crecen de a poquito
       ctx.beginPath(); ctx.arc(0, -actualLen, 8 * depth, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.fill();
       ctx.beginPath(); ctx.arc(0, -actualLen, 3 * depth, 0, Math.PI * 2); ctx.fillStyle = '#00e5ff'; ctx.fill();
     }
@@ -263,19 +304,15 @@
 
   function render() {
     ctx.clearRect(0, 0, width, height);
-
-    // Animación suave de crecimiento (3% en cada fotograma)
     currentLen += (targetLen - currentLen) * 0.03;
     currentDepth += (targetDepth - currentDepth) * 0.03;
     currentGrosor += (targetGrosor - currentGrosor) * 0.03;
 
-    // La cámara enfoca desde abajo
     let zoomOut = Math.max(0.15, 600 / (600 + (currentLen * 2.5)));
 
     ctx.save();
     ctx.translate(width / 2, height - 100); 
     ctx.scale(zoomOut, zoomOut);
-    // Le pasamos el currentDepth con decimales para activar la magia del brote
     dibujarRama(0, 0, currentLen, 0, currentDepth, currentGrosor);
     ctx.restore();
 
@@ -284,6 +321,10 @@
   }
 
   canvas.addEventListener('click', () => {
+    // Evita clics si algún modal está abierto
+    if(document.getElementById('modal-recuerdos').classList.contains('activo') || 
+       document.getElementById('modal-hoja').classList.contains('activo')) return;
+
     if (!isDropReady || dropAnim.active) {
         if (!isDropReady) alert("Mi niña dinda, el arbolito está asimilando todo el amor. Espera a que la nubecita cargue la próxima gota. ♥️");
         return;
@@ -296,14 +337,10 @@
 
   function crecerArbol() {
     treeLevel++;
-    
-    // Al recolectar la gota, sube los objetivos, y el render se encargará de hacer que brote
-    targetLen += 12; 
-    targetGrosor += 0.8;
+    targetLen += 12; targetGrosor += 0.8;
     if (treeLevel % 2 === 0 && targetDepth < 7) targetDepth += 1; 
 
     guardarProgreso(); 
-
     setTimeout(() => {
         document.getElementById('texto-razon').innerText = razones[(treeLevel - 1) % razones.length];
         document.getElementById('modal-hoja').classList.add('activo');
@@ -317,6 +354,27 @@
     nextReadyTime = Date.now() + (baseMinutos + variacionAleatoria);
     guardarProgreso(); 
     actualizarTimer();
+  }
+
+  // --- LÓGICA DE LA GALERÍA DE RECUERDOS ---
+  function abrirRecuerdos() {
+    const contenedorLista = document.getElementById('lista-recuerdos');
+    contenedorLista.innerHTML = ''; // Limpiar lista
+
+    if (treeLevel === 0) {
+        contenedorLista.innerHTML = '<div class="mensaje-vacio">Aún no has regado el arbolito. ¡Déjale caer una gota para descubrir tu primera carta! ♥️</div>';
+    } else {
+        // Generar las cartas basándose en el nivel del árbol
+        for (let i = 0; i < treeLevel; i++) {
+            let indiceFrase = i % razones.length;
+            contenedorLista.innerHTML += `<div class="item-recuerdo">${razones[indiceFrase]}</div>`;
+        }
+    }
+    document.getElementById('modal-recuerdos').classList.add('activo');
+  }
+
+  function cerrarRecuerdos() {
+    document.getElementById('modal-recuerdos').classList.remove('activo');
   }
 
   function volver() {
