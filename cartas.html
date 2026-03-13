@@ -10,7 +10,7 @@
   * { box-sizing: border-box; }
   body, html {
     margin: 0; padding: 0; height: 100%;
-    /* AQUÍ BUSCA LA IMAGEN DE FONDO */
+    /* FONDO CORREGIDO DE NUEVO A .JPG */
     background: url('fondo-estrellas.jpg') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Montserrat', sans-serif;
@@ -18,13 +18,24 @@
     display: flex; align-items: center; justify-content: center;
   }
 
-  /* VELO DE SEGURIDAD */
+  /* VELO DE SEGURIDAD PARA TRANSICIONES */
   #velo-negro {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: #000; z-index: 9999; opacity: 1; transition: opacity 0.8s;
     pointer-events: none;
   }
   #velo-negro.oculto { opacity: 0; }
+
+  /* BOTÓN VOLVER */
+  .btn-volver {
+    position: fixed; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
+    background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer; z-index: 10000;
+    backdrop-filter: blur(5px);
+    font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+    transition: 0.3s;
+  }
+  .btn-volver:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
 
   .escena {
     width: 100%; height: 100%;
@@ -50,7 +61,7 @@
   .cuerpo { font-family: 'Satisfy', cursive; font-size: 1.6rem; line-height: 1.6; color: #444; min-height: 200px; display: flex; align-items: center; justify-content: center; }
   .firma { font-family: 'Satisfy', cursive; font-size: 1.4rem; color: #b71c1c; margin-top: 30px; border-top: 1px solid #f0f0f0; padding-top: 20px; letter-spacing: 1px; }
 
-  /* ANIMACIONES HACIA ADELANTE (Deslizar Arriba) */
+  /* ANIMACIONES */
   .salida-arriba { transform: translateY(-120vh) rotate(-5deg); opacity: 0; transition: transform 0.5s ease-in, opacity 0.4s; }
   .entrada-abajo { animation: entrarAbajo 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
   @keyframes entrarAbajo {
@@ -58,7 +69,6 @@
     to { transform: translateY(0) rotate(0); opacity: 1; }
   }
 
-  /* ANIMACIONES HACIA ATRÁS (Deslizar Abajo) */
   .salida-abajo { transform: translateY(120vh) rotate(5deg); opacity: 0; transition: transform 0.5s ease-in, opacity 0.4s; }
   .entrada-arriba { animation: entrarArriba 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
   @keyframes entrarArriba {
@@ -70,6 +80,7 @@
   #hint {
     position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
     color: #fff; text-align: center; opacity: 0; transition: opacity 0.5s;
+    pointer-events: none;
   }
   .flecha { font-size: 2rem; animation: saltar 1.5s infinite; }
   @keyframes saltar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -77,19 +88,13 @@
   .animar-sugerencia { animation: sugerir 1.2s ease-in-out; }
   @keyframes sugerir { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
 
-  /* BOTÓN PÁGINA ANTERIOR */
-  .btn-volver {
-    position: fixed; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
-    background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
-    cursor: pointer; z-index: 100; backdrop-filter: blur(5px);
-    font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
-  }
 </style>
 </head>
 <body onwheel="scrollWheel(event)" ontouchstart="tInicio(event)" ontouchend="tFin(event)">
 
   <div id="velo-negro"></div>
-  <button class="btn-volver" onclick="volverAPaginaAnterior()">← Página anterior</button>
+  
+  <button class="btn-volver" onclick="volverAPaginaAnterior()">← Volver al Ajedrez</button>
 
   <div class="escena">
     <div class="carta-central" id="carta">
@@ -104,9 +109,7 @@
   </div>
 
 <script>
-  // --- TUS CARTAS Y LAS NUEVAS COMBINADAS ---
   const textosReales = [
-    // TUS 20 CARTAS ORIGINALES
     "Mi niña dinda, solo quería recordarte lo mucho que te amo. A veces no encuentro las palabras exactas para decir todo lo que siento por ti, pero créeme que en mi corazón siempre estás tú. Mi amor, gracias por existir en mi vida y por hacerme sentir tan feliz. Te amo muchísimo, mi cachetona hermosa.",
     "Mi amor, mi niña dinda preciosa, hoy pensé mucho en ti y en lo afortunado que soy de tenerte. Tu sonrisa me da paz y tu forma de ser me enamora cada día más. Gracias por estar conmigo, por tu cariño y por tu paciencia. Te amo muchísimo, mi cachetona linda.",
     "Mi cachetona hermosa, mi amorchito lindo, quería decirte que eres una de las cosas más bonitas que me han pasado en la vida. Cuando hablo contigo todo parece más tranquilo y mi corazón se siente feliz. Mi niña dinda, te amo muchísimo.",
@@ -127,8 +130,6 @@
     "Mi amor, mi cachetona linda, tu forma de ser me encanta. Eres dulce, especial y muy importante para mí. Mi niña dinda, te amo muchísimo.",
     "Mi niña dinda, cuando hablo contigo siento que todo está bien. Tu compañía me hace sentir tranquilo y feliz. Mi amor, te amo muchísimo, mi cachetona.",
     "Mi cachetona hermosa, mi amorchito, quiero que sepas que siempre pienso en ti con mucho cariño. Eres una parte muy bonita de mi vida. Mi niña dinda, te amo muchísimo.",
-
-    // LAS CARTAS ADICIONALES
     "Mi futuro eterno, cada paso que doy es pensando en nosotros. Quiero que sepas que mi intención es firme: construir nuestra felicidad juntos hasta que estemos juntos por siempre. Te amo infinito, mi niña dinda.",
     "Mi Camí, eres la mujer con la que quiero despertar todos los días. No busco a nadie más, porque en ti encontré todo lo que mi corazón necesitaba para estar en paz.",
     "Mi Reina, llevarte al altar no es solo un sueño, es la meta de mi vida. Quiero prometerte amor eterno frente a todos, porque te mereces un amor de verdad. 😍",
@@ -146,10 +147,9 @@
     "Mi cachetoncita hermosa, amo tu risa, tus gestos y hasta tus silencios. Todo en ti me parece perfecto porque eres tú, mi Camí, la dueña absoluta de mi vida. ♥️"
   ];
 
-  // --- HISTORIAL PARA SCROLL INFINITO REAL ---
   let historialCartas = [];
   let indiceActual = -1;
-  let contadorGlobal = 0; // Para recorrer tus textos en orden
+  let contadorGlobal = 0; 
   let animando = false; 
   let yStart = 0;
   let timerHint;
@@ -172,7 +172,6 @@
     else carta.classList.add('salida-abajo');
 
     setTimeout(() => {
-      // Lógica de Historial
       if (direccion === 'siguiente') {
         if (indiceActual === historialCartas.length - 1) {
           historialCartas.push(crearNuevaCarta());
@@ -182,10 +181,8 @@
         indiceActual--;
       }
 
-      // Escribir texto
       document.getElementById('cuerpo').innerText = historialCartas[indiceActual];
 
-      // Efecto de entrada
       carta.className = 'carta-central';
       if (direccion === 'siguiente') carta.classList.add('entrada-abajo');
       else carta.classList.add('entrada-arriba');
@@ -200,7 +197,6 @@
     }, 400); 
   }
 
-  // --- CONTROLES TÁCTILES Y SCROLL ---
   function tInicio(e) { yStart = e.touches[0].clientY; }
   function tFin(e) { 
     let yEnd = e.changedTouches[0].clientY;
@@ -212,7 +208,6 @@
     else mostrarCarta('anterior'); 
   }
 
-  // --- RECORDATORIO VISUAL (7 SEGUNDOS) ---
   function reiniciarTimer() {
     clearTimeout(timerHint);
     document.getElementById('hint').style.opacity = "0";
@@ -224,19 +219,17 @@
     }, 7000);
   }
 
-  // --- BOTÓN VOLVER ATRÁS DIRECTO AL MENÚ ---
+  // LÓGICA CORREGIDA PARA VOLVER DIRECTO AL MENÚ DEL AJEDREZ
   function volverAPaginaAnterior() {
     const velo = document.getElementById('velo-negro');
     velo.classList.remove('oculto');
     setTimeout(() => {
-        // Redirige directo a las opciones sin pasar por la animación del ajedrez
-        window.location.href = 'index.html?p=menu'; 
+        // Redirige a las opciones saltando la intro
+        window.location.href = 'ajedrez.html?p=menu'; 
     }, 600);
   }
 
-  // --- INICIAR ---
   window.onload = () => {
-    // Iniciar desde un punto aleatorio para que sea sorpresa
     contadorGlobal = Math.floor(Math.random() * textosReales.length); 
     mostrarCarta('siguiente'); 
     setTimeout(() => document.getElementById('velo-negro').classList.add('oculto'), 500);
