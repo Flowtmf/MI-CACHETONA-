@@ -150,16 +150,18 @@
 
   let isDropReady = true; 
   let nextReadyTime = 0;
-  
   let treeLevel = 0;
-  let currentLen = 30;
-  let currentDepth = 3; 
-  let currentGrosor = 3;
-  let targetLen = currentLen;
-  let targetDepth = currentDepth;
-  let targetGrosor = currentGrosor;
 
-  // CARGAR PROGRESO
+  // Variables ACTUALES en cero para que brote al cargar la página
+  let currentLen = 0;
+  let currentDepth = 0; 
+  let currentGrosor = 0;
+  
+  // Variables OBJETIVO (El primer nivel es una semillita)
+  let targetLen = 25;
+  let targetDepth = 1;
+  let targetGrosor = 3;
+
   function cargarProgreso() {
       const dataGuardada = JSON.parse(localStorage.getItem('arbol_fractal_camii'));
       if (dataGuardada) {
@@ -169,10 +171,8 @@
           targetGrosor = dataGuardada.targetGrosor;
           nextReadyTime = dataGuardada.nextReadyTime;
 
-          currentLen = targetLen;
-          currentDepth = targetDepth;
-          currentGrosor = targetGrosor;
-
+          // YA NO IGUALAMOS LAS VARIABLES AQUÍ. 
+          // Esto hará que el árbol crezca animado desde cero cada vez que ella entre.
           if (Date.now() < nextReadyTime) isDropReady = false;
       }
   }
@@ -190,7 +190,6 @@
 
   cargarProgreso();
 
-  // RELOJ DE GOTA
   function actualizarTimer() {
     if (isDropReady) {
         document.getElementById('timer-display').innerHTML = "¡Gota lista! Toca el árbol";
@@ -215,7 +214,6 @@
   }
   setInterval(actualizarTimer, 1000);
 
-  // MOTOR CANVAS
   const canvas = document.getElementById('canvas-arbol');
   const ctx = canvas.getContext('2d');
   let width, height;
@@ -233,24 +231,32 @@
     ctx.beginPath(); ctx.arc(width / 2, dropAnim.y, 14, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.fill();
     ctx.beginPath(); ctx.arc(width / 2, dropAnim.y, 6, 0, Math.PI * 2); ctx.fillStyle = '#00e5ff'; ctx.fill();
     dropAnim.y += 18;
-    if (dropAnim.y > height) { dropAnim.active = false; crecerArbol(); }
+    
+    if (dropAnim.y > height - 100) { dropAnim.active = false; crecerArbol(); }
   }
 
+  // --- LÓGICA DE BROTE DE LAS RAMAS MEJORADA ---
   function dibujarRama(startX, startY, len, angle, depth, grosor) {
     ctx.save();
     ctx.translate(startX, startY);
     ctx.rotate(angle * Math.PI / 180);
     
-    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -len);
+    // Si la rama apenas está naciendo (es decir, el nivel de profundidad no es un número entero),
+    // su longitud se recorta para que se vea cómo va saliendo de la rama principal.
+    let actualLen = (depth > 0 && depth < 1) ? len * depth : len;
+
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -actualLen);
     ctx.strokeStyle = `rgba(213, 0, 249, ${0.4 + (depth/10)})`;
     ctx.lineWidth = grosor; ctx.lineCap = 'round'; ctx.stroke();
 
-    if (depth > 0) {
-      dibujarRama(0, -len, len * 0.78, angle - 22, depth - 1, grosor * 0.7);
-      dibujarRama(0, -len, len * 0.78, angle + 22, depth - 1, grosor * 0.7);
-    } else {
-      ctx.beginPath(); ctx.arc(0, -len, 8, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.fill();
-      ctx.beginPath(); ctx.arc(0, -len, 3, 0, Math.PI * 2); ctx.fillStyle = '#00e5ff'; ctx.fill();
+    if (depth > 1) {
+      // Dibujar sub-ramas enteras
+      dibujarRama(0, -actualLen, len * 0.78, angle - 22, depth - 1, grosor * 0.7);
+      dibujarRama(0, -actualLen, len * 0.78, angle + 22, depth - 1, grosor * 0.7);
+    } else if (depth > 0) {
+      // Punta de la rama que está naciendo: Las hojas crecen de a poquito
+      ctx.beginPath(); ctx.arc(0, -actualLen, 8 * depth, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(0, -actualLen, 3 * depth, 0, Math.PI * 2); ctx.fillStyle = '#00e5ff'; ctx.fill();
     }
     ctx.restore();
   }
@@ -258,17 +264,19 @@
   function render() {
     ctx.clearRect(0, 0, width, height);
 
-    currentLen += (targetLen - currentLen) * 0.05;
-    currentDepth += (targetDepth - currentDepth) * 0.05;
-    currentGrosor += (targetGrosor - currentGrosor) * 0.05;
+    // Animación suave de crecimiento (3% en cada fotograma)
+    currentLen += (targetLen - currentLen) * 0.03;
+    currentDepth += (targetDepth - currentDepth) * 0.03;
+    currentGrosor += (targetGrosor - currentGrosor) * 0.03;
 
-    // MAGIA DE LA CÁMARA (SE ALEJA MIENTRAS CRECE)
-    let zoomOut = Math.max(0.15, 600 / (600 + (treeLevel * 85)));
+    // La cámara enfoca desde abajo
+    let zoomOut = Math.max(0.15, 600 / (600 + (currentLen * 2.5)));
 
     ctx.save();
-    ctx.translate(width / 2, height);
+    ctx.translate(width / 2, height - 100); 
     ctx.scale(zoomOut, zoomOut);
-    dibujarRama(0, 0, currentLen, 0, Math.floor(currentDepth), currentGrosor);
+    // Le pasamos el currentDepth con decimales para activar la magia del brote
+    dibujarRama(0, 0, currentLen, 0, currentDepth, currentGrosor);
     ctx.restore();
 
     dibujarGota();
@@ -282,15 +290,17 @@
     }
     isDropReady = false; 
     document.getElementById('timer-display').className = "temporizador";
-    dropAnim.y = height * 0.25; // Baja un poquito el inicio de la gota por la nueva posición
+    dropAnim.y = height * 0.25; 
     dropAnim.active = true;
   });
 
   function crecerArbol() {
     treeLevel++;
-    targetLen += 15; 
-    targetGrosor += 1.2;
-    if (treeLevel % 2 === 0 && targetDepth < 8) targetDepth += 1; 
+    
+    // Al recolectar la gota, sube los objetivos, y el render se encargará de hacer que brote
+    targetLen += 12; 
+    targetGrosor += 0.8;
+    if (treeLevel % 2 === 0 && targetDepth < 7) targetDepth += 1; 
 
     guardarProgreso(); 
 
