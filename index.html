@@ -422,7 +422,7 @@
         // -----------------------------------------------------
         // 3. LÓGICA DEL 13 DE MARZO Y LA FRASE FINAL
         // -----------------------------------------------------
-        const fechaEstreno = new Date("March 13, 2026 00:00:00").getTime();
+        const fechaEstreno = new Date("March 13, 2026 09:20:00").getTime();
         let intervaloReloj;
 
         function abrirSorpresaGranFinal() {
@@ -455,8 +455,8 @@
                 if (fechaEstreno - ahora <= 0) {
                     // ¡ES EL 13 DE MARZO! Muestra la gran sorpresa
                     cerrarPopup();
-                    irA('seccion-carta');
-                    document.getElementById('carta-titulo').innerText = "Feliz 13 de marzo, mi vida ♥️";
+    window.location.href = "ajedrez.html";
+                    }
                     document.getElementById('cursor-type').style.display = "inline-block";
                     
                     // AQUI PONES TU CARTA O SORPRESA FINAL
