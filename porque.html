@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>El Árbol de Nuestro Amor</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Satisfy&family=Montserrat:wght@300;400;600&display=swap');
@@ -12,59 +12,74 @@
     touch-action: none; 
     -webkit-tap-highlight-color: transparent; 
     user-select: none; 
-    -webkit-user-select: none;
   }
   
+  /* BLOQUEO TOTAL DE PANTALLA */
   body, html {
-    margin: 0; padding: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at bottom, #1b0e26 0%, #050505 80%);
-    font-family: 'Montserrat', sans-serif; overflow: hidden; color: white;
+    margin: 0; padding: 0; width: 100vw; height: 100vh;
+    background-color: #050505; 
+    font-family: 'Montserrat', sans-serif; 
+    overflow: hidden; color: white;
+    position: fixed; 
+  }
+
+  /* EFECTO DE RESPIRACIÓN (MÍSTICO) */
+  .respiracion {
+    position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vw; margin-top: -75vw; margin-left: -75vw;
+    background: radial-gradient(circle, rgba(30, 58, 138, 0.25) 0%, rgba(142, 36, 170, 0.15) 25%, rgba(0,0,0,0) 60%);
+    pointer-events: none; z-index: 0; animation: respirar 8s ease-in-out infinite;
+  }
+  @keyframes respirar { 
+    0%, 100% { transform: scale(0.8); opacity: 0.3; } 
+    50% { transform: scale(1.1); opacity: 0.8; } 
   }
 
   /* VELO DE SEGURIDAD */
   #velo-negro {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #000; z-index: 9999; opacity: 1; transition: opacity 0.8s;
-    pointer-events: none;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 9999; opacity: 1; transition: opacity 0.8s; pointer-events: none;
   }
   #velo-negro.oculto { opacity: 0; }
 
-  /* UI: TEXTOS SUPERIORES */
-  .ui-container {
-    position: fixed; top: 8%; left: 0; width: 100%; text-align: center;
-    z-index: 10; pointer-events: none;
-  }
-  .titulo {
-    font-family: 'Playfair Display', serif; font-style: italic; font-size: 2rem;
-    color: #e0f7fa; text-shadow: 0 0 15px rgba(0,229,255,0.5); margin-bottom: 5px;
-  }
-  .subtitulo {
-    font-size: 0.85rem; color: #b3e5fc; letter-spacing: 2px; text-transform: uppercase;
+  /* BOTÓN VOLVER */
+  .btn-volver {
+    position: absolute; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
+    background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer; z-index: 100; backdrop-filter: blur(5px); font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
   }
 
-  /* NUBE MÁGICA Y TEMPORIZADOR */
-  .nube-container {
-    position: fixed; top: 16%; left: 50%; transform: translateX(-50%);
-    text-align: center; z-index: 10; pointer-events: none;
+  /* --- UI CLAVADA (NO SE MUEVE) --- */
+  .seccion-titulos {
+    position: absolute; top: 12%; width: 100%; text-align: center; z-index: 10; pointer-events: none;
   }
-  .nube { font-size: 3.5rem; filter: drop-shadow(0 0 15px rgba(255,255,255,0.6)); }
+  .titulo {
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.2rem;
+    color: #e0f7fa; text-shadow: 0 0 15px rgba(0,229,255,0.5); margin-bottom: 5px;
+  }
+  .subtitulo { font-size: 0.9rem; color: #b3e5fc; letter-spacing: 2px; text-transform: uppercase; }
+
+  .seccion-nube {
+    position: absolute; top: 25%; width: 100%; text-align: center; z-index: 10; pointer-events: none;
+  }
+  .nube { font-size: 4rem; filter: drop-shadow(0 0 15px rgba(255,255,255,0.6)); }
   .temporizador {
     background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
-    padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; margin-top: 5px;
-    font-family: monospace; letter-spacing: 1px;
+    border-radius: 20px; font-size: 0.85rem; padding: 8px 0;
+    margin: 10px auto 0 auto; 
+    width: 260px; /* ANCHO FIJO PARA QUE NO TIEMBLE */
+    display: block; font-family: monospace; font-variant-numeric: tabular-nums;
   }
   .gota-lista { color: #00e5ff; font-weight: bold; animation: titilar 1.5s infinite; }
   @keyframes titilar { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
   /* CANVAS DEL ÁRBOL */
   #canvas-arbol {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-    cursor: pointer;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; cursor: pointer;
   }
 
   /* MODAL DE LA HOJA */
   #modal-hoja {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
     display: flex; align-items: center; justify-content: center;
     z-index: 100; opacity: 0; visibility: hidden; transition: 0.5s ease;
@@ -72,61 +87,39 @@
   #modal-hoja.activo { opacity: 1; visibility: visible; }
 
   .hoja-papel {
-    width: 85%; max-width: 380px;
-    background: linear-gradient(135deg, #4caf50 0%, #1b5e20 100%);
+    width: 85%; max-width: 380px; background: linear-gradient(135deg, #4caf50 0%, #1b5e20 100%);
     border-radius: 0 120px 0 120px; padding: 50px 35px; text-align: center;
     box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(255,255,255,0.1);
-    border: 2px solid #81c784; position: relative;
-    transform: scale(0.5) rotate(-20deg); transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1.2);
+    border: 2px solid #81c784; transform: scale(0.5) rotate(-20deg); transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1.2);
   }
   #modal-hoja.activo .hoja-papel { transform: scale(1) rotate(0deg); }
   
-  .hoja-papel::before {
-    content: ''; position: absolute; top: 5%; left: 50%; width: 2px; height: 90%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
-    transform: translateX(-50%); z-index: 0;
-  }
-
-  /* EL SUBTÍTULO VERDE (AHORA ARRIBA) */
   .subtitulo-hoja {
-    position: relative; z-index: 1; font-family: 'Montserrat', sans-serif;
-    font-size: 1.1rem; color: #b2ff59; font-weight: 600; 
-    margin-bottom: 15px; letter-spacing: 2px;
-    text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #b2ff59; font-weight: 600; 
+    margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.4);
   }
-
   .texto-razon {
-    position: relative; z-index: 1; font-family: 'Satisfy', cursive;
-    font-size: 1.6rem; color: #fffdf5; line-height: 1.4; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    font-family: 'Satisfy', cursive; font-size: 1.6rem; color: #fffdf5; line-height: 1.4; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
-
   .btn-cerrar-hoja {
-    position: relative; z-index: 1; margin-top: 25px; background: transparent;
-    border: 1px solid rgba(255,255,255,0.5); color: white; padding: 10px 25px;
-    border-radius: 20px; font-family: 'Montserrat', sans-serif; cursor: pointer; transition: 0.3s;
-    font-weight: bold;
-  }
-  .btn-cerrar-hoja:hover { background: rgba(255,255,255,0.3); }
-
-  /* BOTÓN VOLVER */
-  .btn-volver {
-    position: fixed; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
-    background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3);
-    cursor: pointer; z-index: 100; backdrop-filter: blur(5px); font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+    margin-top: 25px; background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 10px 25px;
+    border-radius: 20px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: bold;
   }
 </style>
 </head>
 <body>
 
   <div id="velo-negro"></div>
+  <div class="respiracion"></div>
+
   <button class="btn-volver" onclick="volver()">← Página anterior</button>
 
-  <div class="ui-container">
+  <div class="seccion-titulos">
     <div class="titulo">Razones por las que te amo</div>
     <div class="subtitulo">Toca para nutrir nuestro árbol</div>
   </div>
 
-  <div class="nube-container">
+  <div class="seccion-nube">
     <div class="nube">☁️</div>
     <div class="temporizador gota-lista" id="timer-display">¡Gota lista! Toca el árbol</div>
   </div>
@@ -142,7 +135,6 @@
   </div>
 
 <script>
-  // --- BASE DE DATOS DE RAZONES ---
   const razones = [
     "Por la inmensa paz que me das cuando el mundo parece un caos. Contigo todo es más fácil.",
     "Porque a tu lado siento que puedo ser yo mismo, sin miedos y sin esconder nada.",
@@ -156,15 +148,55 @@
     "Por lo hermosa que eres por dentro y por fuera. Eres arte, mi Camí."
   ];
 
-  // NIVEL DEL ÁRBOL
-  let treeLevel = 0;
-
-  // --- LÓGICA DE TIEMPO Y GOTA ---
-  let isDropReady = true; // La primera gota siempre está lista
+  let isDropReady = true; 
   let nextReadyTime = 0;
+  
+  let treeLevel = 0;
+  let currentLen = 30;
+  let currentDepth = 3; 
+  let currentGrosor = 3;
+  let targetLen = currentLen;
+  let targetDepth = currentDepth;
+  let targetGrosor = currentGrosor;
 
+  // CARGAR PROGRESO
+  function cargarProgreso() {
+      const dataGuardada = JSON.parse(localStorage.getItem('arbol_fractal_camii'));
+      if (dataGuardada) {
+          treeLevel = dataGuardada.treeLevel;
+          targetLen = dataGuardada.targetLen;
+          targetDepth = dataGuardada.targetDepth;
+          targetGrosor = dataGuardada.targetGrosor;
+          nextReadyTime = dataGuardada.nextReadyTime;
+
+          currentLen = targetLen;
+          currentDepth = targetDepth;
+          currentGrosor = targetGrosor;
+
+          if (Date.now() < nextReadyTime) isDropReady = false;
+      }
+  }
+
+  function guardarProgreso() {
+      const data = {
+          treeLevel: treeLevel,
+          targetLen: targetLen,
+          targetDepth: targetDepth,
+          targetGrosor: targetGrosor,
+          nextReadyTime: nextReadyTime
+      };
+      localStorage.setItem('arbol_fractal_camii', JSON.stringify(data));
+  }
+
+  cargarProgreso();
+
+  // RELOJ DE GOTA
   function actualizarTimer() {
-    if (isDropReady) return;
+    if (isDropReady) {
+        document.getElementById('timer-display').innerHTML = "¡Gota lista! Toca el árbol";
+        document.getElementById('timer-display').className = "temporizador gota-lista";
+        return;
+    }
 
     const faltan = nextReadyTime - Date.now();
     const txt = document.getElementById('timer-display');
@@ -173,30 +205,21 @@
         isDropReady = true;
         txt.innerHTML = "¡Gota lista! Toca el árbol";
         txt.className = "temporizador gota-lista";
+        guardarProgreso(); 
     } else {
         const min = Math.floor((faltan % (1000 * 60 * 60)) / (1000 * 60));
-        const seg = Math.floor((faltan % (1000 * 60)) / 1000);
+        const seg = Math.floor((faltan % (1000 * 60)) / 1000).toString().padStart(2, '0');
         txt.innerHTML = `Próxima gota en: ${min}m ${seg}s`;
         txt.className = "temporizador";
     }
   }
   setInterval(actualizarTimer, 1000);
 
-  // --- MOTOR DEL CANVAS ---
+  // MOTOR CANVAS
   const canvas = document.getElementById('canvas-arbol');
   const ctx = canvas.getContext('2d');
   let width, height;
-
   let dropAnim = { active: false, y: 0 };
-
-  // Variables iniciales de crecimiento (pequeño brote)
-  let currentLen = 30;
-  let currentDepth = 3; 
-  let currentGrosor = 3;
-  
-  let targetLen = currentLen;
-  let targetDepth = currentDepth;
-  let targetGrosor = currentGrosor;
 
   function resize() {
     width = canvas.width = window.innerWidth;
@@ -205,56 +228,29 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // Dibuja la gota
   function dibujarGota() {
     if (!dropAnim.active) return;
-    
-    ctx.beginPath();
-    ctx.arc(width / 2, dropAnim.y, 14, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0, 229, 255, 0.2)';
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(width / 2, dropAnim.y, 6, 0, Math.PI * 2);
-    ctx.fillStyle = '#00e5ff';
-    ctx.fill();
-    
+    ctx.beginPath(); ctx.arc(width / 2, dropAnim.y, 14, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(width / 2, dropAnim.y, 6, 0, Math.PI * 2); ctx.fillStyle = '#00e5ff'; ctx.fill();
     dropAnim.y += 18;
-    
-    // Al tocar abajo, crece el árbol
-    if (dropAnim.y > height) {
-        dropAnim.active = false;
-        crecerArbol();
-    }
+    if (dropAnim.y > height) { dropAnim.active = false; crecerArbol(); }
   }
 
-  // Fractal del Árbol
   function dibujarRama(startX, startY, len, angle, depth, grosor) {
     ctx.save();
     ctx.translate(startX, startY);
     ctx.rotate(angle * Math.PI / 180);
     
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -len);
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -len);
     ctx.strokeStyle = `rgba(213, 0, 249, ${0.4 + (depth/10)})`;
-    ctx.lineWidth = grosor;
-    ctx.lineCap = 'round';
-    ctx.stroke();
+    ctx.lineWidth = grosor; ctx.lineCap = 'round'; ctx.stroke();
 
     if (depth > 0) {
       dibujarRama(0, -len, len * 0.78, angle - 22, depth - 1, grosor * 0.7);
       dibujarRama(0, -len, len * 0.78, angle + 22, depth - 1, grosor * 0.7);
     } else {
-      ctx.beginPath();
-      ctx.arc(0, -len, 8, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 229, 255, 0.2)';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(0, -len, 3, 0, Math.PI * 2);
-      ctx.fillStyle = '#00e5ff';
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(0, -len, 8, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(0, -len, 3, 0, Math.PI * 2); ctx.fillStyle = '#00e5ff'; ctx.fill();
     }
     ctx.restore();
   }
@@ -266,8 +262,8 @@
     currentDepth += (targetDepth - currentDepth) * 0.05;
     currentGrosor += (targetGrosor - currentGrosor) * 0.05;
 
-    // Zoom Automático ajustado para que tolere un árbol mucho más grande
-    let zoomOut = Math.max(0.12, 600 / (600 + (treeLevel * 80)));
+    // MAGIA DE LA CÁMARA (SE ALEJA MIENTRAS CRECE)
+    let zoomOut = Math.max(0.15, 600 / (600 + (treeLevel * 85)));
 
     ctx.save();
     ctx.translate(width / 2, height);
@@ -279,29 +275,24 @@
     requestAnimationFrame(render);
   }
 
-  // --- INTERACCIÓN ---
   canvas.addEventListener('click', () => {
     if (!isDropReady || dropAnim.active) {
-        if (!isDropReady) {
-            alert("Mi niña dinda, el arbolito está asimilando todo el amor. Espera a que la nubecita cargue la próxima gota. ♥️");
-        }
+        if (!isDropReady) alert("Mi niña dinda, el arbolito está asimilando todo el amor. Espera a que la nubecita cargue la próxima gota. ♥️");
         return;
     }
-    
-    isDropReady = false; // Desactiva la gota para evitar clics dobles
+    isDropReady = false; 
     document.getElementById('timer-display').className = "temporizador";
-    dropAnim.y = height * 0.20; 
+    dropAnim.y = height * 0.25; // Baja un poquito el inicio de la gota por la nueva posición
     dropAnim.active = true;
   });
 
   function crecerArbol() {
     treeLevel++;
-    
-    // CRECIMIENTO MÁS AGRESIVO (Crece más y tiene más ramas)
     targetLen += 15; 
     targetGrosor += 1.2;
-    // Permite más ramas (hasta nivel 8) y saca ramas nuevas más rápido
     if (treeLevel % 2 === 0 && targetDepth < 8) targetDepth += 1; 
+
+    guardarProgreso(); 
 
     setTimeout(() => {
         document.getElementById('texto-razon').innerText = razones[(treeLevel - 1) % razones.length];
@@ -311,22 +302,16 @@
 
   function cerrarHoja() {
     document.getElementById('modal-hoja').classList.remove('activo');
-    
-    // Al cerrar, calcula el nuevo tiempo: Alrededor de 5 minutos (entre 4 y 6 min aleatorio)
     const baseMinutos = 5 * 60 * 1000;
-    const variacionAleatoria = Math.floor(Math.random() * 120000) - 60000; // -1 a +1 minuto
-    const tiempoEspera = baseMinutos + variacionAleatoria;
-    
-    nextReadyTime = Date.now() + tiempoEspera;
+    const variacionAleatoria = Math.floor(Math.random() * 120000) - 60000;
+    nextReadyTime = Date.now() + (baseMinutos + variacionAleatoria);
+    guardarProgreso(); 
     actualizarTimer();
   }
 
   function volver() {
     document.getElementById('velo-negro').classList.remove('oculto');
-    setTimeout(() => { 
-      // Vuelve al menú del ajedrez
-      window.location.href = 'ajedrez.html?p=menu'; 
-    }, 600);
+    setTimeout(() => { window.location.href = 'ajedrez.html?p=menu'; }, 600);
   }
 
   window.onload = () => {
@@ -336,3 +321,4 @@
 </script>
 </body>
 </html>
+
