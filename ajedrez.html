@@ -140,7 +140,7 @@
     <div class="respiracion-warden"></div> 
     <div class="menu-contenedor">
         <div class="menu-titulo">Para mi niña dinda</div>
-        <button class="btn-menu" onclick="seccionBloqueada()" style="opacity: 0.5; filter: grayscale(100%); cursor: not-allowed;">IA de tu niño dindo 🔒</button>
+        <button class="btn-menu" onclick="irAEtapa1()">?</button>
         <button class="btn-menu" onclick="irAPagina('cartas.html')">Cartas infinitassss para mi niña hermosa</button>
         <button class="btn-menu" onclick="irAPagina('porque.html')">¿Por qué te amo?</button>
         <button class="btn-menu" onclick="irAPagina('emociones.html')">Léeme cuando te sientas mal</button>
@@ -155,7 +155,6 @@
   window.onload = () => {
     const velo = document.getElementById('velo-negro');
     if (vVieneDeRegreso) {
-        // Salta directo al menú si viene de regresar de otra página
         document.querySelector('.pantalla.activa').classList.remove('activa');
         document.getElementById('pantalla-menu').classList.add('activa');
     }
@@ -194,7 +193,6 @@
     const inst = document.getElementById('instruccion');
     const txtF = document.getElementById('textosFlotantes');
     
-    // Ocultar textos iniciales e instrucción
     txtF.style.opacity = '0';
     inst.style.opacity = '0';
     setTimeout(() => { 
@@ -205,7 +203,6 @@
     t.classList.add('revelado'); 
     document.getElementById('mensaje').classList.add('activo');
     
-    // Autoscroll del poema
     setTimeout(() => { document.getElementById('zonaScroll').style.pointerEvents = 'auto'; }, 500);
     setTimeout(() => { mS = setInterval(() => { document.getElementById('zonaScroll').scrollBy(0, 1); }, 15); }, 4000);
     setTimeout(() => { clearInterval(mS); document.getElementById('btnContinuar').classList.add('visible'); }, 11500);
@@ -231,8 +228,12 @@
     setTimeout(() => { window.location.href = url; }, 800);
   }
 
-  function seccionBloqueada() {
-    alert( "Mi niña dinda, esta sección todavía está en mantenimiento por tu niño dindo. 🤫 Pronto estará lista para ti.");
+  // FUNCIÓN PARA IR AL MAPA DE MISTERIOS
+  function irAEtapa1() {
+    const velo = document.getElementById('velo-negro');
+    velo.classList.remove('oculto');
+    velo.classList.add('oscuro');
+    setTimeout(() => { window.location.href = 'etapa1.html'; }, 800);
   }
 </script>
 </body>
