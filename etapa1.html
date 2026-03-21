@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>El Viaje - Etapa 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Montserrat:wght@300;400;600&display=swap');
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+  
+  body, html {
+    margin: 0; padding: 0; background-color: #050505; font-family: 'Montserrat', sans-serif; color: white;
+    overscroll-behavior-y: none; -webkit-overflow-scrolling: touch;
+  }
+
+  /* FONDO MÍSTICO FIJO */
+  .fondo-estrellas {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at center, #111 0%, #000 100%); z-index: -2;
+  }
+  .respiracion {
+    position: fixed; top: 50%; left: 50%; width: 150vw; height: 150vw; margin-top: -75vw; margin-left: -75vw;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.05) 0%, rgba(213, 0, 249, 0.03) 30%, rgba(0,0,0,0) 60%);
+    pointer-events: none; z-index: -1; animation: respirar 8s ease-in-out infinite;
+  }
+  @keyframes respirar { 0%, 100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+
+  /* --- HUD SUPERIOR FIJO --- */
+  .header-hud {
+    position: fixed; top: 0; left: 0; width: 100%; height: 85px;
+    background: rgba(5, 5, 8, 0.85); border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 100; backdrop-filter: blur(15px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+  }
+
+  .titulo-seccion { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: #e0f7fa; margin: 0; letter-spacing: 1px; }
+  .subtitulo-seccion { font-size: 0.65rem; color: #00e5ff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+
+  /* MÓDULO DE BATERÍA */
+  .battery-container {
+    display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;
+  }
+  .battery-container.charging { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.3); }
+  .battery-icon { font-size: 1.1rem; }
+  .battery-level { font-family: monospace; font-size: 0.9rem; font-weight: bold; color: #ccc; transition: 0.3s; }
+  .battery-container.charging .battery-level { color: #00e5ff; text-shadow: 0 0 8px rgba(0,229,255,0.8); }
+
+  /* --- ÁREA DE SCROLL --- */
+  .scroll-area {
+    width: 100%; padding-top: 130px; padding-bottom: 80px;
+    display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
+  }
+
+  /* --- DISEÑO DE LOS ORBES --- */
+  .nodo-wrapper {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    margin-bottom: 35px; 
+    position: relative; transition: transform 0.3s ease;
+    opacity: 0.35; pointer-events: none; filter: grayscale(100%);
+  }
+
+  .nodo-wrapper.desbloqueado { opacity: 1; pointer-events: auto; filter: grayscale(0%); }
+  
+  .orbe-nivel {
+    width: 75px; height: 75px; border-radius: 50%; background: #0f0f13; 
+    border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.8);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2);
+  }
+
+  .nodo-wrapper.desbloqueado .orbe-nivel { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.1); }
+  .nodo-wrapper.desbloqueado .orbe-nivel:active { transform: scale(0.9); box-shadow: 0 0 30px rgba(213, 0, 249, 0.6); border-color: #d500f9; }
+
+  /* Orbe especial para el nivel 5 */
+  .nodo-wrapper.desbloqueado.nivel-final .orbe-nivel { border-color: #d500f9; box-shadow: 0 0 25px rgba(213,0,249,0.5); }
+  .nodo-wrapper.desbloqueado.nivel-final .numero-nivel { color: #d500f9; text-shadow: 0 0 10px rgba(213,0,249,0.8); }
+
+  .numero-nivel { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1.4rem; color: rgba(255,255,255,0.3); transition: 0.3s; }
+  .nodo-wrapper.desbloqueado .numero-nivel { color: #fff; text-shadow: 0 0 10px rgba(0,229,255,0.8); }
+
+  .titulo-nodo { margin-top: 12px; font-size: 0.8rem; color: #888; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; text-align: center; transition: 0.3s; }
+  .nodo-wrapper.desbloqueado .titulo-nodo { color: #e0f7fa; }
+
+  /* --- MODAL DE CONTADOR (ESTILO PREMIUM) --- */
+  #modal-contador {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; opacity: 0; visibility: hidden; transition: 0.4s ease;
+  }
+  #modal-contador.activo { opacity: 1; visibility: visible; }
+
+  .caja-modal {
+    background: rgba(15, 15, 20, 0.95); border: 1px solid rgba(213,0,249,0.4);
+    width: 85%; max-width: 350px; border-radius: 20px; padding: 40px 25px;
+    text-align: center; box-shadow: 0 20px 50px rgba(213,0,249,0.2);
+    transform: scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  #modal-contador.activo .caja-modal { transform: scale(1); }
+
+  .titulo-modal { font-family: 'Playfair Display', serif; font-style: italic; color: #d500f9; font-size: 1.8rem; margin-top: 0; margin-bottom: 15px; }
+  .texto-modal { font-size: 0.9rem; color: #ccc; line-height: 1.5; margin-bottom: 30px; }
+
+  .reloj-neon {
+    font-family: monospace; font-size: 1.6rem; font-weight: bold; color: #00e5ff;
+    text-shadow: 0 0 15px rgba(0,229,255,0.6); background: rgba(0,0,0,0.5);
+    padding: 15px 10px; border-radius: 10px; border: 1px solid rgba(0,229,255,0.2);
+    margin-bottom: 30px; letter-spacing: 2px;
+  }
+
+  .btn-cerrar {
+    background: transparent; border: 1px solid #d500f9; color: #d500f9;
+    padding: 12px 30px; border-radius: 30px; font-family: 'Montserrat', sans-serif;
+    font-weight: bold; cursor: pointer; transition: 0.3s;
+  }
+  .btn-cerrar:active { background: rgba(213,0,249,0.2); transform: scale(0.95); }
+
+</style>
+</head>
+<body>
+
+  <div class="fondo-estrellas"></div>
+  <div class="respiracion"></div>
+
+  <div class="header-hud">
+    <div>
+      <div class="subtitulo-seccion">Etapa 1</div>
+      <h1 class="titulo-seccion">El Camino del Amor</h1>
+    </div>
+    <div class="battery-container" id="battery-status">
+      <span class="battery-icon" id="battery-icon">🔋</span>
+      <span class="battery-level" id="battery-level">--%</span>
+    </div>
+  </div>
+
+  <div class="scroll-area" id="mapa-niveles">
+    </div>
+
+  <div id="modal-contador">
+    <div class="caja-modal">
+      <h2 class="titulo-modal">El Fuego Final</h2>
+      <p class="texto-modal">La última revelación de esta etapa aún se está forjando en las estrellas. Estará lista en:</p>
+      <div class="reloj-neon" id="reloj-display">00d 00h 00m 00s</div>
+      <button class="btn-cerrar" onclick="cerrarContador()">Entendido</button>
+    </div>
+  </div>
+
+<script>
+  // AHORA TIENES 30 NIVELES, PERO SOLO LOS PRIMEROS 5 TIENEN NOMBRE.
+  const nombresNiveles = ["Voz", "Carga", "Luz", "Cofre", "Fuego"];
+  const totalNiveles = 30; // Volvemos a los 30 para el efecto visual épico.
+  
+  let nivelActualDesbloqueado = parseInt(localStorage.getItem('progreso_camii_etapa1')) || 1;
+  const contenedorMapa = document.getElementById('mapa-niveles');
+  let intervaloReloj;
+
+  const fechaObjetivo = new Date(2026, 2, 22, 17, 0, 0).getTime(); 
+
+  function generarMapa() {
+    contenedorMapa.innerHTML = ''; 
+
+    for (let i = 1; i <= totalNiveles; i++) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'nodo-wrapper';
+      
+      if (i <= nivelActualDesbloqueado) { wrapper.classList.add('desbloqueado'); }
+      
+      if (i === 5) { wrapper.classList.add('nivel-final'); }
+
+      const desplazamientoCurva = Math.sin(i * 0.6) * 60; 
+      wrapper.style.transform = `translateX(${desplazamientoCurva}px)`;
+
+      // Asigna el nombre si es del 1 al 5. Si es mayor, dice Misterio.
+      let nombreElegido = i <= 5 ? nombresNiveles[i-1] : `Misterio ${i}`;
+
+      wrapper.innerHTML = `
+        <div class="orbe-nivel" onclick="tocarNivel(${i})">
+          <span class="numero-nivel">${i}</span>
+        </div>
+        <div class="titulo-nodo">${nombreElegido}</div>
+      `;
+
+      contenedorMapa.appendChild(wrapper);
+    }
+  }
+
+  function tocarNivel(numero) {
+    
+    if (numero === 1 && numero <= nivelActualDesbloqueado) {
+      window.location.href = 'voz.html'; 
+      return;
+    }
+
+    if (numero === 5 && numero <= nivelActualDesbloqueado) {
+      const ahora = new Date().getTime();
+      if (ahora < fechaObjetivo) {
+        abrirContador(); 
+        return;
+      } else {
+        alert("¡El sello de Fuego se ha roto! Entrando al final de la etapa 1...");
+        window.location.href = 'etapa2.html';
+        return;
+      }
+    }
+
+    if (numero <= nivelActualDesbloqueado) {
+      if (numero <= 5) {
+        alert(`Entrando al módulo de ${nombresNiveles[numero-1]}...`);
+      } else {
+        alert(`Este misterio aún se está construyendo para el futuro...`);
+        return; // No dejar pasar más allá del 5 por ahora
+      }
+      
+      // Simular desarrollo solo para los primeros 4
+      if (numero === nivelActualDesbloqueado && numero < 5) {
+        if(confirm("🛠️ [DEV]: ¿Simular nivel superado para desbloquear el siguiente?")) {
+          nivelActualDesbloqueado++;
+          localStorage.setItem('progreso_camii_etapa1', nivelActualDesbloqueado);
+          generarMapa(); 
+        }
+      }
+    }
+  }
+
+  function abrirContador() {
+    document.getElementById('modal-contador').classList.add('activo');
+    actualizarReloj();
+    intervaloReloj = setInterval(actualizarReloj, 1000);
+  }
+
+  function cerrarContador() {
+    document.getElementById('modal-contador').classList.remove('activo');
+    clearInterval(intervaloReloj);
+  }
+
+  function actualizarReloj() {
+    const ahora = new Date().getTime();
+    const distancia = fechaObjetivo - ahora;
+
+    if (distancia < 0) {
+      clearInterval(intervaloReloj);
+      document.getElementById('reloj-display').innerHTML = "¡DESBLOQUEADO!";
+      return;
+    }
+
+    const dias = Math.floor(distancia / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+    const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+    const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+    const segundos = Math.floor((distancia % (1000 * 60)) / 1000).toString().padStart(2, '0');
+
+    document.getElementById('reloj-display').innerHTML = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+  }
+
+  async function iniciarBateria() {
+    try {
+      const battery = await navigator.getBattery();
+      function actualizarBateria() {
+        document.getElementById('battery-level').innerText = Math.round(battery.level * 100) + '%';
+        const container = document.getElementById('battery-status');
+        const icon = document.getElementById('battery-icon');
+
+        if (battery.charging) {
+          container.classList.add('charging'); icon.innerText = '⚡'; 
+        } else {
+          container.classList.remove('charging'); icon.innerText = '🔋'; 
+        }
+      }
+      actualizarBateria();
+      battery.addEventListener('levelchange', actualizarBateria);
+      battery.addEventListener('chargingchange', actualizarBateria);
+    } catch (e) {
+      document.getElementById('battery-status').style.display = 'none'; 
+    }
+  }
+
+  window.onload = () => {
+    generarMapa();
+    iniciarBateria();
+  };
+</script>
+</body>
+</html>
