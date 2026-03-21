@@ -14,7 +14,7 @@
     overscroll-behavior-y: none; -webkit-overflow-scrolling: touch;
   }
 
-  /* FONDO MÍSTICO FIJO */
+  /* FONDO MÍSTICO */
   .fondo-estrellas {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at center, #111 0%, #000 100%); z-index: -2;
@@ -26,97 +26,90 @@
   }
   @keyframes respirar { 0%, 100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
 
-  /* --- HUD SUPERIOR FIJO --- */
+  /* --- HEADER HUD --- */
   .header-hud {
     position: fixed; top: 0; left: 0; width: 100%; height: 85px;
     background: rgba(5, 5, 8, 0.85); border-bottom: 1px solid rgba(255,255,255,0.05);
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 20px; z-index: 100; backdrop-filter: blur(15px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.9);
   }
 
-  .titulo-seccion { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: #e0f7fa; margin: 0; letter-spacing: 1px; }
+  .titulo-seccion { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: #e0f7fa; margin: 0; }
   .subtitulo-seccion { font-size: 0.65rem; color: #00e5ff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
 
-  /* MÓDULO DE BATERÍA */
-  .battery-container {
-    display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;
+  /* --- DISEÑO BATERÍA REAL --- */
+  .battery-wrapper {
+    display: flex; align-items: center; gap: 8px;
   }
-  .battery-container.charging { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.3); }
-  .battery-icon { font-size: 1.1rem; }
-  .battery-level { font-family: monospace; font-size: 0.9rem; font-weight: bold; color: #ccc; transition: 0.3s; }
-  .battery-container.charging .battery-level { color: #00e5ff; text-shadow: 0 0 8px rgba(0,229,255,0.8); }
+  .battery-body {
+    width: 35px; height: 18px; border: 2px solid #555; border-radius: 4px; position: relative; padding: 1px;
+  }
+  .battery-body::after {
+    content: ''; position: absolute; right: -5px; top: 4px; width: 3px; height: 6px; background: #555; border-radius: 0 2px 2px 0;
+  }
+  .battery-level-fill {
+    height: 100%; width: 0%; background: #fff; border-radius: 1px; transition: width 0.5s, background 0.5s;
+  }
+  /* Estilo cargando */
+  .charging .battery-body { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.4); }
+  .charging .battery-level-fill { background: #00e5ff; box-shadow: 0 0 5px #00e5ff; }
+  .charging .rayo-carga { display: block; }
+  
+  .rayo-carga {
+    display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    font-size: 12px; color: #00e5ff; text-shadow: 0 0 5px #fff; z-index: 10;
+  }
+  .battery-text { font-family: monospace; font-size: 0.85rem; color: #888; }
+  .charging .battery-text { color: #00e5ff; }
 
-  /* --- ÁREA DE SCROLL --- */
+  /* --- ÁREA DE SCROLL Y NODOS --- */
   .scroll-area {
     width: 100%; padding-top: 130px; padding-bottom: 80px;
     display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
   }
 
-  /* --- DISEÑO DE LOS ORBES --- */
   .nodo-wrapper {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    margin-bottom: 35px; 
-    position: relative; transition: transform 0.3s ease;
-    opacity: 0.35; pointer-events: none; filter: grayscale(100%);
+    display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; 
+    position: relative; transition: all 0.3s ease;
+    opacity: 0.25; filter: grayscale(100%); pointer-events: none;
   }
-
-  .nodo-wrapper.desbloqueado { opacity: 1; pointer-events: auto; filter: grayscale(0%); }
+  .nodo-wrapper.desbloqueado { opacity: 1; filter: grayscale(0%); pointer-events: auto; }
   
   .orbe-nivel {
     width: 75px; height: 75px; border-radius: 50%; background: #0f0f13; 
     border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
-    cursor: pointer; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.8);
+    cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2);
   }
+  .desbloqueado .orbe-nivel { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); }
+  .desbloqueado .orbe-nivel:active { transform: scale(0.9); border-color: #d500f9; }
 
-  .nodo-wrapper.desbloqueado .orbe-nivel { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.1); }
-  .nodo-wrapper.desbloqueado .orbe-nivel:active { transform: scale(0.9); box-shadow: 0 0 30px rgba(213, 0, 249, 0.6); border-color: #d500f9; }
+  .numero-nivel { font-weight: 600; font-size: 1.4rem; color: rgba(255,255,255,0.3); }
+  .desbloqueado .numero-nivel { color: #fff; text-shadow: 0 0 10px rgba(0,229,255,0.8); }
 
-  /* Orbe especial para el nivel 5 */
-  .nodo-wrapper.desbloqueado.nivel-final .orbe-nivel { border-color: #d500f9; box-shadow: 0 0 25px rgba(213,0,249,0.5); }
-  .nodo-wrapper.desbloqueado.nivel-final .numero-nivel { color: #d500f9; text-shadow: 0 0 10px rgba(213,0,249,0.8); }
+  .titulo-nodo { margin-top: 10px; font-size: 0.75rem; color: #555; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .desbloqueado .titulo-nodo { color: #00e5ff; }
 
-  .numero-nivel { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1.4rem; color: rgba(255,255,255,0.3); transition: 0.3s; }
-  .nodo-wrapper.desbloqueado .numero-nivel { color: #fff; text-shadow: 0 0 10px rgba(0,229,255,0.8); }
-
-  .titulo-nodo { margin-top: 12px; font-size: 0.8rem; color: #888; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; text-align: center; transition: 0.3s; }
-  .nodo-wrapper.desbloqueado .titulo-nodo { color: #e0f7fa; }
-
-  /* --- MODAL DE CONTADOR (ESTILO PREMIUM) --- */
+  /* --- MODAL CONTADOR --- */
   #modal-contador {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
     display: flex; align-items: center; justify-content: center;
-    z-index: 1000; opacity: 0; visibility: hidden; transition: 0.4s ease;
+    z-index: 1000; opacity: 0; visibility: hidden; transition: 0.4s;
   }
   #modal-contador.activo { opacity: 1; visibility: visible; }
-
   .caja-modal {
-    background: rgba(15, 15, 20, 0.95); border: 1px solid rgba(213,0,249,0.4);
-    width: 85%; max-width: 350px; border-radius: 20px; padding: 40px 25px;
-    text-align: center; box-shadow: 0 20px 50px rgba(213,0,249,0.2);
-    transform: scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: #0f0f14; border: 1px solid #d500f9;
+    width: 85%; max-width: 320px; border-radius: 20px; padding: 35px 20px;
+    text-align: center; transform: scale(0.8); transition: 0.4s;
   }
   #modal-contador.activo .caja-modal { transform: scale(1); }
-
-  .titulo-modal { font-family: 'Playfair Display', serif; font-style: italic; color: #d500f9; font-size: 1.8rem; margin-top: 0; margin-bottom: 15px; }
-  .texto-modal { font-size: 0.9rem; color: #ccc; line-height: 1.5; margin-bottom: 30px; }
-
+  .titulo-modal { font-family: 'Playfair Display', serif; font-style: italic; color: #d500f9; font-size: 1.6rem; margin: 0 0 15px; }
   .reloj-neon {
-    font-family: monospace; font-size: 1.6rem; font-weight: bold; color: #00e5ff;
-    text-shadow: 0 0 15px rgba(0,229,255,0.6); background: rgba(0,0,0,0.5);
-    padding: 15px 10px; border-radius: 10px; border: 1px solid rgba(0,229,255,0.2);
-    margin-bottom: 30px; letter-spacing: 2px;
+    font-family: monospace; font-size: 1.5rem; color: #00e5ff; text-shadow: 0 0 10px #00e5ff;
+    padding: 15px; border: 1px solid rgba(0,229,255,0.2); margin: 20px 0; border-radius: 10px;
   }
-
-  .btn-cerrar {
-    background: transparent; border: 1px solid #d500f9; color: #d500f9;
-    padding: 12px 30px; border-radius: 30px; font-family: 'Montserrat', sans-serif;
-    font-weight: bold; cursor: pointer; transition: 0.3s;
-  }
-  .btn-cerrar:active { background: rgba(213,0,249,0.2); transform: scale(0.95); }
+  .btn-cerrar { background: transparent; border: 1px solid #d500f9; color: #d500f9; padding: 10px 25px; border-radius: 20px; cursor: pointer; }
 
 </style>
 </head>
@@ -128,158 +121,123 @@
   <div class="header-hud">
     <div>
       <div class="subtitulo-seccion">Etapa 1</div>
-      <h1 class="titulo-seccion">El Camino del Amor</h1>
+      <h1 class="titulo-seccion">El Camino</h1>
     </div>
-    <div class="battery-container" id="battery-status">
-      <span class="battery-icon" id="battery-icon">🔋</span>
-      <span class="battery-level" id="battery-level">--%</span>
+    
+    <div class="battery-wrapper" id="battery-status">
+      <span class="battery-text" id="battery-level-text">--%</span>
+      <div class="battery-body">
+        <div class="rayo-carga">⚡</div>
+        <div class="battery-level-fill" id="battery-fill"></div>
+      </div>
     </div>
   </div>
 
-  <div class="scroll-area" id="mapa-niveles">
-    </div>
+  <div class="scroll-area" id="mapa-niveles"></div>
 
   <div id="modal-contador">
     <div class="caja-modal">
       <h2 class="titulo-modal">El Fuego Final</h2>
-      <p class="texto-modal">La última revelación de esta etapa aún se está forjando en las estrellas. Estará lista en:</p>
+      <p style="font-size: 0.85rem; color: #888;">Este misterio se revelará en:</p>
       <div class="reloj-neon" id="reloj-display">00d 00h 00m 00s</div>
-      <button class="btn-cerrar" onclick="cerrarContador()">Entendido</button>
+      <button class="btn-cerrar" onclick="cerrarContador()">Cerrar</button>
     </div>
   </div>
 
 <script>
-  // AHORA TIENES 30 NIVELES, PERO SOLO LOS PRIMEROS 5 TIENEN NOMBRE.
   const nombresNiveles = ["Voz", "Carga", "Luz", "Cofre", "Fuego"];
-  const totalNiveles = 30; // Volvemos a los 30 para el efecto visual épico.
+  const totalNiveles = 30;
   
+  // Nivel actual: 1=Voz, 2=Carga, 3=Luz, 4=Tinta, 5=Final
   let nivelActualDesbloqueado = parseInt(localStorage.getItem('progreso_camii_etapa1')) || 1;
   const contenedorMapa = document.getElementById('mapa-niveles');
-  let intervaloReloj;
-
   const fechaObjetivo = new Date(2026, 2, 22, 17, 0, 0).getTime(); 
 
   function generarMapa() {
     contenedorMapa.innerHTML = ''; 
-
     for (let i = 1; i <= totalNiveles; i++) {
       const wrapper = document.createElement('div');
       wrapper.className = 'nodo-wrapper';
+      if (i <= nivelActualDesbloqueado) wrapper.classList.add('desbloqueado');
       
-      if (i <= nivelActualDesbloqueado) { wrapper.classList.add('desbloqueado'); }
+      // Curva del mapa
+      const desplazamiento = Math.sin(i * 0.7) * 65; 
+      wrapper.style.transform = `translateX(${desplazamiento}px)`;
+
+      let nombre = i <= 5 ? nombresNiveles[i-1] : `Misterio ${i}`;
       
-      if (i === 5) { wrapper.classList.add('nivel-final'); }
-
-      const desplazamientoCurva = Math.sin(i * 0.6) * 60; 
-      wrapper.style.transform = `translateX(${desplazamientoCurva}px)`;
-
-      // Asigna el nombre si es del 1 al 5. Si es mayor, dice Misterio.
-      let nombreElegido = i <= 5 ? nombresNiveles[i-1] : `Misterio ${i}`;
-
       wrapper.innerHTML = `
         <div class="orbe-nivel" onclick="tocarNivel(${i})">
           <span class="numero-nivel">${i}</span>
         </div>
-        <div class="titulo-nodo">${nombreElegido}</div>
+        <div class="titulo-nodo">${nombre}</div>
       `;
-
       contenedorMapa.appendChild(wrapper);
     }
   }
 
-  function tocarNivel(numero) {
-    
-    if (numero === 1 && numero <= nivelActualDesbloqueado) {
-      window.location.href = 'voz.html'; 
-      return;
-    }
+  function tocarNivel(num) {
+    if (num > nivelActualDesbloqueado) return;
 
-    if (numero === 5 && numero <= nivelActualDesbloqueado) {
-      const ahora = new Date().getTime();
-      if (ahora < fechaObjetivo) {
-        abrirContador(); 
-        return;
-      } else {
-        alert("¡El sello de Fuego se ha roto! Entrando al final de la etapa 1...");
-        window.location.href = 'etapa2.html';
-        return;
-      }
-    }
-
-    if (numero <= nivelActualDesbloqueado) {
-      if (numero <= 5) {
-        alert(`Entrando al módulo de ${nombresNiveles[numero-1]}...`);
-      } else {
-        alert(`Este misterio aún se está construyendo para el futuro...`);
-        return; // No dejar pasar más allá del 5 por ahora
-      }
-      
-      // Simular desarrollo solo para los primeros 4
-      if (numero === nivelActualDesbloqueado && numero < 5) {
-        if(confirm("🛠️ [DEV]: ¿Simular nivel superado para desbloquear el siguiente?")) {
-          nivelActualDesbloqueado++;
-          localStorage.setItem('progreso_camii_etapa1', nivelActualDesbloqueado);
-          generarMapa(); 
-        }
-      }
+    // REDIRECCIONES A LOS ARCHIVOS HTML
+    switch(num) {
+      case 1: window.location.href = 'voz.html'; break;
+      case 2: window.location.href = 'carga.html'; break;
+      case 3: window.location.href = 'luz.html'; break;
+      case 4: window.location.href = 'tinta_termica.html'; break;
+      case 5: 
+        if (new Date().getTime() < fechaObjetivo) abrirContador();
+        else alert("¡Fuego desbloqueado! Etapa 2 muy pronto...");
+        break;
+      default:
+        alert("Este misterio está en construcción...");
     }
   }
 
-  function abrirContador() {
-    document.getElementById('modal-contador').classList.add('activo');
-    actualizarReloj();
-    intervaloReloj = setInterval(actualizarReloj, 1000);
-  }
-
-  function cerrarContador() {
-    document.getElementById('modal-contador').classList.remove('activo');
-    clearInterval(intervaloReloj);
-  }
-
-  function actualizarReloj() {
-    const ahora = new Date().getTime();
-    const distancia = fechaObjetivo - ahora;
-
-    if (distancia < 0) {
-      clearInterval(intervaloReloj);
-      document.getElementById('reloj-display').innerHTML = "¡DESBLOQUEADO!";
-      return;
-    }
-
-    const dias = Math.floor(distancia / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-    const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-    const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-    const segundos = Math.floor((distancia % (1000 * 60)) / 1000).toString().padStart(2, '0');
-
-    document.getElementById('reloj-display').innerHTML = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
-  }
-
+  // LÓGICA DE BATERÍA ESTILO CELULAR
   async function iniciarBateria() {
     try {
       const battery = await navigator.getBattery();
-      function actualizarBateria() {
-        document.getElementById('battery-level').innerText = Math.round(battery.level * 100) + '%';
-        const container = document.getElementById('battery-status');
-        const icon = document.getElementById('battery-icon');
+      function update() {
+        const level = Math.round(battery.level * 100);
+        document.getElementById('battery-level-text').innerText = level + '%';
+        document.getElementById('battery-fill').style.width = level + '%';
+        
+        const status = document.getElementById('battery-status');
+        if (battery.charging) status.classList.add('charging');
+        else status.classList.remove('charging');
 
-        if (battery.charging) {
-          container.classList.add('charging'); icon.innerText = '⚡'; 
-        } else {
-          container.classList.remove('charging'); icon.innerText = '🔋'; 
-        }
+        // Color según nivel
+        const fill = document.getElementById('battery-fill');
+        if (level <= 20) fill.style.background = '#ff4444';
+        else if (!battery.charging) fill.style.background = '#fff';
       }
-      actualizarBateria();
-      battery.addEventListener('levelchange', actualizarBateria);
-      battery.addEventListener('chargingchange', actualizarBateria);
-    } catch (e) {
-      document.getElementById('battery-status').style.display = 'none'; 
-    }
+      update();
+      battery.addEventListener('levelchange', update);
+      battery.addEventListener('chargingchange', update);
+    } catch (e) { document.getElementById('battery-status').style.display = 'none'; }
   }
 
-  window.onload = () => {
-    generarMapa();
-    iniciarBateria();
-  };
+  // CONTADOR
+  let interval;
+  function abrirContador() {
+    document.getElementById('modal-contador').classList.add('activo');
+    interval = setInterval(() => {
+      const dist = fechaObjetivo - new Date().getTime();
+      if (dist < 0) { clearInterval(interval); return; }
+      const d = Math.floor(dist/(1000*60*60*24)).toString().padStart(2,'0');
+      const h = Math.floor((dist%(1000*60*60*24))/(1000*60*60)).toString().padStart(2,'0');
+      const m = Math.floor((dist%(1000*60*60))/(1000*60)).toString().padStart(2,'0');
+      const s = Math.floor((dist%(1000*60))/1000).toString().padStart(2,'0');
+      document.getElementById('reloj-display').innerText = `${d}d ${h}h ${m}m ${s}s`;
+    }, 1000);
+  }
+  function cerrarContador() {
+    document.getElementById('modal-contador').classList.remove('activo');
+    clearInterval(interval);
+  }
+
+  window.onload = () => { generarMapa(); iniciarBateria(); };
 </script>
 </body>
 </html>
