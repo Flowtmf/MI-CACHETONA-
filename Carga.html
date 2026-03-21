@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Carga - El Misterio de la Energía</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Montserrat:wght@300;400;600;800&display=swap');
+
+  * { box-sizing: border-box; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+  
+  body, html {
+    margin: 0; padding: 0; width: 100vw; height: 100vh;
+    background-color: #000000; /* NEGRO ABSOLUTO */
+    font-family: 'Montserrat', sans-serif; overflow: hidden; color: white;
+  }
+
+  /* LA PISTA SUTIL (Fading Clue) */
+  #pista-misterio {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 85%; text-align: center; color: #333; 
+    font-weight: 300; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase;
+    animation: palpitarPista 4s ease-in-out infinite alternate;
+    transition: opacity 1s; z-index: 10; pointer-events: none; line-height: 1.8;
+  }
+  @keyframes palpitarPista { 0% { color: #111; } 100% { color: #555; text-shadow: 0 0 15px rgba(255,255,255,0.1); } }
+
+  /* FONDO DE CORAZONES FOSFORESCENTES (Optimizado) */
+  #fondo-corazones {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 1; pointer-events: none; overflow: hidden;
+  }
+  
+  .corazon-particula {
+    position: absolute; bottom: -50px;
+    font-family: 'Montserrat', sans-serif; font-weight: bold;
+    opacity: 0; will-change: transform, opacity; 
+  }
+  @keyframes flotarHaciaArriba {
+    0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.5; }
+    80% { opacity: 0.5; }
+    100% { transform: translateY(-120vh) scale(1.3) rotate(20deg); opacity: 0; }
+  }
+
+  /* --- TEXTO GRANDE ADICIONAL: "MI CACHETONCITA" --- */
+  #contenedor-titulo {
+    position: absolute; top: 20%; width: 100%; text-align: center;
+    z-index: 100; opacity: 0; transform: scale(0.9);
+    transition: opacity 1.5s ease-out, transform 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+  }
+  #contenedor-titulo.visible { opacity: 1; transform: scale(1); }
+  
+  .gran-titulo {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: clamp(2.2rem, 8vw, 3.5rem); 
+    color: #ff2a5f; 
+    text-shadow: 0 0 15px #ff0033, 0 0 30px #ff0033, 0 0 50px #ff0033;
+    letter-spacing: 1px;
+  }
+
+  /* EL CONTENEDOR DEL POEMA */
+  #contenedor-texto {
+    position: absolute; top: 58%; left: 50%; transform: translate(-50%, -50%);
+    width: 95%; max-width: 600px; 
+    display: flex; flex-direction: column; align-items: center; gap: 6px; 
+    z-index: 5;
+  }
+
+  .linea-texto { display: flex; justify-content: center; flex-wrap: nowrap; gap: 1px; }
+  
+  .letra {
+    font-weight: 600; font-size: clamp(0.6rem, 2.7vw, 1rem); 
+    text-transform: uppercase; color: #000000; 
+    transition: color 0.1s ease, text-shadow 0.1s ease, transform 0.1s;
+    display: inline-block;
+  }
+  .espacio { width: 5px; }
+
+  /* ESTADO: LETRA ENCENDIDA LOCAL */
+  .letra.iluminada-local {
+    color: #ffffff; text-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff; transform: scale(1.15); 
+  }
+  .letra.corazon.iluminada-local {
+    color: #ff2a5f; text-shadow: 0 0 20px #ff0033, 0 0 40px #ff0033; transform: scale(1.4);
+  }
+
+  /* ESTADO FINAL: NEÓN COMPLETO TRAS EL CLICK */
+  .frase-completa-neon .letra {
+    color: #bdf2ff; text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #00bfff;
+    transition: color 1s ease, text-shadow 1s ease, transform 1s ease; transform: scale(1);
+  }
+  .frase-completa-neon .letra.corazon {
+    color: #ff2a5f; text-shadow: 0 0 15px #ff0033, 0 0 30px #ff0033, 0 0 45px #ff0033;
+    font-size: 1.3em; 
+  }
+
+  /* LA BOLA DE ENERGÍA VISUAL MÁGICA */
+  #bola-energia {
+    position: fixed; top: 0; left: 0;
+    width: 14px; height: 14px; border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 20px 10px rgba(0, 229, 255, 0.8), 0 0 40px 20px rgba(0, 229, 255, 0.4);
+    opacity: 0; z-index: 50; pointer-events: none;
+    transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s; 
+    transform: translate(calc(50vw - 7px), calc(100vh + 20px)) scale(0);
+  }
+
+  /* BOTÓN PARA REVELAR TODO AL FINAL */
+  #btn-revelar {
+    position: absolute; bottom: 6%; left: 50%; transform: translateX(-50%);
+    padding: 15px 40px; border-radius: 30px;
+    background: transparent; border: 1px solid #00e5ff; color: #00e5ff;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 3px;
+    box-shadow: 0 0 15px rgba(0,229,255,0.2);
+    opacity: 0; pointer-events: none; transition: all 1s ease; z-index: 100;
+  }
+  #btn-revelar.visible { opacity: 1; pointer-events: auto; background: rgba(0,229,255,0.05); }
+  #btn-revelar:active { background: rgba(0,229,255,0.2); transform: translateX(-50%) scale(0.95); }
+
+  /* NUEVO BOTÓN REGRESAR ABAJO (Aparece al final del todo) */
+  #btn-regresar-final {
+    position: absolute; bottom: 6%; left: 50%; transform: translateX(-50%);
+    padding: 15px 40px; border-radius: 30px;
+    background: transparent; border: 1px solid #ff2a5f; color: #ff2a5f;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 3px;
+    box-shadow: 0 0 15px rgba(255,42,95,0.3);
+    opacity: 0; pointer-events: none; transition: all 1s ease; z-index: 100;
+  }
+  #btn-regresar-final.visible { opacity: 1; pointer-events: auto; background: rgba(255,42,95,0.05); }
+  #btn-regresar-final:active { background: rgba(255,42,95,0.2); transform: translateX(-50%) scale(0.95); }
+
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+  <div id="fondo-corazones"></div>
+
+  <div id="pista-misterio">Iniciando conexión neuronal...</div>
+
+  <div id="contenedor-titulo">
+    <div class="gran-titulo">Mi Cachetoncita</div>
+  </div>
+
+  <div id="contenedor-texto"></div>
+
+  <div id="bola-energia"></div>
+
+  <button id="btn-revelar" onclick="secuenciaEncendidoFinalOptimizado()">Iluminar</button>
+  <button id="btn-regresar-final" onclick="window.location.href='etapa1.html'">Regresar</button>
+
+<script>
+  // TEXTO BALANCEADO
+  const lineasCarga = [
+    "Tú eres la chispa que encendió algo",
+    "en mí que no sabía que faltaba,",
+    "la energía que ilumina mis días",
+    "incluso cuando todo parece apagarse.",
+    "Desde que llegaste, todo tiene",
+    "más color, más vida y más sentido.",
+    "Eres esa luz que me levanta,",
+    "que me calma y que hace que todo",
+    "brille diferente solo por estar tú.",
+    "♥️"
+  ];
+  
+  const contenedorTexto = document.getElementById('contenedor-texto');
+  const pistaMisterio = document.getElementById('pista-misterio');
+  const btnRevelar = document.getElementById('btn-revelar');
+  const btnRegresarFinal = document.getElementById('btn-regresar-final');
+  const bolaEnergia = document.getElementById('bola-energia');
+  const fondoCorazones = document.getElementById('fondo-corazones');
+  const contenedorTitulo = document.getElementById('contenedor-titulo');
+  
+  let letrasElements = []; 
+  let magiaIniciada = false;
+  let esperandoDesconexion = false;
+  let generadorCorazones;
+
+  // 1. INYECTAR EL POEMA
+  function prepararTexto() {
+    lineasCarga.forEach(linea => {
+      let divLinea = document.createElement('div');
+      divLinea.className = 'linea-texto';
+      
+      [...linea].forEach((char) => {
+        let span = document.createElement('span');
+        
+        if (char === ' ') {
+          span.className = 'letra espacio';
+          span.innerHTML = '&nbsp;'; 
+        } else if (char === '♥️') {
+          span.className = 'letra corazon';
+          span.innerText = char;
+        } else {
+          span.className = 'letra';
+          span.innerText = char;
+        }
+        
+        divLinea.appendChild(span);
+        if (char !== ' ') { letrasElements.push(span); }
+      });
+      contenedorTexto.appendChild(divLinea);
+    });
+  }
+
+  // 2. MONITOREO DE BATERÍA FÍSICO
+  async function iniciarMonitoreoBateria() {
+    if (!('getBattery' in navigator)) {
+      pistaMisterio.innerHTML = "Tu navegador bloquea la magia.<br>Intenta desde Chrome o Android.";
+      return;
+    }
+
+    try {
+      const battery = await navigator.getBattery();
+      
+      if (battery.charging) {
+        esperandoDesconexion = true;
+        pistaMisterio.innerHTML = "El vínculo ya está establecido...<br>Desconecta el cable para reiniciar la magia.";
+      } else {
+        esperandoDesconexion = false;
+        pistaMisterio.innerHTML = "A este universo le falta energía física<br>para despertar...";
+      }
+
+      battery.addEventListener('chargingchange', () => {
+        if (!battery.charging) {
+          esperandoDesconexion = false;
+          pistaMisterio.style.opacity = '0';
+          setTimeout(() => {
+            pistaMisterio.innerHTML = "A este universo le falta energía física<br>para despertar...";
+            pistaMisterio.style.opacity = '1';
+          }, 800);
+        } 
+        else if (battery.charging && !esperandoDesconexion && !magiaIniciada) {
+          arrancarMagiaVisual();
+        }
+      });
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // 3. LA MAGIA: NACE LA BOLA DEL PUERTO DE CARGA
+  function arrancarMagiaVisual() {
+    magiaIniciada = true;
+    pistaMisterio.style.opacity = '0';
+
+    setTimeout(() => {
+      bolaEnergia.style.opacity = '1';
+      bolaEnergia.style.transform = `translate(calc(50vw - 7px), calc(100vh - 60px)) scale(1)`;
+    }, 1000);
+
+    setTimeout(() => {
+      enviarBolaAPrimeraLetra();
+    }, 2500); 
+  }
+
+  // 4. VIAJE A LA PRIMERA LETRA
+  function enviarBolaAPrimeraLetra() {
+    const primeraLetra = letrasElements[0];
+    const rect = primeraLetra.getBoundingClientRect();
+    
+    const destX = rect.left + (rect.width / 2) - 7; 
+    const destY = rect.top + (rect.height / 2) - 7;
+
+    bolaEnergia.style.transform = `translate(${destX}px, ${destY}px) scale(1)`;
+
+    setTimeout(() => {
+      bolaEnergia.style.opacity = '0'; 
+      bolaEnergia.style.transform = `translate(${destX}px, ${destY}px) scale(0)`; 
+      
+      setTimeout(recorrerLetrasLentamente, 400);
+    }, 2500);
+  }
+
+  // 5. EL PULSO POR LAS LETRAS
+  function recorrerLetrasLentamente() {
+    let indiceActual = 0;
+    const tiempoLento = 100; 
+
+    function pasoSiguiente() {
+      if (indiceActual > 0) {
+        letrasElements[indiceActual - 1].classList.remove('iluminada-local');
+      }
+
+      // SI LLEGAMOS AL FINAL 
+      if (indiceActual >= letrasElements.length) {
+        renacerBolaHaciaBoton();
+        return;
+      }
+
+      letrasElements[indiceActual].classList.add('iluminada-local');
+      indiceActual++;
+      setTimeout(pasoSiguiente, tiempoLento);
+    }
+
+    pasoSiguiente();
+  }
+
+  // 6. RENACIMIENTO DE LA BOLA HACIA EL BOTÓN
+  function renacerBolaHaciaBoton() {
+    const ultimaLetra = letrasElements[letrasElements.length - 1];
+    const rectUltima = ultimaLetra.getBoundingClientRect();
+    
+    const startX = rectUltima.left + (rectUltima.width / 2) - 7;
+    const startY = rectUltima.top + (rectUltima.height / 2) - 7;
+
+    bolaEnergia.style.transition = 'none'; 
+    bolaEnergia.style.transform = `translate(${startX}px, ${startY}px) scale(0)`;
+
+    setTimeout(() => {
+      bolaEnergia.style.transition = 'transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s';
+      bolaEnergia.style.opacity = '1';
+      bolaEnergia.style.transform = `translate(${startX}px, ${startY}px) scale(1)`;
+
+      setTimeout(() => {
+        const destX = window.innerWidth / 2 - 7;
+        const destY = window.innerHeight * 0.94 - 25; 
+
+        bolaEnergia.style.transform = `translate(${destX}px, ${destY}px) scale(1)`;
+
+        setTimeout(() => {
+          bolaEnergia.style.opacity = '0';
+          bolaEnergia.style.transform = `translate(${destX}px, ${destY}px) scale(0)`;
+          btnRevelar.classList.add('visible'); 
+        }, 1500); 
+        
+      }, 500); 
+    }, 50);
+  }
+
+  // --- 7. SECUENCIA FINAL OPTIMIZADA ---
+  function secuenciaEncendidoFinalOptimizado() {
+    // Esconder el botón "ILUMINAR" quitándolo del flujo visual
+    btnRevelar.style.display = 'none'; 
+    
+    // PASO A: Encender el poema 
+    setTimeout(() => {
+      contenedorTexto.classList.add('frase-completa-neon');
+      localStorage.setItem('progreso_camii_etapa1', 3); 
+    }, 300);
+
+    // PASO B: Encender el Gran Título 
+    setTimeout(() => {
+      contenedorTitulo.classList.add('visible'); 
+    }, 1200); 
+
+    // PASO C: Iniciar corazones y mostrar el botón "REGRESAR" abajo
+    setTimeout(() => {
+      iniciarCorazonesFosforescentes(); 
+      btnRegresarFinal.classList.add('visible'); // Aparece en la parte inferior
+    }, 2500); 
+  }
+
+  // EL GENERADOR DE CORAZONES OPTIMIZADO
+  function iniciarCorazonesFosforescentes() {
+    const colores = ['#d500f9', '#00e5ff', '#ff2a5f', '#ff0033']; 
+    
+    generadorCorazones = setInterval(() => {
+      let corazon = document.createElement('div');
+      corazon.className = 'corazon-particula';
+      corazon.innerHTML = '♥️';
+      
+      let startX = Math.random() * window.innerWidth;
+      let size = Math.random() * 1.1 + 0.6; 
+      let color = colores[Math.floor(Math.random() * colores.length)];
+      let duracion = Math.random() * 5 + 7; 
+      
+      corazon.style.left = `${startX}px`;
+      corazon.style.color = color;
+      corazon.style.textShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+      corazon.style.fontSize = `${size}rem`;
+      corazon.style.animation = `flotarHaciaArriba ${duracion}s ease-in-out forwards`; 
+      
+      fondoCorazones.appendChild(corazon);
+      
+      setTimeout(() => { corazon.remove(); }, duracion * 1000);
+      
+    }, 500); 
+  }
+
+  window.onload = () => {
+    prepararTexto();
+    iniciarMonitoreoBateria();
+  };
+</script>
+</body>
+</html>
+
