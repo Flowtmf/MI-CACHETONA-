@@ -7,7 +7,8 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:ital,wght@1,600&display=swap');
 
-  * { box-sizing: border-box; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+  /* CORRECCIÓN 1: Eliminamos touch-action: none para que los celulares detecten el toque perfecto */
+  * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
   
   body, html {
     margin: 0; padding: 0; width: 100vw; height: 100vh;
@@ -59,7 +60,7 @@
     
     /* Transición suave para el hundido */
     transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2), box-shadow 0.3s ease;
-    animation: palpitarPuerta 3s infinite alternate; z-index: 105;
+    animation: palpitarPuerta 3s infinite alternate; z-index: 1000; /* Elevado para asegurar interacción */
   }
   
   @keyframes palpitarPuerta {
@@ -67,7 +68,7 @@
     100% { box-shadow: 0 0 35px 10px rgba(0, 229, 255, 0.4), inset 0 0 20px rgba(0,0,0,0.9); }
   }
 
-  /* ¡ESTA ES LA CLASE MÁGICA QUE LA HUNDE FORZADAMENTE! */
+  /* LA CLASE MÁGICA QUE LA HUNDE FORZADAMENTE */
   .puerta-hundida {
     transform: scale(0.9) perspective(600px) rotateX(10deg) !important;
     box-shadow: 0 0 10px 2px rgba(0, 229, 255, 0.8), inset 0 0 60px rgba(0,0,0,1) !important;
@@ -153,7 +154,7 @@
       <div class="instruccion-puerta">Ya tienes la llave. Ahora desbloquea esta puerta... ♥️</div>
     </div>
     
-    <div id="puerta-contenedor" ontouchstart="" onclick="abrirPuerta()">
+    <div id="puerta-contenedor" onclick="abrirPuerta()">
       <div class="panel-madera"></div>
       <div id="cerrojo">♥️</div>
       <div id="picaporte"></div>
@@ -172,7 +173,7 @@
     <div class="panel-final">
       <div class="titulo-final">Para ti, mi amor</div>
       <div id="texto-final" class="texto-poema-final"></div>
-      <button id="btn-regresar-mapa" onclick="window.location.href='etapa1.html'">Volver Atrás</button>
+      <button id="btn-regresar-mapa" onclick="completarMisterioFinal()">Volver al Mapa</button>
     </div>
   </div>
 
@@ -190,32 +191,45 @@
     if (puertaAbierta) return;
     puertaAbierta = true;
 
+    // CORRECCIÓN 3: Truco maestro para el Video en Celulares. 
+    // Obligamos al navegador a aceptar la reproducción interactuando con el video en el ms 0 del click.
+    let playPromise = video.play();
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+            video.pause(); // Lo pausamos rápido, ya tenemos el permiso
+        }).catch(error => {
+            console.log("El navegador bloqueó el autoplay, requerirá un toque extra de la usuaria.");
+        });
+    }
+
     const puerta = document.getElementById('puerta-contenedor');
     const texto = document.getElementById('pre-texto');
     
-    // 1. Quitar animación base y APLICAR HUNDIDO FORZADO
+    // Quitar animación base y APLICAR HUNDIDO FORZADO
     puerta.style.animation = 'none';
     puerta.classList.add('puerta-hundida');
     
-    // 2. Esperar 450ms (casi medio segundo) para que se vea claramente cómo se hunde
+    // Esperar 450ms para que se vea el "hundido"
     setTimeout(() => {
         texto.style.opacity = '0';
         
-        // 3. Efecto de apertura (se quita el hundido y se lanza hacia la derecha)
+        // Efecto de apertura
         puerta.classList.remove('puerta-hundida');
         puerta.style.transition = 'opacity 1.2s ease-out, transform 1.2s ease-in-out, box-shadow 0.8s';
         puerta.style.boxShadow = '0 0 80px 25px rgba(0, 229, 255, 0.9)';
         puerta.style.transform = 'scale(0.8) perspective(800px) rotateY(100deg) translateX(120px)';
         puerta.style.opacity = '0';
 
-        // 4. Pasar al video
+        // Pasar al video
         setTimeout(() => {
             escenaPuerta.style.display = 'none';
             contenedorVideo.style.display = 'flex';
-            setTimeout(() => { contenedorVideo.style.opacity = '1'; }, 100);
-            video.play();
-        }, 1400); // Darle tiempo a la puerta para que se abra
-    }, 450); // Tiempo del hundido
+            setTimeout(() => { 
+                contenedorVideo.style.opacity = '1'; 
+                video.play(); // Aquí ya correrá libremente
+            }, 100);
+        }, 1400); 
+    }, 450); 
   }
 
   // Al terminar el video
@@ -245,6 +259,11 @@
             document.getElementById('btn-regresar-mapa').classList.add('visible');
         }
     }, 45); 
+  }
+
+  function completarMisterioFinal() {
+    localStorage.setItem('progreso_camii_etapa1', 5); 
+    window.location.href = 'etapa1.html'; 
   }
 
 </script>
