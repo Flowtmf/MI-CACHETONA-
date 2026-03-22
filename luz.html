@@ -110,6 +110,7 @@
   }
   .btn-avanzar:active { transform: scale(0.95); background: rgba(255,215,0,0.1); }
 
+  /* ¡AQUÍ ESTÁ EL CAMBIO IMPORTANTE: muted agregado! */
   #video-sensor, #canvas-sensor { display: none; }
 </style>
 </head>
@@ -155,7 +156,7 @@
     <button class="btn-avanzar" onclick="completarMisterio()">Continuar</button>
   </div>
 
-  <video id="video-sensor" autoplay playsinline></video>
+  <video id="video-sensor" autoplay playsinline muted></video>
   <canvas id="canvas-sensor" width="32" height="32"></canvas>
 
 <script>
@@ -172,12 +173,10 @@
   let targetRotY = 0, currentRotY = 0;
   let targetRotX = 0, currentRotX = 0;
 
-  // NUEVO SISTEMA TÁCTIL (Funciona en PC y Celular)
   let isDragging = false;
   let previousX = 0, previousY = 0;
 
   const startDrag = (e) => { 
-    // Si tocó la llave o el botón, no hacer drag
     if(e.target.id === 'llave' || e.target.tagName === 'BUTTON') return;
     
     isDragging = true; 
@@ -198,23 +197,21 @@
     
     targetRotY += deltaX * 0.4; 
     targetRotX -= deltaY * 0.4;
-    targetRotX = Math.max(-45, Math.min(45, targetRotX)); // Limitar para no romper el cuello
+    targetRotX = Math.max(-45, Math.min(45, targetRotX)); 
     
     previousX = clientX; 
     previousY = clientY;
   };
 
-  // Eventos para Mouse
   document.addEventListener('mousedown', startDrag);
   document.addEventListener('mouseup', endDrag);
   document.addEventListener('mousemove', moveDrag);
 
-  // Eventos para Pantalla Táctil (Celular)
   document.addEventListener('touchstart', startDrag, { passive: false });
   document.addEventListener('touchend', endDrag);
   document.addEventListener('touchmove', (e) => {
     if (isDragging) {
-      e.preventDefault(); // <-- Esto es lo que evita que el celular se trabe intentando hacer scroll
+      e.preventDefault(); 
       moveDrag(e);
     }
   }, { passive: false });
@@ -266,7 +263,8 @@
       
       let promedioLuma = sumaLuma / (canvas.width * canvas.height);
 
-      if (maxLuma > 200 || promedioLuma > 100) {
+      // Umbrales reducidos para que sea mucho más sensible a la luz
+      if (maxLuma > 170 || promedioLuma > 80) {
         if (!cuartoIluminado) {
           cuartoIluminado = true;
           oscuridadLayer.style.opacity = '0'; 
@@ -310,4 +308,5 @@
   }
 </script>
 </body>
-</html>
+  </html>
+  
