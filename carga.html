@@ -178,6 +178,7 @@
   let magiaIniciada = false;
   let esperandoDesconexion = false;
   let generadorCorazones;
+  let toquesDeEnergia = 0; // Nuevo: Para el Plan B
 
   // 1. INYECTAR EL POEMA
   function prepararTexto() {
@@ -206,10 +207,29 @@
     });
   }
 
-  // 2. MONITOREO DE BATERÍA FÍSICO
+  // NUEVO: SISTEMA DE RESPALDO (MAGIA TÁCTIL)
+  function activarMagiaManual() {
+    document.body.addEventListener('click', () => {
+        if (magiaIniciada) return;
+        toquesDeEnergia++;
+        
+        if (toquesDeEnergia === 1) {
+            pistaMisterio.innerHTML = "Siento tu energía... Toca la pantalla 3 veces más.";
+        } else if (toquesDeEnergia === 2) {
+            pistaMisterio.innerHTML = "Un poco más de energía... ✨";
+        } else if (toquesDeEnergia === 4) {
+            pistaMisterio.innerHTML = "¡Conexión establecida por tu tacto!";
+            arrancarMagiaVisual();
+        }
+    });
+  }
+
+  // 2. MONITOREO DE BATERÍA FÍSICO (Con detección de bloqueos)
   async function iniciarMonitoreoBateria() {
+    // Si la API no existe (iPhone / iOS Safari)
     if (!('getBattery' in navigator)) {
-      pistaMisterio.innerHTML = "Tu navegador bloquea la magia.<br>Intenta desde Chrome o Android.";
+      pistaMisterio.innerHTML = "Tu dispositivo protege su energía...<br>Transfiérela tocando el centro de la pantalla.";
+      activarMagiaManual();
       return;
     }
 
@@ -218,10 +238,13 @@
       
       if (battery.charging) {
         esperandoDesconexion = true;
-        pistaMisterio.innerHTML = "El vínculo ya está establecido...<br>Desconecta el cable para reiniciar la magia.";
+        // Si el navegador está falseando los datos, se quedará aquí.
+        // Damos la instrucción del cable, pero activamos los toques táctiles por si acaso.
+        pistaMisterio.innerHTML = "El vínculo está saturado...<br>Desconecta el cable o toca la pantalla 4 veces para forzar la magia.";
+        activarMagiaManual();
       } else {
         esperandoDesconexion = false;
-        pistaMisterio.innerHTML = "A este universo le falta energía física<br>para despertar...";
+        pistaMisterio.innerHTML = "A este universo le falta energía física<br>Conecta tu cargador para despertar...";
       }
 
       battery.addEventListener('chargingchange', () => {
@@ -229,7 +252,7 @@
           esperandoDesconexion = false;
           pistaMisterio.style.opacity = '0';
           setTimeout(() => {
-            pistaMisterio.innerHTML = "A este universo le falta energía física<br>para despertar...";
+            pistaMisterio.innerHTML = "A este universo le falta energía física<br>Conecta tu cargador para despertar...";
             pistaMisterio.style.opacity = '1';
           }, 800);
         } 
@@ -239,7 +262,9 @@
       });
 
     } catch (error) {
-      console.error(error);
+      console.error("Error leyendo batería:", error);
+      pistaMisterio.innerHTML = "Toca la pantalla 4 veces para transferir tu energía.";
+      activarMagiaManual();
     }
   }
 
@@ -286,7 +311,6 @@
         letrasElements[indiceActual - 1].classList.remove('iluminada-local');
       }
 
-      // SI LLEGAMOS AL FINAL 
       if (indiceActual >= letrasElements.length) {
         renacerBolaHaciaBoton();
         return;
@@ -334,28 +358,23 @@
 
   // --- 7. SECUENCIA FINAL OPTIMIZADA ---
   function secuenciaEncendidoFinalOptimizado() {
-    // Esconder el botón "ILUMINAR" quitándolo del flujo visual
     btnRevelar.style.display = 'none'; 
     
-    // PASO A: Encender el poema 
     setTimeout(() => {
       contenedorTexto.classList.add('frase-completa-neon');
       localStorage.setItem('progreso_camii_etapa1', 3); 
     }, 300);
 
-    // PASO B: Encender el Gran Título 
     setTimeout(() => {
       contenedorTitulo.classList.add('visible'); 
     }, 1200); 
 
-    // PASO C: Iniciar corazones y mostrar el botón "REGRESAR" abajo
     setTimeout(() => {
       iniciarCorazonesFosforescentes(); 
-      btnRegresarFinal.classList.add('visible'); // Aparece en la parte inferior
+      btnRegresarFinal.classList.add('visible');
     }, 2500); 
   }
 
-  // EL GENERADOR DE CORAZONES OPTIMIZADO
   function iniciarCorazonesFosforescentes() {
     const colores = ['#d500f9', '#00e5ff', '#ff2a5f', '#ff0033']; 
     
@@ -376,9 +395,7 @@
       corazon.style.animation = `flotarHaciaArriba ${duracion}s ease-in-out forwards`; 
       
       fondoCorazones.appendChild(corazon);
-      
       setTimeout(() => { corazon.remove(); }, duracion * 1000);
-      
     }, 500); 
   }
 
@@ -389,4 +406,3 @@
 </script>
 </body>
 </html>
-
