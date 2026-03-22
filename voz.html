@@ -3,195 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Voz - El Cofre del Aliento</title>
+<title>Voz - El Aliento</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Montserrat:wght@300;600;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:ital,wght@1,600&display=swap');
 
   * { box-sizing: border-box; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
   
   body, html {
     margin: 0; padding: 0; width: 100vw; height: 100vh;
-    background-color: #050505; font-family: 'Montserrat', sans-serif; overflow: hidden; color: white;
-  }
-
-  /* FONDOS (Se desvanecen) */
-  #fondo-estrellas {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: radial-gradient(circle at center, #111 0%, #000 100%); z-index: -2; transition: opacity 2s;
-  }
-
-  /* EL CUARTO ELEGANTE (Aparece tras soplar) */
-  #cuarto-bg {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: radial-gradient(circle at 50% 40%, #1a2a3a 0%, #050a10 100%);
-    opacity: 0; transition: opacity 2.5s ease; z-index: 1;
-  }
-  
-  /* MESA 3D CON CSS */
-  .mesa-elegante {
-    position: absolute; bottom: -15%; left: -20%; width: 140%; height: 40%;
-    background: linear-gradient(to bottom, #2d1a11 0%, #0a0502 100%);
-    border-top: 5px solid #4a2e1b; box-shadow: 0 -20px 50px rgba(0,0,0,0.8);
-    transform: perspective(800px) rotateX(60deg);
+    background: linear-gradient(135deg, #16080b 0%, #0a0506 100%);
+    font-family: 'Poppins', sans-serif; overflow: hidden; color: white;
   }
 
   /* BOTÓN VOLVER */
   .btn-volver {
     position: absolute; top: 20px; left: 20px; padding: 12px 24px; border-radius: 30px;
-    background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2);
-    cursor: pointer; z-index: 1000; backdrop-filter: blur(5px); font-family: 'Montserrat', sans-serif; font-size: 0.85rem; transition: 0.4s;
+    background: rgba(255, 71, 87, 0.1); color: #ffb8bf; border: 1px solid rgba(255, 71, 87, 0.3);
+    cursor: pointer; z-index: 1000; backdrop-filter: blur(5px); font-family: 'Poppins', sans-serif; font-size: 0.85rem; transition: 0.4s;
   }
-  .btn-volver:active { background: rgba(0,229,255,0.2); border-color: #00e5ff; transform: scale(0.95); }
+  .btn-volver:active { background: rgba(255, 71, 87, 0.3); border-color: #ff4757; transform: scale(0.95); }
 
   /* INTERFAZ INICIO */
   #ui-inicio {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: rgba(5,5,5,0.95); z-index: 500; transition: opacity 1s; padding: 20px;
+    background: rgba(10, 5, 6, 0.95); z-index: 500; transition: opacity 1s; padding: 20px;
   }
   .titulo-inicio {
-    font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.2rem;
-    color: #e0f7fa; text-shadow: 0 0 20px rgba(0,229,255,0.6); margin-bottom: 20px; text-align: center;
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.5rem;
+    color: #ff4757; text-shadow: 0 0 20px rgba(255, 71, 87, 0.5); margin-bottom: 20px; text-align: center;
   }
   .btn-conectar {
-    background: transparent; border: 2px solid #00e5ff; color: #fff; padding: 18px 50px;
-    border-radius: 30px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem;
-    cursor: pointer; box-shadow: 0 0 20px rgba(0,229,255,0.4); transition: 0.3s; text-transform: uppercase;
+    background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%); border: none; color: #fff; padding: 15px 40px;
+    border-radius: 30px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1rem;
+    cursor: pointer; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); transition: 0.3s;
   }
 
   /* FEEDBACK DE SOPLIDO */
   #instruccion {
-    position: absolute; top: 15%; width: 100%; text-align: center; font-weight: 600;
-    font-size: 1.1rem; color: #b3e5fc; letter-spacing: 2px; z-index: 100;
+    position: absolute; top: 15%; width: 100%; text-align: center; font-weight: 500;
+    font-size: 1.1rem; color: #ffb8bf; letter-spacing: 1px; z-index: 100;
     opacity: 0; transition: opacity 1s; pointer-events: none;
   }
   #feedback-soplido {
-    position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
-    width: 60%; height: 10px; background: rgba(255,255,255,0.1);
-    border-radius: 5px; z-index: 100; opacity: 0; transition: opacity 0.5s;
-    border: 1px solid rgba(255,255,255,0.2); overflow: hidden;
+    position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 8px; background: rgba(255, 71, 87, 0.1);
+    border-radius: 10px; z-index: 100; opacity: 0; transition: opacity 0.5s;
+    border: 1px solid rgba(255, 71, 87, 0.3); overflow: hidden;
   }
-  #progreso-fill { height: 100%; width: 0%; background: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.8); transition: width 0.1s; }
+  #progreso-fill { height: 100%; width: 0%; background: #ff4757; box-shadow: 0 0 10px rgba(255, 71, 87, 0.8); transition: width 0.1s; }
 
   canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
 
-  /* --- MÓDULO VISUAL PREMIUM (DOM) --- */
+  /* --- MÓDULO VISUAL CORAZÓN --- */
   #escenario-magico {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 50; display: none; opacity: 0; transition: opacity 2s;
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    z-index: 50; display: none; opacity: 0; transition: opacity 1.5s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
 
-  /* COFRE DEL TESORO (Imagen Real) */
-  #contenedor-cofre {
-    position: relative; margin-bottom: 15%; width: 180px; height: auto;
-    cursor: pointer; transition: transform 0.3s, filter 0.3s;
+  /* EL GRAN CORAZÓN LATIENDO */
+  #gran-corazon {
+    font-size: 8rem; color: #ff4757; text-shadow: 0 0 30px rgba(255, 71, 87, 0.6);
+    cursor: pointer; transition: transform 0.2s;
+    animation: latirFuerte 1.5s infinite; z-index: 60;
   }
-  #contenedor-cofre:active { transform: scale(0.95); }
-  
-  .img-cofre {
-    width: 100%; height: auto; display: block;
-    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
-    transition: opacity 0.5s;
+  @keyframes latirFuerte {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); }
+    60% { transform: scale(1); }
   }
-  #cofre-abierto { position: absolute; top: 0; left: 0; opacity: 0; }
 
-  /* LUZ DORADA EXPLOSIVA */
-  #luz-dorada {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 0px; height: 0px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,220,100,1) 0%, rgba(255,150,0,0.8) 40%, rgba(0,0,0,0) 70%);
-    mix-blend-mode: screen; opacity: 0; transition: all 2s cubic-bezier(0.1, 0.8, 0.2, 1);
-    pointer-events: none; z-index: -1;
+  /* PARTICULAS DOM */
+  .particula-explosion {
+    position: absolute; font-size: 1.5rem; color: #ff4757;
+    pointer-events: none; z-index: 55; opacity: 1;
+    transition: transform 1.5s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 1.5s ease-in;
   }
-  .cofre-abierto-state #luz-dorada { width: 800px; height: 800px; opacity: 1; }
-  .cofre-abierto-state #cofre-cerrado { opacity: 0; }
-  .cofre-abierto-state #cofre-abierto { opacity: 1; filter: drop-shadow(0 0 30px rgba(255,215,0,0.8)); }
 
-  /* TEXTO FLOTANTE (CRISP DOM CSS) */
+  /* TEXTO FLOTANTE (POEMA) */
   #contenedor-texto {
-    position: absolute; top: 15%; width: 90%; text-align: center;
-    display: flex; flex-direction: column; gap: 15px; pointer-events: none;
+    position: absolute; top: 20%; width: 90%; text-align: center;
+    display: flex; flex-direction: column; gap: 8px; pointer-events: none; z-index: 65;
   }
   
-  .linea-poema {
-    display: flex; justify-content: center; flex-wrap: wrap; gap: 8px;
-  }
+  .linea-poema { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
 
   .palabra {
-    font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.4rem;
-    color: #bdf2ff; text-shadow: 0 0 15px #00bfff, 0 0 30px #00bfff;
-    opacity: 0; transform: translateY(50px) scale(0.8);
-    /* Levitación perpetua tras aparecer */
-    animation: flotarPerpetuo 4s ease-in-out infinite alternate;
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.2rem;
+    color: #fff; text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+    opacity: 0; transform: scale(0.5);
   }
-
-  .palabra.corazon {
-    color: #ff2a5f; text-shadow: 0 0 20px #ff0033, 0 0 40px #ff0033; font-size: 2.2rem;
-  }
-
-  /* Animación disparada por JS */
   .palabra.visible {
-    transition: opacity 1s ease-out, transform 1s cubic-bezier(0.1, 0.8, 0.2, 1);
-    opacity: 1; transform: translateY(0) scale(1);
-  }
-
-  @keyframes flotarPerpetuo {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-12px); }
+    transition: opacity 1.5s ease-out, transform 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+    opacity: 1; transform: scale(1);
   }
 
   /* BOTÓN REGRESAR */
   #btn-regresar {
     position: absolute; bottom: 8%; padding: 15px 40px; border-radius: 30px;
-    background: rgba(0,0,0,0.5); border: 2px solid #00e5ff; color: #fff;
-    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem;
+    background: transparent; border: 1px solid #ff4757; color: #ffb8bf;
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.9rem;
     cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
-    box-shadow: 0 0 15px rgba(0,229,255,0.4); backdrop-filter: blur(5px);
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.2); backdrop-filter: blur(5px);
     opacity: 0; pointer-events: none; transition: all 1s ease; z-index: 1000;
   }
-  #btn-regresar.visible { opacity: 1; pointer-events: auto; }
-
+  #btn-regresar.visible { opacity: 1; pointer-events: auto; background: rgba(255, 71, 87, 0.1); }
 </style>
 </head>
 <body oncontextmenu="return false;">
 
-  <div id="fondo-estrellas"></div>
-  
-  <div id="cuarto-bg">
-    <div class="mesa-elegante"></div>
-  </div>
-
   <button class="btn-volver" onclick="window.location.href='etapa1.html'">← Volver</button>
 
   <div id="ui-inicio">
-    <div class="titulo-inicio">Voz</div>
-    <p style="text-align: center; width: 85%; margin-bottom: 50px; color: #ccc; font-size: 0.95rem; line-height: 1.6;">
-      Mi niña dinda... el tesoro espera. Sopla suave y constantemente hacia el micrófono para despejar la niebla.<br><br>Permite el acceso al micrófono.♥️
+    <div class="titulo-inicio">El Aliento</div>
+    <p style="text-align: center; width: 85%; margin-bottom: 50px; color: #ffb8bf; font-size: 0.95rem; line-height: 1.6;">
+      Mi niña hemocha... Sopla suavemente hacia tu celular para despejar la bruma y encontrar mi corazón.<br><br>(Permite el acceso al micrófono) ♥️
     </p>
-    <button class="btn-conectar" onclick="iniciarMagiaVoz()">Conectar</button>
+    <button class="btn-conectar" onclick="iniciarMagiaVoz()">Soplar</button>
   </div>
 
-  <div id="instruccion">Acércate y sopla para revelar el cofre...</div>
+  <div id="instruccion">Acércate y sopla con amor...</div>
   <div id="feedback-soplido"><div id="progreso-fill"></div></div>
 
   <canvas id="canvas-humo"></canvas>
 
   <div id="escenario-magico">
-    
-    <div id="contenedor-texto">
-      </div>
-
-    <div id="contenedor-cofre" onclick="abrirCofreReal()">
-      <div id="luz-dorada"></div>
-      
-      <img src="cofre_cerrado.png" id="cofre-cerrado" class="img-cofre" alt="Cofre Cerrado" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3254/3254073.png'">
-      
-      <img src="cofre_abierto.png" id="cofre-abierto" class="img-cofre" alt="Cofre Abierto" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3254/3254073.png'">
-    </div>
-
+    <div id="contenedor-texto"></div>
+    <div id="gran-corazon" onclick="explotarCorazon()">♥️</div>
     <button id="btn-regresar" onclick="completarMisterio()">Regresar al Mapa</button>
-
   </div>
 
 <script>
@@ -206,14 +148,16 @@
   let particulasHumo = [];
   let estadoEscuchando = false;
 
+  // NUEVO POEMA
   const lineasPoema = [
-    "Ese aire que exhalas,",
-    "es el único que quiero respirar",
-    "por el resto de mis días.",
-    "Porque tu aliento, mi niña,",
-    "es la brisa que le da vida",
-    "a mi corazón.",
-    "♥️"
+    "Tu voz es mi melodía favorita,",
+    "el susurro que calma mi alma,",
+    "y el aliento que le da vida",
+    "a mi mundo entero.",
+    "Nunca dejes de hablarme,",
+    "porque en tus palabras",
+    "siempre encuentro mi hogar.",
+    "Te amo, mi cachetona."
   ];
 
   function resize() {
@@ -234,10 +178,10 @@
     }
     dibujar() {
       if (this.life <= 0) return;
-      ctx.globalAlpha = this.life * 0.4; 
+      ctx.globalAlpha = this.life * 0.3; 
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = '#cccccc'; 
+      ctx.fillStyle = '#ff4757'; // Humo romántico
       ctx.fill();
       ctx.globalAlpha = 1;
     }
@@ -283,42 +227,62 @@
   function revelarEscenarioPremium() {
     document.getElementById('instruccion').style.opacity = '0';
     document.getElementById('feedback-soplido').style.opacity = '0';
-    document.getElementById('fondo-estrellas').style.opacity = '0';
     
-    // Revelar el cuarto
-    document.getElementById('cuarto-bg').style.opacity = '1';
-    
-    // Revelar el escenario DOM (Cofre y textos)
     let escenario = document.getElementById('escenario-magico');
     escenario.style.display = 'flex';
     setTimeout(() => { escenario.style.opacity = '1'; }, 100);
 
     setTimeout(() => {
-      document.getElementById('instruccion').innerText = "Toca el cofre...";
+      document.getElementById('instruccion').innerText = "Toca mi corazón...";
       document.getElementById('instruccion').style.opacity = '1';
     }, 2000);
   }
 
-  // --- ANIMACIÓN DOM DEL COFRE Y TEXTO ---
-  let cofreYaAbierto = false;
+  // --- ANIMACIÓN EXPLOSIÓN DE CORAZÓN A TEXTO ---
+  let corazonExplotado = false;
 
-  function abrirCofreReal() {
-    if (cofreYaAbierto) return;
-    cofreYaAbierto = true;
+  function explotarCorazon() {
+    if (corazonExplotado) return;
+    corazonExplotado = true;
     
     document.getElementById('instruccion').style.opacity = '0';
+    const corazon = document.getElementById('gran-corazon');
+    const rect = corazon.getBoundingClientRect();
+    const centroX = rect.left + rect.width / 2;
+    const centroY = rect.top + rect.height / 2;
     
-    // Agrega la clase que desencadena la luz dorada y el cambio de imagen
-    document.getElementById('contenedor-cofre').classList.add('cofre-abierto-state');
+    corazon.style.display = 'none'; // Desaparece el corazón principal
 
-    prepararTextosDOM();
+    // Generar partículas que viajan hacia la zona del texto
+    for(let i=0; i<40; i++) {
+        let p = document.createElement('div');
+        p.className = 'particula-explosion';
+        p.innerHTML = '♥️';
+        p.style.left = centroX + 'px';
+        p.style.top = centroY + 'px';
+        document.body.appendChild(p);
+
+        // Animar hacia arriba y desvanecer
+        setTimeout(() => {
+            let destX = (Math.random() - 0.5) * window.innerWidth * 0.8;
+            let destY = - (window.innerHeight * 0.4 + Math.random() * 100); // Suben al área de texto
+            p.style.transform = `translate(${destX}px, ${destY}px) scale(${Math.random() + 0.5})`;
+            p.style.opacity = '0';
+        }, 50);
+
+        // Limpiar DOM
+        setTimeout(() => p.remove(), 1600);
+    }
+
+    // Retrasar la aparición del texto para que coincida con la llegada de las partículas
+    setTimeout(prepararTextosDOM, 800);
   }
 
   function prepararTextosDOM() {
     const contenedorTexto = document.getElementById('contenedor-texto');
     contenedorTexto.innerHTML = '';
     
-    let delayGlobal = 0; // Tiempo en milisegundos
+    let delayGlobal = 0; 
 
     lineasPoema.forEach((linea) => {
       let divLinea = document.createElement('div');
@@ -329,26 +293,18 @@
         let spanPalabra = document.createElement('span');
         spanPalabra.className = 'palabra';
         spanPalabra.innerText = textoPalabra;
-        
-        if (textoPalabra === '♥️') { spanPalabra.classList.add('corazon'); }
-        
         divLinea.appendChild(spanPalabra);
 
-        // Disparar la animación de aparición
-        setTimeout(() => {
-          spanPalabra.classList.add('visible');
-        }, delayGlobal);
-        
-        delayGlobal += 150; // Cada palabra aparece 150ms después de la anterior
+        setTimeout(() => { spanPalabra.classList.add('visible'); }, delayGlobal);
+        delayGlobal += 100; // Rapidez de aparición
       });
       
       contenedorTexto.appendChild(divLinea);
     });
 
-    // Mostrar botón regresar al terminar
     setTimeout(() => {
         document.getElementById('btn-regresar').classList.add('visible');
-    }, delayGlobal + 1500);
+    }, delayGlobal + 1000);
   }
 
   function completarMisterio() {
