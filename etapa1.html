@@ -34,6 +34,20 @@
     padding: 0 20px; z-index: 100; backdrop-filter: blur(15px);
   }
 
+  /* NUEVO: Botón circular para volver al Index */
+  .btn-volver-index {
+    background: rgba(0, 229, 255, 0.1); 
+    border: 1px solid rgba(0, 229, 255, 0.3); 
+    color: #00e5ff; 
+    width: 38px; height: 38px; 
+    border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; backdrop-filter: blur(5px); 
+    font-size: 1.2rem; transition: 0.3s;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+  }
+  .btn-volver-index:active { transform: scale(0.9); background: rgba(0, 229, 255, 0.3); }
+
   .titulo-seccion { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: #e0f7fa; margin: 0; }
   .subtitulo-seccion { font-size: 0.65rem; color: #00e5ff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
 
@@ -119,9 +133,12 @@
   <div class="respiracion"></div>
 
   <div class="header-hud">
-    <div>
-      <div class="subtitulo-seccion">Etapa 1</div>
-      <h1 class="titulo-seccion">El Camino</h1>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="btn-volver-index" onclick="window.location.href='index.html'">←</button>
+      <div>
+        <div class="subtitulo-seccion">Etapa 1</div>
+        <h1 class="titulo-seccion">El Camino</h1>
+      </div>
     </div>
     
     <div class="battery-wrapper" id="battery-status">
@@ -145,13 +162,15 @@
   </div>
 
 <script>
-  const nombresNiveles = ["Voz", "Carga", "Luz", "Cofre", "Fuego"];
-  const totalNiveles = 30;
+  // El orden exacto de los 5 niveles
+  const nombresNiveles = ["Voz", "Carga", "Luz", "Puerta", "Fuego"];
+  const totalNiveles = 30; // Mantiene el camino largo visualmente
   
-  // Nivel actual: 1=Voz, 2=Carga, 3=Luz, 4=Tinta, 5=Final
   let nivelActualDesbloqueado = parseInt(localStorage.getItem('progreso_camii_etapa1')) || 1;
   const contenedorMapa = document.getElementById('mapa-niveles');
-  const fechaObjetivo = new Date(2026, 2, 22, 17, 0, 0).getTime(); 
+  
+  // Establecemos la fecha objetivo al 25 de marzo de 2026 a las 00:00:00
+  const fechaObjetivo = new Date(2026, 2, 25, 0, 0, 0).getTime(); 
 
   function generarMapa() {
     contenedorMapa.innerHTML = ''; 
@@ -160,10 +179,10 @@
       wrapper.className = 'nodo-wrapper';
       if (i <= nivelActualDesbloqueado) wrapper.classList.add('desbloqueado');
       
-      // Curva del mapa
       const desplazamiento = Math.sin(i * 0.7) * 65; 
       wrapper.style.transform = `translateX(${desplazamiento}px)`;
 
+      // Toma el nombre del arreglo si es del 1 al 5
       let nombre = i <= 5 ? nombresNiveles[i-1] : `Misterio ${i}`;
       
       wrapper.innerHTML = `
@@ -179,12 +198,12 @@
   function tocarNivel(num) {
     if (num > nivelActualDesbloqueado) return;
 
-    // REDIRECCIONES A LOS ARCHIVOS HTML
+    // REDIRECCIONES A LOS ARCHIVOS HTML EN ORDEN
     switch(num) {
       case 1: window.location.href = 'voz.html'; break;
       case 2: window.location.href = 'carga.html'; break;
       case 3: window.location.href = 'luz.html'; break;
-      case 4: window.location.href = 'tinta_termica.html'; break;
+      case 4: window.location.href = 'puerta_reveladora.html'; break;
       case 5: 
         if (new Date().getTime() < fechaObjetivo) abrirContador();
         else alert("¡Fuego desbloqueado! Etapa 2 muy pronto...");
@@ -196,7 +215,6 @@
 
   // LÓGICA DE BATERÍA ESTILO CELULAR (Con Plan B)
   async function iniciarBateria() {
-    // Función de respaldo si la API no existe o falla
     const activarBateriaMagica = () => {
       const text = document.getElementById('battery-level-text');
       const fill = document.getElementById('battery-fill');
@@ -210,7 +228,7 @@
       fill.style.boxShadow = '0 0 10px #d500f9';
       status.style.borderColor = '#d500f9';
       status.classList.add('charging');
-      rayo.innerHTML = '♥️'; // Cambiamos el rayo por un corazón
+      rayo.innerHTML = '♥️'; 
       rayo.style.color = '#fff';
       rayo.style.textShadow = '0 0 5px #d500f9';
     };
@@ -231,7 +249,6 @@
         if (battery.charging) status.classList.add('charging');
         else status.classList.remove('charging');
 
-        // Color según nivel
         const fill = document.getElementById('battery-fill');
         if (level <= 20) fill.style.background = '#ff4444';
         else if (!battery.charging) fill.style.background = '#fff';
