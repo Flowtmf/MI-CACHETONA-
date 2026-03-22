@@ -4,66 +4,186 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mi Camii ♥️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Roboto', sans-serif; background: #0f0f0f; color: #ffffff; overflow-x: hidden; }
+        
+        /* FONDO ROMÁNTICO OSCURO */
+        body { 
+            margin: 0; 
+            font-family: 'Poppins', 'Roboto', sans-serif; 
+            background: linear-gradient(135deg, #16080b 0%, #0a0506 100%);
+            background-attachment: fixed;
+            color: #ffffff; 
+            overflow-x: hidden; 
+        }
 
         /* VISTAS */
-        .view { display: none; padding-bottom: 90px; min-height: 100vh; animation: fadeIn 0.3s ease; }
+        .view { display: none; padding-bottom: 90px; min-height: 100vh; animation: fadeIn 0.4s ease-out; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TOP BAR */
-        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #0f0f0f; position: sticky; top: 0; z-index: 100; }
-        .logo-container { display: flex; align-items: center; font-size: 20px; font-weight: 700; cursor: pointer; }
-        .yt-icon { color: #ff0000; font-size: 24px; margin-right: 8px; }
+        /* TOP BAR - EFECTO CRISTAL */
+        .topbar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 12px 20px; 
+            background: rgba(22, 8, 11, 0.7); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 71, 87, 0.15);
+            position: sticky; top: 0; z-index: 100; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .logo-container { display: flex; align-items: center; font-size: 22px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; }
+        
+        /* ANIMACIÓN DE LATIDO PARA EL LOGO */
+        .yt-icon { 
+            color: #ff4757; font-size: 24px; margin-right: 10px; 
+            animation: heartbeat 1.5s infinite;
+            text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.2); }
+            60% { transform: scale(1); }
+        }
         
         /* BUSCADOR */
-        .search-container { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #0f0f0f; align-items: center; padding: 0 15px; z-index: 110; border-bottom: 1px solid #272727; }
-        .search-input { flex: 1; background: #272727; border: none; padding: 10px 15px; border-radius: 20px; color: white; outline: none; font-size: 14px; }
+        .search-container { 
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 65px; 
+            background: rgba(22, 8, 11, 0.95); backdrop-filter: blur(10px);
+            align-items: center; padding: 0 15px; z-index: 110; 
+            border-bottom: 1px solid rgba(255, 71, 87, 0.3); 
+        }
+        .search-input { 
+            flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 71, 87, 0.3); 
+            padding: 12px 20px; border-radius: 25px; color: white; outline: none; font-size: 15px; 
+            font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
+        }
+        .search-input:focus { border-color: #ff4757; box-shadow: 0 0 15px rgba(255, 71, 87, 0.2); }
 
         /* CATEGORÍAS */
-        .categories { display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto; background: #0f0f0f; }
+        .categories { 
+            display: flex; gap: 12px; padding: 15px 20px; overflow-x: auto; 
+            background: transparent;
+        }
         .categories::-webkit-scrollbar { display: none; }
-        .chip { background: #272727; padding: 7px 14px; border-radius: 8px; font-size: 14px; white-space: nowrap; cursor: pointer; }
-        .chip.active { background: #fff; color: #000; }
+        .chip { 
+            background: rgba(255, 71, 87, 0.08); padding: 8px 18px; 
+            border-radius: 20px; font-size: 14px; font-weight: 500; white-space: nowrap; 
+            cursor: pointer; border: 1px solid rgba(255, 71, 87, 0.2);
+            color: #ffb8bf; transition: all 0.3s ease;
+        }
+        .chip.active { 
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%); 
+            color: #fff; border-color: transparent;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+            transform: translateY(-2px);
+        }
 
         /* VIDEOS */
-        .video { margin-bottom: 20px; cursor: pointer; }
-        .thumbnail-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #222; }
-        .thumbnail { width: 100%; height: 100%; object-fit: cover; }
-        .video-info { display: flex; padding: 12px 15px; gap: 12px; }
-        .avatar-foto { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid #333; }
-        .v-text .title { font-size: 14px; font-weight: 500; color: #fff; line-height: 1.4; margin-bottom: 4px; }
-        .v-text .meta { font-size: 12px; color: #aaa; }
+        .video { margin-bottom: 25px; cursor: pointer; transition: transform 0.2s ease; padding: 0 10px; }
+        .video:active { transform: scale(0.98); }
+        .thumbnail-container { 
+            position: relative; width: 100%; aspect-ratio: 16/9; 
+            background: #222; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
+        }
+        .thumbnail { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .video:hover .thumbnail { transform: scale(1.03); }
+        
+        .video-info { display: flex; padding: 15px 10px; gap: 15px; align-items: center; }
+        .avatar-foto { 
+            width: 45px; height: 45px; border-radius: 50%; object-fit: cover; flex-shrink: 0; 
+            border: 2px solid #ff4757; box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+        }
+        .v-text .title { font-size: 15px; font-weight: 600; color: #fff; line-height: 1.4; margin-bottom: 5px; }
+        .v-text .meta { font-size: 13px; color: #ffb8bf; font-weight: 400; opacity: 0.8; }
 
-        /* CONTENIDO DE TEXTO */
-        .content-area { padding: 20px; }
-        .carta-box { background: #181818; padding: 25px; border-radius: 15px; border: 1px solid #333; text-align: left; position: relative; }
-        .carta-titulo { color: #ff4757; font-size: 20px; margin-bottom: 15px; font-weight: 700; line-height: 1.3; }
-        .carta-texto { font-size: 15px; line-height: 1.7; color: #eee; white-space: pre-wrap; display: inline; }
-        .cursor { display: inline-block; width: 3px; height: 16px; background: #ff4757; margin-left: 3px; animation: blink 0.7s infinite; vertical-align: middle; }
+        /* CONTENIDO DE TEXTO (CARTA) */
+        .content-area { padding: 25px 20px; }
+        .carta-box { 
+            background: rgba(255, 255, 255, 0.03); padding: 30px; 
+            border-radius: 20px; border: 1px solid rgba(255, 71, 87, 0.2); 
+            text-align: left; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 71, 87, 0.05);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .carta-titulo { 
+            color: #ff4757; font-size: 24px; margin-bottom: 20px; font-weight: 700; 
+            line-height: 1.3; text-shadow: 0 2px 10px rgba(255, 71, 87, 0.3); 
+        }
+        .carta-texto { font-size: 16px; line-height: 1.8; color: #f5f5f5; white-space: pre-wrap; display: inline; font-weight: 400; }
+        .cursor { display: inline-block; width: 3px; height: 18px; background: #ff4757; margin-left: 4px; animation: blink 0.7s infinite; vertical-align: middle; box-shadow: 0 0 8px #ff4757; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* NAV INFERIOR */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0f0f0f; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #272727; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #aaa; font-size: 10px; cursor: pointer; flex: 1; }
-        .nav-item.active { color: #fff; }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; }
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; 
+            background: rgba(22, 8, 11, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            display: flex; justify-content: space-around; padding: 12px 0 20px 0; 
+            border-top: 1px solid rgba(255, 71, 87, 0.15); z-index: 100; 
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #8a6a70; font-size: 11px; font-weight: 500; cursor: pointer; flex: 1; transition: all 0.3s ease; }
+        .nav-item.active { color: #ff4757; transform: translateY(-3px); }
+        .nav-icon { font-size: 24px; margin-bottom: 5px; transition: transform 0.3s ease; }
+        .nav-item.active .nav-icon { transform: scale(1.1); text-shadow: 0 0 15px rgba(255, 71, 87, 0.6); }
 
         /* POPUP DEL 13 DE MARZO */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; display: none; }
-        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #212121; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; z-index: 201; display: none; border: 1px solid #444; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 200; display: none; }
+        .popup { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: linear-gradient(145deg, #1e0b10 0%, #120608 100%); 
+            padding: 35px 25px; border-radius: 25px; width: 88%; max-width: 400px; 
+            text-align: center; z-index: 201; display: none; 
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8), 0 0 30px rgba(255, 71, 87, 0.15);
+        }
 
         /* ANIMACIÓN TE AMO SECRETA */
-        .pantalla-te-amo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f0f0f; z-index: 300; display: none; justify-content: center; align-items: center; flex-direction: column; }
-        .texto-gigante { font-size: 5em; color: #ff4757; animation: animTeAmo 3.5s ease forwards; text-align: center; margin: 0; }
+        .pantalla-te-amo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0506; z-index: 300; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .texto-gigante { font-size: 5.5em; color: #ff4757; animation: animTeAmo 3.5s ease forwards; text-align: center; margin: 0; text-shadow: 0 0 30px rgba(255, 71, 87, 0.6); font-family: 'Poppins', sans-serif; font-weight: 700; }
         @keyframes animTeAmo { 
             0% { opacity: 0; transform: scale(0.5); } 
             20% { opacity: 1; transform: scale(1.1); } 
             80% { opacity: 1; transform: scale(1); } 
             100% { opacity: 0; transform: scale(1.5); } 
+        }
+
+        /* BOTONES GLOBALES */
+        button { font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
+        button:active { transform: scale(0.95); }
+
+        /* ========================================= */
+        /* NUEVO: BOTÓN FLOTANTE TIPO CARRITO        */
+        /* ========================================= */
+        .floating-heart-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 100px; /* Se ajusta justo arriba del menú inferior */
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.5);
+            cursor: pointer;
+            z-index: 150;
+            /* Transición suave para el efecto de rebote */
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+
+        /* Clase que se activa con JavaScript al hacer click */
+        .floating-heart-btn.ampliado {
+            transform: scale(1.35);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.8);
+            background: linear-gradient(135deg, #ff6b81 0%, #ff4757 100%);
         }
     </style>
 </head>
@@ -74,12 +194,12 @@
             <span class="yt-icon">▶</span>
             <span>Mi Camii ♥️</span>
         </div>
-        <div onclick="toggleSearch()" style="font-size: 20px; cursor:pointer;">🔍</div>
+        <div onclick="toggleSearch()" style="font-size: 20px; cursor:pointer; color: #ffb8bf;">🔍</div>
     </div>
 
     <div class="search-container" id="search-box">
         <input type="text" id="search-input" class="search-input" placeholder="Como me gusta que me digas 🥺">
-        <span onclick="toggleSearch()" style="margin-left:10px; cursor:pointer;">✕</span>
+        <span onclick="toggleSearch()" style="margin-left:15px; cursor:pointer; color: #ff4757; font-size: 20px; font-weight: bold;">✕</span>
     </div>
 
     <div id="inicio" class="view active">
@@ -90,7 +210,7 @@
             <div class="chip" onclick="prepararCarta('cat3')">Especiales</div>
         </div>
 
-        <div style="margin-top:10px;">
+        <div style="margin-top:15px;">
             <div class="video" onclick="prepararCarta('v1')">
                 <div class="thumbnail-container"><img src="foto1.jpg" class="thumbnail"></div>
                 <div class="video-info">
@@ -145,7 +265,7 @@
             <div class="video" onclick="window.location.href='pista1.html'">
                 <div class="thumbnail-container">
                     <img src="foto-pista1.jpg" class="thumbnail" style="filter: brightness(0.7);">
-                    <div style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.8); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">🧩 Jugar</div>
+                    <div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 71, 87, 0.9); padding:6px 12px; border-radius:6px; font-size:12px; font-weight:bold; box-shadow: 0 2px 10px rgba(255,71,87,0.4);">🧩 Jugar</div>
                 </div>
                 <div class="video-info">
                     <img src="persona-amada.jpg" class="avatar-foto">
@@ -159,7 +279,7 @@
             <div class="video" onclick="window.location.href='pista2.html'">
                 <div class="thumbnail-container">
                     <img src="foto-pista2.jpg" class="thumbnail" style="filter: brightness(0.7);">
-                    <div style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.8); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">🧩 Jugar</div>
+                    <div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 71, 87, 0.9); padding:6px 12px; border-radius:6px; font-size:12px; font-weight:bold; box-shadow: 0 2px 10px rgba(255,71,87,0.4);">🧩 Jugar</div>
                 </div>
                 <div class="video-info">
                     <img src="persona-amada.jpg" class="avatar-foto">
@@ -171,12 +291,12 @@
             </div>
 
             <div class="video" onclick="abrirSorpresaGranFinal()">
-                <div class="thumbnail-container" style="filter: grayscale(1) blur(3px);">
+                <div class="thumbnail-container" style="filter: grayscale(0.8) blur(1px);">
                     <img src="foto7.jpg" class="thumbnail">
-                    <div style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold; color:white; font-size:18px;">🔒 ESTRENO</div>
+                    <div style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold; color:white; font-size:20px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); letter-spacing: 2px;">🔒 ESTRENO</div>
                 </div>
                 <div class="video-info">
-                    <div class="avatar-foto" style="background:#333; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔒</div>
+                    <div class="avatar-foto" style="background:rgba(255,71,87,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid #555;">🔒</div>
                     <div class="v-text">
                         <div class="title">Sorpresa del 13 de marzo</div>
                         <div class="meta">Estreno programado</div>
@@ -188,7 +308,7 @@
 
     <div id="seccion-carta" class="view">
         <div class="content-area">
-            <button onclick="irA('inicio')" style="background:#272727; border:none; color:white; padding:10px 20px; border-radius:20px; margin-bottom:15px; cursor:pointer;">← Volver</button>
+            <button onclick="irA('inicio')" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:10px 22px; border-radius:25px; margin-bottom:20px; cursor:pointer; font-weight: 500; backdrop-filter: blur(5px);">← Volver</button>
             <div class="carta-box">
                 <div id="carta-titulo" class="carta-titulo"></div>
                 <div id="carta-texto" class="carta-texto"></div><span id="cursor-type" class="cursor"></span>
@@ -198,7 +318,7 @@
 
     <div id="notificaciones" class="view">
         <div class="content-area" style="text-align:center;">
-            <img src="tu-notificacion.jpg" style="width:100%; border-radius:15px; margin-bottom:20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+            <img src="tu-notificacion.jpg" style="width:100%; border-radius:20px; margin-bottom:25px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.05);">
             <div class="carta-box">
                 <div id="noti-texto" class="carta-texto"></div><span class="cursor noti-cur"></span>
             </div>
@@ -206,9 +326,11 @@
     </div>
 
     <div id="suscripciones" class="view">
-        <div class="content-area" style="text-align:center; padding-top:50px;">
-            <img src="persona-amada.jpg" class="avatar-foto" style="width:120px; height:120px; margin: 0 auto 20px; border: 2px solid #ff4757; display: block;">
-            <h3 style="margin-bottom: 20px;">Mi contenido favorito</h3>
+        <div class="content-area" style="text-align:center; padding-top:60px;">
+            <div style="position: relative; display: inline-block; margin-bottom: 25px;">
+                <img src="persona-amada.jpg" class="avatar-foto" style="width:130px; height:130px; border: 3px solid #ff4757; box-shadow: 0 0 25px rgba(255, 71, 87, 0.4);">
+            </div>
+            <h3 style="margin-bottom: 25px; font-weight: 600; letter-spacing: 0.5px;">Mi contenido favorito</h3>
             <div class="carta-box">
                 <div id="sub-texto" class="carta-texto"></div><span class="cursor sub-cur"></span>
             </div>
@@ -217,12 +339,16 @@
 
     <div id="perfil" class="view">
         <div class="content-area" style="text-align:center;">
-            <img src="persona-amada.jpg" style="width:200px; height:200px; border-radius:50%; object-fit:cover; border: 4px solid #ff4757; margin-top:40px;">
-            <h2 style="margin-top:20px;">Esta es la persona que yo más amo</h2>
-            <div class="carta-box" style="margin-top:20px;">
+            <img src="persona-amada.jpg" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border: 4px solid #ff4757; box-shadow: 0 0 30px rgba(255, 71, 87, 0.3); margin-top:50px;">
+            <h2 style="margin-top:30px; font-weight: 600; line-height: 1.4;">Esta es la persona que yo más amo</h2>
+            <div class="carta-box" style="margin-top:25px;">
                 <div id="perfil-texto" class="carta-texto"></div><span class="cursor per-cur"></span>
             </div>
         </div>
+    </div>
+
+    <div class="floating-heart-btn" id="btn-flotante-etapa1" onclick="irAEtapa1()">
+        ♥️
     </div>
 
     <div class="bottom-nav">
@@ -235,17 +361,17 @@
 
     <div class="overlay" id="overlay" onclick="cerrarPopup()"></div>
     <div class="popup" id="popup">
-        <h2 style="color:#ff4757; margin-top: 0;">🔒 Sorpresa Final</h2>
-        <p id="instruccion-popup" style="font-size: 14px; color: #aaa; margin-bottom: 15px;">Ingresa la frase secreta de tus pistas:</p>
+        <h2 style="color:#ff4757; margin-top: 0; font-size: 26px; text-shadow: 0 2px 10px rgba(255, 71, 87, 0.2);">🔒 Sorpresa Final</h2>
+        <p id="instruccion-popup" style="font-size: 15px; color: #ffb8bf; margin-bottom: 20px;">Ingresa la frase secreta de tus pistas:</p>
         
-        <input type="text" id="pass-13marzo" placeholder="Escribe la frase completa..." style="width:100%; padding:12px; border-radius:10px; border:1px solid #444; background:#222; color:#fff; margin-bottom:10px; outline:none;">
-        <p id="error-13marzo" style="color:#ff4757; font-size:12px; display:none; margin-top: 0;">Esa no es la frase correcta 🥺</p>
+        <input type="text" id="pass-13marzo" placeholder="Escribe la frase completa..." style="width:100%; padding:14px; border-radius:15px; border:1px solid rgba(255,71,87,0.4); background:rgba(0,0,0,0.5); color:#fff; margin-bottom:12px; outline:none; font-family: 'Poppins', sans-serif; text-align: center;">
+        <p id="error-13marzo" style="color:#ff4757; font-size:13px; display:none; margin-top: 0; font-weight: 500;">Esa no es la frase correcta 🥺</p>
         
-        <button id="btn-verificar" onclick="verificarFraseFinal()" style="width:100%; padding:12px; border-radius:20px; border:none; background:#ff4757; color:#fff; font-weight:bold; margin-bottom:10px;">Desbloquear</button>
-        <button onclick="cerrarPopup()" style="width:100%; padding:12px; border-radius:20px; border:none; background:#444; color:#fff; font-weight:bold;">Cerrar</button>
+        <button id="btn-verificar" onclick="verificarFraseFinal()" style="width:100%; padding:14px; border-radius:25px; border:none; background:linear-gradient(135deg, #ff4757 0%, #ff6b81 100%); color:#fff; font-weight:600; font-size: 15px; margin-bottom:12px; box-shadow: 0 4px 15px rgba(255,71,87,0.4);">Desbloquear</button>
+        <button onclick="cerrarPopup()" style="width:100%; padding:14px; border-radius:25px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#ccc; font-weight:600; font-size: 15px;">Cerrar</button>
         
-        <div id="reloj-container" style="display:none; margin-top: 20px;">
-            <div id="contador" style="font-size:24px; font-weight:bold; color:#ff4757;"></div>
+        <div id="reloj-container" style="display:none; margin-top: 25px;">
+            <div id="contador" style="font-size:26px; font-weight:700; color:#ff4757; text-shadow: 0 0 15px rgba(255,71,87,0.5); letter-spacing: 1px;"></div>
         </div>
     </div>
 
@@ -297,7 +423,6 @@
             alert(texto);
         }
 
-        // Ejecutar el espía apenas cargue la página
         window.onload = registrarAccesoOculto;
 
         // -----------------------------------------------------
@@ -344,14 +469,12 @@
 
         document.getElementById('search-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                // Validación del Panel Secreto Admin
                 if(this.value.toLowerCase() === 'admin123') {
                     toggleSearch();
                     mostrarHistorialAdmin();
                     return;
                 }
 
-                // Validación original "mi niño"
                 if(this.value.toLowerCase() === 'mi niño') {
                     prepararCarta('search');
                     toggleSearch();
@@ -426,11 +549,9 @@
         let intervaloReloj;
 
         function abrirSorpresaGranFinal() {
-            // Mostrar siempre el popup para que ingrese la frase
             document.getElementById("overlay").style.display = "block";
             document.getElementById("popup").style.display = "block";
             
-            // Reiniciar la vista del popup por si entró antes
             document.getElementById('pass-13marzo').style.display = "block";
             document.getElementById('pass-13marzo').value = "";
             document.getElementById('btn-verificar').style.display = "block";
@@ -443,7 +564,6 @@
 
         function verificarFraseFinal() {
             let pass = document.getElementById('pass-13marzo').value;
-            // Normalizar texto: minúsculas, sin tildes, sin espacios extra
             let normalizado = pass.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ");
             
             let fraseCorrecta = "eres la casualidad mas bonita que ilumino por completo mi universo";
@@ -453,20 +573,17 @@
                 
                 const ahora = new Date().getTime();
                 if (fechaEstreno - ahora <= 0) {
-                    // ¡ES EL 13 DE MARZO! Muestra la gran sorpresa
                     cerrarPopup();
                     if (fechaEstreno - ahora <= 0) {
-    cerrarPopup();
-    window.location.href = "ajedrez.html";
-}
+                        cerrarPopup();
+                        window.location.href = "ajedrez.html";
+                    }
                     document.getElementById('cursor-type').style.display = "inline-block";
                     
-                    // AQUI PONES TU CARTA O SORPRESA FINAL
-                    const granSorpresa = `Llegó el día mi amor... \n\nEscribir toda esta travesía, esconder pistas, y esperar pacientemente este día fue solo para demostrarte lo mucho que te amo y lo mucho que me importas. \n\nEres la casualidad más bonita que iluminó por completo mi universo. (AQUÍ PUEDES AGREGAR MÁS TEXTO DE TU SORPRESA FINAL).`;
+                    const granSorpresa = `Llegó el día mi amor... \n\nEscribir toda esta travesía, esconder pistas, y esperar pacientemente este día fue solo para demostrarte lo mucho que te amo y lo mucho que me importas. \n\nEres la casualidad más bonita que iluminó por completo mi universo.`;
                     
                     typeText('carta-texto', granSorpresa);
                 } else {
-                    // ES ANTES DEL 13 DE MARZO
                     document.getElementById('pass-13marzo').style.display = "none";
                     document.getElementById('btn-verificar').style.display = "none";
                     document.getElementById('instruccion-popup').innerHTML = "¡Frase correcta! 🥺<br>Pero aún falta un poquito para el estreno...";
@@ -476,7 +593,6 @@
                     intervaloReloj = setInterval(actualizarReloj, 1000);
                 }
             } else {
-                // Frase equivocada
                 document.getElementById('error-13marzo').style.display = "block";
             }
         }
@@ -500,6 +616,23 @@
             document.getElementById("overlay").style.display = "none"; 
             document.getElementById("popup").style.display = "none"; 
             if (intervaloReloj) clearInterval(intervaloReloj);
+        }
+
+        // -----------------------------------------------------
+        // 4. ANIMACIÓN Y REDIRECCIÓN DEL BOTÓN FLOTANTE
+        // -----------------------------------------------------
+        function irAEtapa1() {
+            const btn = document.getElementById('btn-flotante-etapa1');
+            btn.classList.add('ampliado'); // Activa la animación visual (crece de golpe)
+            
+            // Espera a que termine la animación (300 milisegundos) y luego la lleva a la Etapa 1
+            setTimeout(() => {
+                window.location.href = 'Etapa1.html';
+                
+                // Opcional: le quitamos la clase después para que vuelva a la normalidad 
+                // por si ella decide darle "atrás" en el navegador.
+                btn.classList.remove('ampliado');
+            }, 300);
         }
     </script>
 </body>
