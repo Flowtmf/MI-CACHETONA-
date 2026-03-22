@@ -194,8 +194,32 @@
     }
   }
 
-  // LÓGICA DE BATERÍA ESTILO CELULAR
+  // LÓGICA DE BATERÍA ESTILO CELULAR (Con Plan B)
   async function iniciarBateria() {
+    // Función de respaldo si la API no existe o falla
+    const activarBateriaMagica = () => {
+      const text = document.getElementById('battery-level-text');
+      const fill = document.getElementById('battery-fill');
+      const status = document.getElementById('battery-status');
+      const rayo = document.querySelector('.rayo-carga');
+      
+      text.innerText = '100%';
+      text.style.color = '#d500f9';
+      fill.style.width = '100%';
+      fill.style.background = '#d500f9';
+      fill.style.boxShadow = '0 0 10px #d500f9';
+      status.style.borderColor = '#d500f9';
+      status.classList.add('charging');
+      rayo.innerHTML = '♥️'; // Cambiamos el rayo por un corazón
+      rayo.style.color = '#fff';
+      rayo.style.textShadow = '0 0 5px #d500f9';
+    };
+
+    if (!('getBattery' in navigator)) {
+      activarBateriaMagica();
+      return;
+    }
+
     try {
       const battery = await navigator.getBattery();
       function update() {
@@ -215,7 +239,9 @@
       update();
       battery.addEventListener('levelchange', update);
       battery.addEventListener('chargingchange', update);
-    } catch (e) { document.getElementById('battery-status').style.display = 'none'; }
+    } catch (e) { 
+      activarBateriaMagica(); 
+    }
   }
 
   // CONTADOR
