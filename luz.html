@@ -14,7 +14,7 @@
     background-color: #000; font-family: 'Montserrat', sans-serif; overflow: hidden;
   }
 
-  /* BOTÓN VOLVER (Oculto hasta que acabe) */
+  /* BOTÓN VOLVER */
   .btn-volver {
     position: absolute; top: 20px; left: 20px; padding: 12px 24px; border-radius: 30px;
     background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
@@ -22,7 +22,7 @@
     opacity: 0; pointer-events: none;
   }
 
-  /* PANTALLA INICIAL INVISIBLE (Para el toque obligatorio) */
+  /* PANTALLA INICIAL */
   #pantalla-toque {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     z-index: 3000; display: flex; align-items: center; justify-content: center; flex-direction: column;
@@ -35,8 +35,8 @@
 
   /* TEXTO GUÍA MÍSTICO */
   #texto-guia {
-    position: absolute; top: 40%; width: 100%; text-align: center; color: #fff;
-    font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; z-index: 1000;
+    position: absolute; top: 15%; width: 100%; text-align: center; color: #fff;
+    font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; z-index: 1000;
     pointer-events: none; opacity: 0; transition: opacity 0.5s; text-shadow: 0 0 15px rgba(0,229,255,0.8);
     padding: 0 20px; line-height: 1.6;
   }
@@ -47,13 +47,13 @@
   #oscuridad {
     position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
     background-color: #000; z-index: 500; pointer-events: none;
-    transition: opacity 0.3s ease-out; /* Súper responsivo a la luz */
+    transition: opacity 0.5s ease-out; 
   }
 
   /* MOTOR 3D EN CSS */
   #escena-3d {
     perspective: 700px; width: 100vw; height: 100vh;
-    position: absolute; top: 0; left: 0; overflow: hidden;
+    position: absolute; top: 0; left: 0; overflow: hidden; 
   }
   #camara {
     width: 100%; height: 100%; position: absolute; transform-style: preserve-3d;
@@ -79,13 +79,13 @@
   #techo { transform: rotateX(-90deg) translateZ(-700px); background: #050a10; }
   #piso  { transform: rotateX(90deg) translateZ(-700px); background: radial-gradient(circle, #2d1a11 0%, #0a0502 100%); }
 
-  .objeto-decorativo { font-size: 8rem; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8)); position: absolute; }
-  .texto-pared { color: rgba(255,255,255,0.2); font-size: 2rem; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 20px; }
+  .objeto-decorativo { font-size: 8rem; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8)); position: absolute; pointer-events: none; }
+  .texto-pared { color: rgba(255,255,255,0.2); font-size: 2rem; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 20px; text-align: center; pointer-events: none; }
 
   /* LA LLAVE DORADA */
   #llave {
     font-size: 7rem; cursor: pointer; position: absolute; top: 40%;
-    filter: drop-shadow(0 0 20px #FFD700);
+    filter: drop-shadow(0 0 20px #FFD700); z-index: 100; pointer-events: auto;
     animation: flotarLlave 3s ease-in-out infinite alternate;
   }
   @keyframes flotarLlave {
@@ -119,10 +119,10 @@
 
   <div id="pantalla-toque" onclick="iniciarConexion()">
     <div class="texto-toque">Toca aquí para abrir tus ojos...</div>
-    <div style="color:#888; font-size:0.9rem;">(Acepta los permisos de cámara y movimiento)</div>
+    <div style="color:#888; font-size:0.9rem;">(Acepta los permisos de cámara)</div>
   </div>
 
-  <div id="texto-guia">Ilumina la pantalla de tu celular con una linterna para poder ver...</div>
+  <div id="texto-guia">Ilumina tu cámara frontal con otra luz para poder ver...<br><span style="font-size:0.8rem; color:#aaa;">(Desliza la pantalla con tu dedo para mirar)</span></div>
 
   <div id="oscuridad"></div>
 
@@ -130,7 +130,7 @@
     <div id="camara">
       <div id="cuarto">
         <div class="pared" id="frente">
-          <div class="texto-pared">Gira a tu alrededor...</div>
+          <div class="texto-pared">Desliza la pantalla para mirar...</div>
           <div class="objeto-decorativo" style="font-size: 15rem;">🖼️</div>
         </div>
         <div class="pared" id="derecha">
@@ -150,7 +150,7 @@
   </div>
 
   <div id="pantalla-victoria">
-    <div class="texto-victoria">Has encontrado la luz en la oscuridad...</div>
+    <div class="texto-victoria">Has encontrado la luz...</div>
     <p style="color: #ccc; margin-bottom: 40px; font-size: 1.1rem;">Tú iluminas mi vida de la misma manera. ♥️</p>
     <button class="btn-avanzar" onclick="completarMisterio()">Continuar</button>
   </div>
@@ -167,11 +167,57 @@
   const video = document.getElementById('video-sensor');
   const canvas = document.getElementById('canvas-sensor');
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
-
   const camara = document.getElementById('camara');
-  let lastAlpha = null;
+
   let targetRotY = 0, currentRotY = 0;
   let targetRotX = 0, currentRotX = 0;
+
+  // NUEVO SISTEMA TÁCTIL (Funciona en PC y Celular)
+  let isDragging = false;
+  let previousX = 0, previousY = 0;
+
+  const startDrag = (e) => { 
+    // Si tocó la llave o el botón, no hacer drag
+    if(e.target.id === 'llave' || e.target.tagName === 'BUTTON') return;
+    
+    isDragging = true; 
+    previousX = e.clientX || (e.touches && e.touches[0].clientX); 
+    previousY = e.clientY || (e.touches && e.touches[0].clientY); 
+  };
+
+  const endDrag = () => { isDragging = false; };
+
+  const moveDrag = (e) => {
+    if (!isDragging) return;
+    
+    let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    let clientY = e.clientY || (e.touches && e.touches[0].clientY);
+    
+    let deltaX = clientX - previousX;
+    let deltaY = clientY - previousY;
+    
+    targetRotY += deltaX * 0.4; 
+    targetRotX -= deltaY * 0.4;
+    targetRotX = Math.max(-45, Math.min(45, targetRotX)); // Limitar para no romper el cuello
+    
+    previousX = clientX; 
+    previousY = clientY;
+  };
+
+  // Eventos para Mouse
+  document.addEventListener('mousedown', startDrag);
+  document.addEventListener('mouseup', endDrag);
+  document.addEventListener('mousemove', moveDrag);
+
+  // Eventos para Pantalla Táctil (Celular)
+  document.addEventListener('touchstart', startDrag, { passive: false });
+  document.addEventListener('touchend', endDrag);
+  document.addEventListener('touchmove', (e) => {
+    if (isDragging) {
+      e.preventDefault(); // <-- Esto es lo que evita que el celular se trabe intentando hacer scroll
+      moveDrag(e);
+    }
+  }, { passive: false });
 
   async function iniciarConexion() {
     document.getElementById('pantalla-toque').style.opacity = '0';
@@ -183,42 +229,15 @@
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
       video.srcObject = stream;
-      await video.play(); // Forzar reproducción en iOS
+      await video.play(); 
       sensorIniciado = true;
     } catch (err) {
-      textoGuia.innerHTML = "Permiso de cámara denegado.<br>No podemos detectar la luz.";
+      textoGuia.innerHTML = "Permiso denegado.<br>No podemos detectar la luz.";
       return;
-    }
-
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      try {
-        const perm = await DeviceOrientationEvent.requestPermission();
-        if (perm === 'granted') {
-          window.addEventListener('deviceorientation', manejarGiroscopioCrudo);
-        }
-      } catch (e) { console.error(e); }
-    } else {
-      window.addEventListener('deviceorientation', manejarGiroscopioCrudo);
     }
 
     requestAnimationFrame(renderMotor3D);
     monitorearLuzPrecisa(); 
-  }
-
-  // --- MOTOR 3D FLUIDO ---
-  function manejarGiroscopioCrudo(e) {
-    if (e.alpha === null) return;
-    if (lastAlpha === null) lastAlpha = e.alpha;
-
-    let deltaAlpha = e.alpha - lastAlpha;
-    if (deltaAlpha > 180) deltaAlpha -= 360;
-    if (deltaAlpha < -180) deltaAlpha += 360;
-
-    targetRotY -= deltaAlpha; 
-    lastAlpha = e.alpha;
-
-    let b = e.beta - 90;
-    targetRotX = Math.max(-45, Math.min(45, b)); 
   }
 
   function renderMotor3D() {
@@ -228,7 +247,6 @@
     requestAnimationFrame(renderMotor3D);
   }
 
-  // --- SENSOR DE LUZ INFALIBLE ---
   function monitorearLuzPrecisa() {
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -236,34 +254,35 @@
       const data = frameData.data;
       
       let maxLuma = 0;
-      let pixelesQuemados = 0;
+      let sumaLuma = 0;
       
       for (let i = 0; i < data.length; i += 4) {
         let r = data[i]; let g = data[i+1]; let b = data[i+2];
-        let luma = 0.299*r + 0.587*g + 0.114*b; // Brillo del pixel
+        let luma = 0.299*r + 0.587*g + 0.114*b; 
         
+        sumaLuma += luma;
         if (luma > maxLuma) maxLuma = luma;
-        if (luma > 245) pixelesQuemados++; // Pixel casi blanco puro
       }
+      
+      let promedioLuma = sumaLuma / (canvas.width * canvas.height);
 
-      // Si detecta una fuente de luz directa (linterna)
-      if (pixelesQuemados > 2 || maxLuma > 250) {
+      if (maxLuma > 200 || promedioLuma > 100) {
         if (!cuartoIluminado) {
           cuartoIluminado = true;
-          oscuridadLayer.style.opacity = '0'; // Enciende la luz
+          oscuridadLayer.style.opacity = '0'; 
           textoGuia.style.opacity = '0';
         }
       } else {
         if (cuartoIluminado) {
           cuartoIluminado = false;
-          oscuridadLayer.style.opacity = '0.98'; // Apaga la luz
-          textoGuia.innerHTML = "Se fue la luz... vuelve a iluminar con la linterna.";
+          oscuridadLayer.style.opacity = '0.96'; 
+          textoGuia.innerHTML = "Se fue la luz... vuelve a iluminar tu cámara.";
           textoGuia.style.opacity = '1';
         }
       }
     }
     
-    setTimeout(monitorearLuzPrecisa, 100); 
+    setTimeout(monitorearLuzPrecisa, 150); 
   }
 
   function tomarLlave() {
@@ -292,4 +311,3 @@
 </script>
 </body>
 </html>
-
