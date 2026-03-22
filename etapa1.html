@@ -14,7 +14,43 @@
     overscroll-behavior-y: none; -webkit-overflow-scrolling: touch;
   }
 
-  /* FONDO MÍSTICO */
+  /* --- INTRO MATRIX --- */
+  #matrix-intro {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #000; z-index: 9999; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 1.5s ease;
+  }
+  #canvas-matrix {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.5; z-index: 1; pointer-events: none;
+  }
+  #contenedor-poema {
+    position: relative; z-index: 2; width: 90%; max-width: 600px;
+    height: 75vh; overflow-y: auto; color: #fff;
+    font-family: monospace; font-size: 1.1rem; line-height: 1.6;
+    text-shadow: 0 0 10px #00e5ff; padding: 25px; 
+    background: rgba(5, 5, 8, 0.85); border-radius: 15px;
+    border: 1px solid rgba(0,229,255,0.4);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+  }
+  #contenedor-poema::-webkit-scrollbar { width: 6px; }
+  #contenedor-poema::-webkit-scrollbar-thumb { background: #00e5ff; border-radius: 10px; }
+  
+  #texto-poema { white-space: pre-wrap; margin-bottom: 20px; }
+  
+  #input-continuar-box {
+    display: none; text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px dashed rgba(0, 229, 255, 0.4);
+  }
+  #input-continuar {
+    background: rgba(0,0,0,0.5); border: 1px solid #00e5ff; color: #00e5ff;
+    padding: 12px 20px; border-radius: 20px; outline: none; text-align: center;
+    font-family: monospace; font-size: 1rem; width: 80%; text-transform: lowercase;
+    box-shadow: 0 0 15px rgba(0,229,255,0.3); transition: 0.3s;
+  }
+  #input-continuar:focus { box-shadow: 0 0 25px rgba(0,229,255,0.6); }
+
+  /* FONDO MÍSTICO ETAPA 1 */
   .fondo-estrellas {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at center, #111 0%, #000 100%); z-index: -2;
@@ -34,108 +70,77 @@
     padding: 0 20px; z-index: 100; backdrop-filter: blur(15px);
   }
 
-  /* NUEVO: Botón circular para volver al Index */
-  .btn-volver-index {
-    background: rgba(0, 229, 255, 0.1); 
-    border: 1px solid rgba(0, 229, 255, 0.3); 
-    color: #00e5ff; 
-    width: 38px; height: 38px; 
-    border-radius: 50%; 
+  .controles-izq { display: flex; align-items: center; gap: 10px; }
+  
+  .btn-accion-top {
+    background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); 
+    color: #00e5ff; width: 38px; height: 38px; border-radius: 50%; 
     display: flex; align-items: center; justify-content: center; 
-    cursor: pointer; backdrop-filter: blur(5px); 
-    font-size: 1.2rem; transition: 0.3s;
+    cursor: pointer; backdrop-filter: blur(5px); font-size: 1.1rem; transition: 0.3s;
     box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
   }
-  .btn-volver-index:active { transform: scale(0.9); background: rgba(0, 229, 255, 0.3); }
+  .btn-accion-top:active { transform: scale(0.9); background: rgba(0, 229, 255, 0.3); }
 
   .titulo-seccion { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: #e0f7fa; margin: 0; }
   .subtitulo-seccion { font-size: 0.65rem; color: #00e5ff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
 
   /* --- DISEÑO BATERÍA REAL --- */
-  .battery-wrapper {
-    display: flex; align-items: center; gap: 8px;
-  }
-  .battery-body {
-    width: 35px; height: 18px; border: 2px solid #555; border-radius: 4px; position: relative; padding: 1px;
-  }
-  .battery-body::after {
-    content: ''; position: absolute; right: -5px; top: 4px; width: 3px; height: 6px; background: #555; border-radius: 0 2px 2px 0;
-  }
-  .battery-level-fill {
-    height: 100%; width: 0%; background: #fff; border-radius: 1px; transition: width 0.5s, background 0.5s;
-  }
-  /* Estilo cargando */
+  .battery-wrapper { display: flex; align-items: center; gap: 8px; }
+  .battery-body { width: 35px; height: 18px; border: 2px solid #555; border-radius: 4px; position: relative; padding: 1px; }
+  .battery-body::after { content: ''; position: absolute; right: -5px; top: 4px; width: 3px; height: 6px; background: #555; border-radius: 0 2px 2px 0; }
+  .battery-level-fill { height: 100%; width: 0%; background: #fff; border-radius: 1px; transition: width 0.5s, background 0.5s; }
   .charging .battery-body { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.4); }
   .charging .battery-level-fill { background: #00e5ff; box-shadow: 0 0 5px #00e5ff; }
   .charging .rayo-carga { display: block; }
-  
-  .rayo-carga {
-    display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    font-size: 12px; color: #00e5ff; text-shadow: 0 0 5px #fff; z-index: 10;
-  }
+  .rayo-carga { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 12px; color: #00e5ff; text-shadow: 0 0 5px #fff; z-index: 10; }
   .battery-text { font-family: monospace; font-size: 0.85rem; color: #888; }
   .charging .battery-text { color: #00e5ff; }
 
   /* --- ÁREA DE SCROLL Y NODOS --- */
-  .scroll-area {
-    width: 100%; padding-top: 130px; padding-bottom: 80px;
-    display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
-  }
-
-  .nodo-wrapper {
-    display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; 
-    position: relative; transition: all 0.3s ease;
-    opacity: 0.25; filter: grayscale(100%); pointer-events: none;
-  }
+  .scroll-area { width: 100%; padding-top: 130px; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+  .nodo-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; position: relative; transition: all 0.3s ease; opacity: 0.25; filter: grayscale(100%); pointer-events: none; }
   .nodo-wrapper.desbloqueado { opacity: 1; filter: grayscale(0%); pointer-events: auto; }
-  
-  .orbe-nivel {
-    width: 75px; height: 75px; border-radius: 50%; background: #0f0f13; 
-    border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2);
-  }
+  .orbe-nivel { width: 75px; height: 75px; border-radius: 50%; background: #0f0f13; border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2); }
   .desbloqueado .orbe-nivel { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); }
   .desbloqueado .orbe-nivel:active { transform: scale(0.9); border-color: #d500f9; }
-
   .numero-nivel { font-weight: 600; font-size: 1.4rem; color: rgba(255,255,255,0.3); }
   .desbloqueado .numero-nivel { color: #fff; text-shadow: 0 0 10px rgba(0,229,255,0.8); }
-
   .titulo-nodo { margin-top: 10px; font-size: 0.75rem; color: #555; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
   .desbloqueado .titulo-nodo { color: #00e5ff; }
 
   /* --- MODAL CONTADOR --- */
-  #modal-contador {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 1000; opacity: 0; visibility: hidden; transition: 0.4s;
-  }
+  #modal-contador { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.4s; }
   #modal-contador.activo { opacity: 1; visibility: visible; }
-  .caja-modal {
-    background: #0f0f14; border: 1px solid #d500f9;
-    width: 85%; max-width: 320px; border-radius: 20px; padding: 35px 20px;
-    text-align: center; transform: scale(0.8); transition: 0.4s;
-  }
+  .caja-modal { background: #0f0f14; border: 1px solid #d500f9; width: 85%; max-width: 320px; border-radius: 20px; padding: 35px 20px; text-align: center; transform: scale(0.8); transition: 0.4s; }
   #modal-contador.activo .caja-modal { transform: scale(1); }
   .titulo-modal { font-family: 'Playfair Display', serif; font-style: italic; color: #d500f9; font-size: 1.6rem; margin: 0 0 15px; }
-  .reloj-neon {
-    font-family: monospace; font-size: 1.5rem; color: #00e5ff; text-shadow: 0 0 10px #00e5ff;
-    padding: 15px; border: 1px solid rgba(0,229,255,0.2); margin: 20px 0; border-radius: 10px;
-  }
+  .reloj-neon { font-family: monospace; font-size: 1.5rem; color: #00e5ff; text-shadow: 0 0 10px #00e5ff; padding: 15px; border: 1px solid rgba(0,229,255,0.2); margin: 20px 0; border-radius: 10px; }
   .btn-cerrar { background: transparent; border: 1px solid #d500f9; color: #d500f9; padding: 10px 25px; border-radius: 20px; cursor: pointer; }
-
 </style>
 </head>
 <body>
+
+  <div id="matrix-intro" style="display: none;">
+    <canvas id="canvas-matrix"></canvas>
+    <div id="contenedor-poema">
+        <div id="texto-poema"></div>
+        <div id="input-continuar-box">
+            <p style="margin-bottom: 15px; color: #00e5ff; text-shadow: none;">Escribe <b style="color:#fff;">continuar</b> para avanzar...</p>
+            <input type="text" id="input-continuar" placeholder="..." autocomplete="off">
+            <p id="error-continuar" style="color: #ff4757; font-size: 0.85rem; display: none; margin-top: 10px; text-shadow: none;">Palabra incorrecta...</p>
+        </div>
+    </div>
+  </div>
 
   <div class="fondo-estrellas"></div>
   <div class="respiracion"></div>
 
   <div class="header-hud">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <button class="btn-volver-index" onclick="window.location.href='index.html'">←</button>
-      <div>
+    <div class="controles-izq">
+      <button class="btn-accion-top" onclick="window.location.href='index.html'">←</button>
+      <button class="btn-accion-top" onclick="forzarIntroMatrix()" title="Volver a leer el poema">📜</button>
+      
+      <div style="margin-left: 8px;">
         <div class="subtitulo-seccion">Etapa 1</div>
         <h1 class="titulo-seccion">El Camino</h1>
       </div>
@@ -162,14 +167,177 @@
   </div>
 
 <script>
-  // El orden exacto de los 5 niveles
+  // -----------------------------------------------------
+  // 1. LÓGICA DEL POEMA MATRIX
+  // -----------------------------------------------------
+  const poemaLargo = [
+    "Te amo, porque eres tú,",
+    "y esa es la única ciencia,",
+    "la más bella coincidencia",
+    "que me ha llenado de luz.",
+    "",
+    "Eres mi brújula, mi sur,",
+    "el centro de mis mañanas,",
+    "la brisa en mis ventanas",
+    "con su inmensa gratitud.",
+    "",
+    "A veces creo inventarte",
+    "como un poeta en su lienzo,",
+    "donde el fin es un comienzo",
+    "y el aire se vuelve arte.",
+    "",
+    "Los relojes, al mirarte,",
+    "derriten todas sus horas,",
+    "y las luces de las auroras",
+    "se dibujan para amarte.",
+    "",
+    "Sharon, en tu propio nombre",
+    "descubrí constelaciones,",
+    "resolví las ecuaciones",
+    "que el universo nos esconde.",
+    "",
+    "Eres la voz que responde",
+    "al silencio de mi pecho,",
+    "mi camino y mi derecho,",
+    "el refugio en que me escondo.",
+    "",
+    "Te encuentro en cada compás,",
+    "en los giros de bachata,",
+    "cuando la música nos ata",
+    "y no pido nada más.",
+    "",
+    "O en un merengue fugaz",
+    "que nos enreda los pies,",
+    "amándote una y otra vez",
+    "con un ritmo que da paz.",
+    "",
+    "Te amo por tus silencios,",
+    "por tu risa desatada,",
+    "por la magia inesperada",
+    "de tus infinitos comienzos.",
+    "",
+    "Por los mundos tan inmensos",
+    "que construimos de la nada,",
+    "por tu voz enamorada",
+    "y tus latidos intensos.",
+    "",
+    "Construiré un rincón distinto,",
+    "un espacio interactivo,",
+    "para que sepas que vivo",
+    "siguiendo solo mi instinto.",
+    "",
+    "Un lugar donde te pinto",
+    "con códigos mi pasión,",
+    "para que tu corazón",
+    "se pierda en mi laberinto.",
+    "",
+    "Te amo, porque eres tú,",
+    "la mujer del espejito,",
+    "la que vuelve el infinito",
+    "un mar de sereno azul.",
+    "",
+    "Y aunque se apague la luz",
+    "y el mundo pierda su giro,",
+    "sabrás en cada suspiro:",
+    "Te amo, porque eres tú."
+  ];
+
+  let lineaIdx = 0;
+  let charIdx = 0;
+  let intervalMatrix;
+
+  function iniciarMatrixVisual() {
+      const canvasMatrix = document.getElementById('canvas-matrix');
+      const ctxMatrix = canvasMatrix.getContext('2d');
+      canvasMatrix.width = window.innerWidth;
+      canvasMatrix.height = window.innerHeight;
+      
+      const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&♥️".split("");
+      const fontSize = 16;
+      const columnas = canvasMatrix.width / fontSize;
+      const drops = [];
+      for(let x = 0; x < columnas; x++) drops[x] = 1;
+
+      intervalMatrix = setInterval(() => {
+          ctxMatrix.fillStyle = "rgba(0, 0, 0, 0.05)";
+          ctxMatrix.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
+          ctxMatrix.fillStyle = "#00e5ff"; // Verde Matrix cambiado a Cian Neón
+          ctxMatrix.font = fontSize + "px monospace";
+          
+          for(let i = 0; i < drops.length; i++) {
+              const text = letras[Math.floor(Math.random() * letras.length)];
+              ctxMatrix.fillText(text, i * fontSize, drops[i] * fontSize);
+              if(drops[i] * fontSize > canvasMatrix.height && Math.random() > 0.975) drops[i] = 0;
+              drops[i]++;
+          }
+      }, 33);
+  }
+
+  function escribirPoema() {
+      const textoPoema = document.getElementById('texto-poema');
+      const contenedor = document.getElementById('contenedor-poema');
+      
+      if (lineaIdx < poemaLargo.length) {
+          if (charIdx < poemaLargo[lineaIdx].length) {
+              textoPoema.innerHTML += poemaLargo[lineaIdx].charAt(charIdx);
+              charIdx++;
+              contenedor.scrollTop = contenedor.scrollHeight;
+              setTimeout(escribirPoema, 35); // Velocidad de tipeo por letra
+          } else {
+              textoPoema.innerHTML += '<br>';
+              charIdx = 0;
+              lineaIdx++;
+              contenedor.scrollTop = contenedor.scrollHeight;
+              setTimeout(escribirPoema, 400); // Pausa al final de cada línea
+          }
+      } else {
+          document.getElementById('input-continuar-box').style.display = 'block';
+          contenedor.scrollTop = contenedor.scrollHeight;
+          document.getElementById('input-continuar').focus();
+      }
+  }
+
+  function verificarContinuar(e) {
+      if (e.key === 'Enter') {
+          let valor = e.target.value.toLowerCase().trim();
+          if (valor === 'continuar') {
+              localStorage.setItem('intro_matrix_vista', 'true');
+              document.getElementById('matrix-intro').style.opacity = '0';
+              setTimeout(() => {
+                  document.getElementById('matrix-intro').style.display = 'none';
+                  clearInterval(intervalMatrix);
+              }, 1500);
+          } else {
+              document.getElementById('error-continuar').style.display = 'block';
+              setTimeout(() => { document.getElementById('error-continuar').style.display = 'none'; }, 2000);
+          }
+      }
+  }
+
+  document.getElementById('input-continuar').addEventListener('keypress', verificarContinuar);
+
+  function forzarIntroMatrix() {
+      localStorage.removeItem('intro_matrix_vista');
+      location.reload();
+  }
+
+  function chequearIntro() {
+      if(localStorage.getItem('intro_matrix_vista') !== 'true') {
+          document.getElementById('matrix-intro').style.display = 'flex';
+          iniciarMatrixVisual();
+          // Retraso de 1 segundo antes de empezar a escribir
+          setTimeout(escribirPoema, 1000); 
+      }
+  }
+
+  // -----------------------------------------------------
+  // 2. LÓGICA DEL MAPA (Etapa 1)
+  // -----------------------------------------------------
   const nombresNiveles = ["Voz", "Carga", "Luz", "Puerta", "Fuego"];
-  const totalNiveles = 30; // Mantiene el camino largo visualmente
+  const totalNiveles = 30; 
   
   let nivelActualDesbloqueado = parseInt(localStorage.getItem('progreso_camii_etapa1')) || 1;
   const contenedorMapa = document.getElementById('mapa-niveles');
-  
-  // Establecemos la fecha objetivo al 25 de marzo de 2026 a las 00:00:00
   const fechaObjetivo = new Date(2026, 2, 25, 0, 0, 0).getTime(); 
 
   function generarMapa() {
@@ -182,7 +350,6 @@
       const desplazamiento = Math.sin(i * 0.7) * 65; 
       wrapper.style.transform = `translateX(${desplazamiento}px)`;
 
-      // Toma el nombre del arreglo si es del 1 al 5
       let nombre = i <= 5 ? nombresNiveles[i-1] : `Misterio ${i}`;
       
       wrapper.innerHTML = `
@@ -198,7 +365,6 @@
   function tocarNivel(num) {
     if (num > nivelActualDesbloqueado) return;
 
-    // REDIRECCIONES A LOS ARCHIVOS HTML EN ORDEN
     switch(num) {
       case 1: window.location.href = 'voz.html'; break;
       case 2: window.location.href = 'carga.html'; break;
@@ -213,7 +379,7 @@
     }
   }
 
-  // LÓGICA DE BATERÍA ESTILO CELULAR (Con Plan B)
+  // LÓGICA DE BATERÍA ESTILO CELULAR
   async function iniciarBateria() {
     const activarBateriaMagica = () => {
       const text = document.getElementById('battery-level-text');
@@ -280,7 +446,11 @@
     clearInterval(interval);
   }
 
-  window.onload = () => { generarMapa(); iniciarBateria(); };
+  window.onload = () => { 
+      chequearIntro();
+      generarMapa(); 
+      iniciarBateria(); 
+  };
 </script>
 </body>
 </html>
