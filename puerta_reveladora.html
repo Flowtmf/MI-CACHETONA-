@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La Puerta del Destino</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:ital,wght@1,600&display=swap');
+
+  * { box-sizing: border-box; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+  
+  body, html {
+    margin: 0; padding: 0; width: 100vw; height: 100vh;
+    background: linear-gradient(135deg, #16080b 0%, #0a0506 100%);
+    font-family: 'Poppins', sans-serif; overflow: hidden; color: white;
+  }
+
+  /* BOTÓN VOLVER SUTIL */
+  .btn-volver-sutil {
+    position: absolute; top: 20px; left: 20px; padding: 10px 20px; border-radius: 30px;
+    background: rgba(255, 71, 87, 0.05); color: #ffb8bf; border: 1px solid rgba(255, 71, 87, 0.2);
+    cursor: pointer; z-index: 2000; backdrop-filter: blur(5px); font-size: 0.8rem; transition: 0.4s;
+  }
+  .btn-volver-sutil:active { background: rgba(255, 71, 87, 0.2); border-color: #ff4757; }
+
+  /* --- ESCENARIO DE LA PUERTA --- */
+  #escena-puerta {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px;
+    transition: opacity 1.5s ease-out; z-index: 100;
+  }
+
+  /* MENSAJE INICIAL */
+  #pre-texto {
+    width: 90%; text-align: center; z-index: 110;
+    transition: opacity 0.5s; margin-top: 30px;
+  }
+  .titulo-congrat {
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.2rem;
+    color: #ff4757; text-shadow: 0 0 15px rgba(255, 71, 87, 0.5); margin-bottom: 10px;
+  }
+  .instruccion-puerta {
+    font-size: 1rem; color: #ffb8bf; letter-spacing: 1px; line-height: 1.6;
+  }
+
+  /* LA PUERTA MÁS DETALLADA */
+  #puerta-contenedor {
+    width: 220px; height: 350px; border-radius: 10px 10px 0 0;
+    background: 
+      linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)),
+      linear-gradient(to right, #3a2214 0%, #2d1a11 20%, #1f110a 50%, #2d1a11 80%, #3a2214 100%);
+    border: 6px solid #140b06; 
+    border-bottom: none;
+    box-shadow: 0 0 25px 5px rgba(0, 229, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.9);
+    position: relative; cursor: pointer; transform-style: preserve-3d;
+    
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    padding: 25px 0;
+    
+    /* Transición suave para el hundido */
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2), box-shadow 0.3s ease;
+    animation: palpitarPuerta 3s infinite alternate; z-index: 105;
+  }
+  
+  @keyframes palpitarPuerta {
+    0% { box-shadow: 0 0 20px 5px rgba(0, 229, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.9); }
+    100% { box-shadow: 0 0 35px 10px rgba(0, 229, 255, 0.4), inset 0 0 20px rgba(0,0,0,0.9); }
+  }
+
+  /* ¡ESTA ES LA CLASE MÁGICA QUE LA HUNDE FORZADAMENTE! */
+  .puerta-hundida {
+    transform: scale(0.9) perspective(600px) rotateX(10deg) !important;
+    box-shadow: 0 0 10px 2px rgba(0, 229, 255, 0.8), inset 0 0 60px rgba(0,0,0,1) !important;
+  }
+
+  /* PANELES DE LA MADERA TALLADA */
+  .panel-madera {
+    width: 65%; height: 30%;
+    border: 2px solid #140b06;
+    background: linear-gradient(to bottom right, rgba(255,255,255,0.05), rgba(0,0,0,0.4));
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.8), 0 2px 0 rgba(255,255,255,0.05);
+    border-radius: 4px;
+  }
+
+  /* DETALLES: PICAPORTE Y CERROJO */
+  #picaporte {
+    position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 14px; height: 50px;
+    background: linear-gradient(to bottom, #888, #333); border-radius: 6px; 
+    box-shadow: 2px 4px 6px rgba(0,0,0,0.8), inset 1px 1px 2px rgba(255,255,255,0.3);
+  }
+  
+  #cerrojo {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    font-size: 3.5rem; color: #ff4757; text-shadow: 0 0 20px rgba(255, 71, 87, 0.9);
+    animation: latirCerrojo 1.5s infinite; z-index: 10;
+  }
+  @keyframes latirCerrojo { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.1); } }
+
+  /* --- REPRODUCTOR DE VIDEO --- */
+  #contenedor-video {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 200; display: none; opacity: 0;
+    transition: opacity 1.5s; display: flex; align-items: center; justify-content: center;
+  }
+  #video-revelador { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  /* --- MENSAJE FINAL --- */
+  #post-mensaje {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 5, 6, 0.98); z-index: 300; display: none; opacity: 0;
+    transition: opacity 1.5s; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+
+  .panel-final {
+    background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 71, 87, 0.2);
+    border-radius: 20px; padding: 40px 30px; max-width: 400px; width: 95%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+    text-align: center; display: flex; flex-direction: column; align-items: center;
+  }
+  
+  .titulo-final {
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 2rem;
+    color: #ff4757; text-shadow: 0 0 20px rgba(255, 71, 87, 0.4); margin-bottom: 25px;
+  }
+  
+  .texto-poema-final {
+    font-size: 1.05rem; line-height: 1.8; color: #fff; white-space: pre-wrap;
+    font-weight: 400; text-align: left; width: 100%;
+  }
+
+  /* BOTÓN VOLVER ATRÁS FINAL */
+  #btn-regresar-mapa {
+    margin-top: 35px; padding: 16px 45px; border-radius: 30px;
+    background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%); color: #fff;
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); border: none; transition: 0.3s;
+    opacity: 0; pointer-events: none; 
+  }
+  #btn-regresar-mapa.visible { opacity: 1; pointer-events: auto; }
+  #btn-regresar-mapa:active { transform: scale(0.95); }
+
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+  <button class="btn-volver-sutil" onclick="window.location.href='etapa1.html'">← Volver</button>
+
+  <div id="escena-puerta">
+    <div id="pre-texto">
+      <div class="titulo-congrat">¡Felicitaciones, mi amor!</div>
+      <div class="instruccion-puerta">Ya tienes la llave. Ahora desbloquea esta puerta... ♥️</div>
+    </div>
+    
+    <div id="puerta-contenedor" ontouchstart="" onclick="abrirPuerta()">
+      <div class="panel-madera"></div>
+      <div id="cerrojo">♥️</div>
+      <div id="picaporte"></div>
+      <div class="panel-madera"></div>
+    </div>
+  </div>
+
+  <div id="contenedor-video">
+    <video id="video-revelador" playsinline>
+      <source src="tu-video-romantico.mp4" type="video/mp4">
+      Tu navegador no soporta videos.
+    </video>
+  </div>
+
+  <div id="post-mensaje">
+    <div class="panel-final">
+      <div class="titulo-final">Para ti, mi amor</div>
+      <div id="texto-final" class="texto-poema-final"></div>
+      <button id="btn-regresar-mapa" onclick="window.location.href='etapa1.html'">Volver Atrás</button>
+    </div>
+  </div>
+
+<script>
+  const escenaPuerta = document.getElementById('escena-puerta');
+  const contenedorVideo = document.getElementById('contenedor-video');
+  const video = document.getElementById('video-revelador');
+  const postMensaje = document.getElementById('post-mensaje');
+  
+  let puertaAbierta = false;
+
+  const mensajeAmorFinal = `TE AMO MUCHOOO MI CACHETONCITA, espero siempre alegrarte el día. Siempre hago todo con amor. Y aunque no sea o no tenga las mejores respuestas siempre busco mejorar, porque tú mereces lo mejor de mí ♥️`;
+
+  function abrirPuerta() {
+    if (puertaAbierta) return;
+    puertaAbierta = true;
+
+    const puerta = document.getElementById('puerta-contenedor');
+    const texto = document.getElementById('pre-texto');
+    
+    // 1. Quitar animación base y APLICAR HUNDIDO FORZADO
+    puerta.style.animation = 'none';
+    puerta.classList.add('puerta-hundida');
+    
+    // 2. Esperar 450ms (casi medio segundo) para que se vea claramente cómo se hunde
+    setTimeout(() => {
+        texto.style.opacity = '0';
+        
+        // 3. Efecto de apertura (se quita el hundido y se lanza hacia la derecha)
+        puerta.classList.remove('puerta-hundida');
+        puerta.style.transition = 'opacity 1.2s ease-out, transform 1.2s ease-in-out, box-shadow 0.8s';
+        puerta.style.boxShadow = '0 0 80px 25px rgba(0, 229, 255, 0.9)';
+        puerta.style.transform = 'scale(0.8) perspective(800px) rotateY(100deg) translateX(120px)';
+        puerta.style.opacity = '0';
+
+        // 4. Pasar al video
+        setTimeout(() => {
+            escenaPuerta.style.display = 'none';
+            contenedorVideo.style.display = 'flex';
+            setTimeout(() => { contenedorVideo.style.opacity = '1'; }, 100);
+            video.play();
+        }, 1400); // Darle tiempo a la puerta para que se abra
+    }, 450); // Tiempo del hundido
+  }
+
+  // Al terminar el video
+  video.addEventListener('ended', () => {
+    contenedorVideo.style.opacity = '0';
+    setTimeout(() => {
+        contenedorVideo.style.display = 'none';
+        
+        postMensaje.style.display = 'flex';
+        setTimeout(() => { postMensaje.style.opacity = '1'; }, 100);
+        
+        typeTextFinal('texto-final', mensajeAmorFinal);
+    }, 1500);
+  });
+
+  // Efecto de escritura tipo máquina de escribir
+  function typeTextFinal(elementId, text) {
+    const element = document.getElementById(elementId);
+    element.innerText = "";
+    let i = 0;
+    const typingTimer = setInterval(() => {
+        if (i < text.length) {
+            element.innerText += text.charAt(i);
+            i++;
+        } else {
+            clearInterval(typingTimer);
+            document.getElementById('btn-regresar-mapa').classList.add('visible');
+        }
+    }, 45); 
+  }
+
+</script>
+</body>
+</html>
