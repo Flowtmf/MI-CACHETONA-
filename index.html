@@ -113,11 +113,11 @@
 
         /* --- ESTILOS EXCLUSIVOS PARA SHORTS --- */
         #shorts { 
-            padding-bottom: 0; /* Quita el padding para ocupar pantalla completa */
+            padding-bottom: 0; 
             background: #000;
         }
         .shorts-scroll {
-            height: calc(100vh - 75px); /* Resta el tamaño de la barra inferior */
+            height: calc(100vh - 75px); 
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
@@ -137,7 +137,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 30px 20px 20px 20px; /* Padding extra arriba para el degradado */
+            padding: 30px 20px 20px 20px; 
             background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, transparent 100%);
             display: flex;
             flex-direction: column;
@@ -151,23 +151,22 @@
         }
         .short-desc-container {
             position: relative;
-            width: 85%; /* Deja espacio para botones de la derecha si quieres luego */
+            width: 85%; 
         }
         .short-desc {
             font-size: 14.5px;
             line-height: 1.5;
             color: #eee;
-            max-height: 44px; /* Muestra aprox 2 líneas */
+            max-height: 44px; 
             overflow: hidden;
             transition: max-height 0.3s ease;
-            white-space: pre-wrap; /* Respeta los saltos de línea */
+            white-space: pre-wrap; 
         }
         .short-desc.expanded {
-            max-height: 250px; /* Altura máxima expandida */
-            overflow-y: auto; /* Scroll interno en el texto */
+            max-height: 250px; 
+            overflow-y: auto; 
             padding-right: 10px;
         }
-        /* Estilizar el scrollbar del texto de los shorts */
         .short-desc::-webkit-scrollbar { width: 4px; }
         .short-desc::-webkit-scrollbar-thumb { background: #ff4757; border-radius: 4px; }
         
@@ -383,7 +382,7 @@
 
     <div id="perfil" class="view">
         <div class="content-area" style="text-align:center;">
-            <img src="persona-amada.jpg" style="style="width:220px; height:220px; border-radius:50%; object-fit:cover; border: 4px solid #ff4757; box-shadow: 0 0 30px rgba(255, 71, 87, 0.3); margin-top:50px;">
+            <img src="persona-amada.jpg" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border: 4px solid #ff4757; box-shadow: 0 0 30px rgba(255, 71, 87, 0.3); margin-top:50px;">
             <h2 style="margin-top:30px; font-weight: 600; line-height: 1.4;">Esta es la persona que yo más amo</h2>
             <div class="carta-box" style="margin-top:25px;">
                 <div id="perfil-texto" class="carta-texto"></div><span class="cursor per-cur"></span>
@@ -497,10 +496,9 @@
 
         // --- LÓGICA DE BLOQUEO DE LOS SHORTS ---
         function accederShorts() {
-            // Detecta si la persona ya pasó por ajedrez.html verificando el localStorage
-            if (localStorage.getItem('paso_por_ajedrez') === 'true') {
-                irA('shorts');
-            }
+            // Se quitó el candado temporalmente para que puedas hacer pruebas de los Shorts sin jugar Ajedrez
+            irA('shorts');
+        }
 
         // Lógica para el botón "Mostrar más" en los Shorts
         function toggleShortDesc(btn) {
