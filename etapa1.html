@@ -336,7 +336,9 @@
   const nombresNiveles = ["Voz", "Carga", "Luz", "Puerta", "Fuego"];
   const totalNiveles = 30; 
   
-  let nivelActualDesbloqueado = parseInt(localStorage.getItem('progreso_camii_etapa1')) || 1;
+  // ¡NOTA IMPORTANTE! He cambiado el "|| 1" a "|| 5" para que puedas probar el botón Fuego ahora mismo.
+  // Cuando vayas a entregarle la página, vuelve a cambiar este "5" por un "1"
+  let nivelActualDesbloqueado = parseInt(localStorage.getItem('progreso_camii_etapa1')) || 5; 
   const contenedorMapa = document.getElementById('mapa-niveles');
   const fechaObjetivo = new Date(2026, 2, 25, 0, 0, 0).getTime(); 
 
@@ -370,10 +372,7 @@
       case 2: window.location.href = 'carga.html'; break;
       case 3: window.location.href = 'luz.html'; break;
       case 4: window.location.href = 'puerta_reveladora.html'; break;
-      case 5: 
-        if (new Date().getTime() < fechaObjetivo) abrirContador();
-        else alert("¡Fuego desbloqueado! Etapa 2 muy pronto...");
-        break;
+      case 5: window.location.href = 'fuego.html'; break; /* ¡MODIFICADO AQUÍ PARA IR A FUEGO.HTML! */
       default:
         alert("Este misterio está en construcción...");
     }
