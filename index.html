@@ -4,562 +4,320 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mi Camii ♥️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* ESTILOS BASE - MODO OSCURO IG */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        body { background-color: #000; color: #f5f5f5; overflow-x: hidden; }
         
-        body { 
-            margin: 0; 
-            font-family: 'Poppins', 'Roboto', sans-serif; 
-            background: linear-gradient(135deg, #16080b 0%, #0a0506 100%);
-            background-attachment: fixed;
-            color: #ffffff; 
-            overflow-x: hidden; 
-        }
-
-        .view { display: none; padding-bottom: 90px; min-height: 100vh; animation: fadeIn 0.4s ease-out; }
+        .view { display: none; padding-bottom: 70px; min-height: 100vh; animation: fadeIn 0.2s ease; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .topbar { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px 20px; 
-            background: rgba(22, 8, 11, 0.7); 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 71, 87, 0.15);
-            position: sticky; top: 0; z-index: 100; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .logo-container { display: flex; align-items: center; font-size: 22px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; }
+        /* ICONOS SVG */
+        svg { fill: #f5f5f5; color: #f5f5f5; width: 24px; height: 24px; cursor: pointer; }
         
-        .yt-icon { 
-            color: #ff4757; font-size: 24px; margin-right: 10px; 
-            animation: heartbeat 1.5s infinite;
-            text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+        /* TOPBAR (HEADER) */
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 15px; position: sticky; top: 0; z-index: 100;
+            background: #000; border-bottom: 1px solid #262626;
         }
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            15% { transform: scale(1.2); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.2); }
-            60% { transform: scale(1); }
+        .logo-text { font-family: 'Georgia', serif; font-size: 26px; font-weight: bold; font-style: italic; cursor: pointer; letter-spacing: -0.5px;}
+        .top-icons { display: flex; gap: 20px; align-items: center; }
+
+        /* HISTORIAS (STORIES) */
+        .stories-container {
+            display: flex; gap: 15px; padding: 12px 15px; overflow-x: auto; border-bottom: 1px solid #262626;
         }
+        .stories-container::-webkit-scrollbar { display: none; }
+        .story { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; min-width: 76px; }
+        .story-ring {
+            width: 76px; height: 76px; border-radius: 50%;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            display: flex; align-items: center; justify-content: center; padding: 3px;
+        }
+        .story-ring.destacada { background: #555; /* Anillo gris para destacadas */ }
+        .story-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #000; }
+        .story-text { font-size: 11px; color: #f5f5f5; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 70px; }
+
+        /* FEED (PUBLICACIONES) */
+        .post { margin-bottom: 10px; border-bottom: 1px solid #262626; padding-bottom: 15px; }
+        .post-header { display: flex; align-items: center; padding: 10px 15px; gap: 10px; }
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .post-header-name { font-size: 14px; font-weight: 600; flex: 1; }
+        .post-img { width: 100%; max-height: 600px; object-fit: contain; background: #111; }
+        .post-actions { padding: 12px 15px 8px; display: flex; align-items: center; gap: 18px; }
+        .post-actions svg { width: 26px; height: 26px; }
+        .post-likes { padding: 0 15px; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .post-caption { padding: 0 15px; font-size: 14px; line-height: 1.5; }
+        .post-caption strong { font-weight: 600; }
+        .read-more { color: #a8a8a8; cursor: pointer; font-size: 14px; }
+        .post-time { padding: 0 15px; font-size: 11px; color: #a8a8a8; margin-top: 6px; text-transform: uppercase; }
+
+        /* EXPLORAR (BÚSQUEDA) */
+        .search-bar-container { padding: 10px 15px; }
+        .search-input {
+            width: 100%; background: #262626; border: none; padding: 10px 15px;
+            border-radius: 10px; color: white; outline: none; font-size: 15px;
+        }
+        .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .explore-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        #search-results { display: none; padding: 15px; }
+        .user-result { display: flex; align-items: center; gap: 15px; padding: 10px; background: #1a1a1a; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .user-result:active { background: #333; }
+        .user-result img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+
+        /* CREAR POST (CÁMARA/GALERÍA) */
+        .crear-post-container { padding: 20px; text-align: center; }
+        .upload-btn {
+            background: #0095f6; color: white; border: none; padding: 12px 25px;
+            border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+            margin-bottom: 20px; display: inline-flex; align-items: center; gap: 10px;
+        }
+        #preview-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; display: none; margin-bottom: 15px; }
+        .caption-input {
+            width: 100%; background: transparent; border: none; border-bottom: 1px solid #262626;
+            color: white; padding: 10px 0; outline: none; font-size: 15px; margin-bottom: 20px; display: none;
+        }
+        #btn-publicar { display: none; width: 100%; }
+
+        /* REELS */
+        #reels { background: #000; padding-bottom: 0; }
+        .reels-scroll { height: calc(100vh - 50px); overflow-y: scroll; scroll-snap-type: y mandatory; }
+        .reels-scroll::-webkit-scrollbar { display: none; }
+        .reel-item { height: 100%; width: 100%; scroll-snap-align: start; position: relative; background-size: cover; background-position: center; }
+        .reel-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 20px 70px 20px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+        .reel-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .reel-user img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; }
+        .reel-desc { font-size: 14px; max-height: 40px; overflow: hidden; transition: 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .reel-desc.expanded { max-height: 300px; overflow-y: auto; }
+        .reel-actions { position: absolute; right: 15px; bottom: 90px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+
+        /* PERFIL (COMÚN PARA CAMII Y YERIK) */
+        .profile-header { padding: 20px 15px 10px; display: flex; align-items: center; gap: 25px; }
+        .profile-pic { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 1px solid #262626; }
+        .profile-stats { display: flex; flex: 1; justify-content: space-between; text-align: center; padding-right: 15px; }
+        .stat-num { font-size: 18px; font-weight: 600; }
+        .stat-label { font-size: 13px; color: #f5f5f5; }
+        .profile-bio { padding: 0 15px 10px; font-size: 14px; line-height: 1.5; }
+        .profile-tabs { display: flex; border-top: 1px solid #262626; }
+        .tab { flex: 1; text-align: center; padding: 12px; border-bottom: 1px solid #fff; display: flex; justify-content: center; }
+
+        /* HIGHLIGHTS PERFIL */
+        .profile-highlights { display: flex; gap: 15px; padding: 0 15px 15px; overflow-x: auto; }
+        .profile-highlights::-webkit-scrollbar { display: none; }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: #000;
+            display: flex; justify-content: space-around; padding: 12px 0 15px 0;
+            border-top: 1px solid #262626; z-index: 100;
+        }
+        .nav-item svg { opacity: 0.5; transition: 0.2s; width: 28px; height: 28px; }
+        .nav-item.active svg { opacity: 1; transform: scale(1.1); }
         
-        .search-container { 
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 65px; 
-            background: rgba(22, 8, 11, 0.95); backdrop-filter: blur(10px);
-            align-items: center; padding: 0 15px; z-index: 110; 
-            border-bottom: 1px solid rgba(255, 71, 87, 0.3); 
-        }
-        .search-input { 
-            flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 71, 87, 0.3); 
-            padding: 12px 20px; border-radius: 25px; color: white; outline: none; font-size: 15px; 
-            font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
-        }
-        .search-input:focus { border-color: #ff4757; box-shadow: 0 0 15px rgba(255, 71, 87, 0.2); }
+        .nav-profile-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; opacity: 0.5; border: 1px solid transparent; }
+        .nav-item.active .nav-profile-pic { opacity: 1; border-color: #fff; transform: scale(1.1); }
 
-        .categories { 
-            display: flex; gap: 12px; padding: 15px 20px; overflow-x: auto; 
-            background: transparent;
-        }
-        .categories::-webkit-scrollbar { display: none; }
-        .chip { 
-            background: rgba(255, 71, 87, 0.08); padding: 8px 18px; 
-            border-radius: 20px; font-size: 14px; font-weight: 500; white-space: nowrap; 
-            cursor: pointer; border: 1px solid rgba(255, 71, 87, 0.2);
-            color: #ffb8bf; transition: all 0.3s ease;
-        }
-        .chip.active { 
-            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%); 
-            color: #fff; border-color: transparent;
-            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-            transform: translateY(-2px);
-        }
+        /* PANTALLAS EMERGENTES Y CARTAS */
+        .carta-view { padding: 20px; background: #000; min-height: 100vh; }
+        .pantalla-te-amo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 300; display: none; justify-content: center; align-items: center; }
+        .texto-gigante { font-size: 4em; color: #ff4757; animation: animTeAmo 3.5s ease forwards; text-align: center; }
+        @keyframes animTeAmo { 0% { opacity: 0; transform: scale(0.5); } 20% { opacity: 1; transform: scale(1.1); } 80% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.5); } }
 
-        .video { margin-bottom: 25px; cursor: pointer; transition: transform 0.2s ease; padding: 0 10px; }
-        .video:active { transform: scale(0.98); }
-        .thumbnail-container { 
-            position: relative; width: 100%; aspect-ratio: 16/9; 
-            background: #222; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
-        }
-        .thumbnail { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .video:hover .thumbnail { transform: scale(1.03); }
-        
-        .video-info { display: flex; padding: 15px 10px; gap: 15px; align-items: center; }
-        .avatar-foto { 
-            width: 45px; height: 45px; border-radius: 50%; object-fit: cover; flex-shrink: 0; 
-            border: 2px solid #ff4757; box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
-        }
-        .v-text .title { font-size: 15px; font-weight: 600; color: #fff; line-height: 1.4; margin-bottom: 5px; }
-        .v-text .meta { font-size: 13px; color: #ffb8bf; font-weight: 400; opacity: 0.8; }
-
-        .content-area { padding: 25px 20px; }
-        .carta-box { 
-            background: rgba(255, 255, 255, 0.03); padding: 30px; 
-            border-radius: 20px; border: 1px solid rgba(255, 71, 87, 0.2); 
-            text-align: left; position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 71, 87, 0.05);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        }
-        .carta-titulo { 
-            color: #ff4757; font-size: 24px; margin-bottom: 20px; font-weight: 700; 
-            line-height: 1.3; text-shadow: 0 2px 10px rgba(255, 71, 87, 0.3); 
-        }
-        .carta-texto { font-size: 16px; line-height: 1.8; color: #f5f5f5; white-space: pre-wrap; display: inline; font-weight: 400; }
-        .cursor { display: inline-block; width: 3px; height: 18px; background: #ff4757; margin-left: 4px; animation: blink 0.7s infinite; vertical-align: middle; box-shadow: 0 0 8px #ff4757; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-        /* --- ESTILOS EXCLUSIVOS PARA SHORTS --- */
-        #shorts { 
-            padding-bottom: 0; 
-            background: #000;
-        }
-        .shorts-scroll {
-            height: calc(100vh - 75px); 
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-        }
-        .shorts-scroll::-webkit-scrollbar { display: none; }
-        
-        .short-item {
-            height: 100%;
-            width: 100%;
-            scroll-snap-align: start;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-        }
-        .short-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 30px 20px 20px 20px; 
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, transparent 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-        .short-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 0 0 10px 0;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-        }
-        .short-desc-container {
-            position: relative;
-            width: 85%; 
-        }
-        .short-desc {
-            font-size: 14.5px;
-            line-height: 1.5;
-            color: #eee;
-            max-height: 44px; 
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            white-space: pre-wrap; 
-        }
-        .short-desc.expanded {
-            max-height: 250px; 
-            overflow-y: auto; 
-            padding-right: 10px;
-        }
-        .short-desc::-webkit-scrollbar { width: 4px; }
-        .short-desc::-webkit-scrollbar-thumb { background: #ff4757; border-radius: 4px; }
-        
-        .btn-more {
-            color: #ffb8bf;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 8px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-
-        /* --- BARRA INFERIOR --- */
-        .bottom-nav { 
-            position: fixed; bottom: 0; width: 100%; 
-            background: rgba(22, 8, 11, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            display: flex; justify-content: space-around; padding: 12px 0 20px 0; 
-            border-top: 1px solid rgba(255, 71, 87, 0.15); z-index: 100; 
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #8a6a70; font-size: 11px; font-weight: 500; cursor: pointer; flex: 1; transition: all 0.3s ease; }
-        .nav-item.active { color: #ff4757; transform: translateY(-3px); }
-        .nav-icon { font-size: 24px; margin-bottom: 5px; transition: transform 0.3s ease; }
-        .nav-item.active .nav-icon { transform: scale(1.1); text-shadow: 0 0 15px rgba(255, 71, 87, 0.6); }
-
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 200; display: none; }
-        .popup { 
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background: linear-gradient(145deg, #1e0b10 0%, #120608 100%); 
-            padding: 35px 25px; border-radius: 25px; width: 88%; max-width: 400px; 
-            text-align: center; z-index: 201; display: none; 
-            border: 1px solid rgba(255, 71, 87, 0.3);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.8), 0 0 30px rgba(255, 71, 87, 0.15);
-        }
-
-        .pantalla-te-amo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0506; z-index: 300; display: none; justify-content: center; align-items: center; flex-direction: column; }
-        .texto-gigante { font-size: 5.5em; color: #ff4757; animation: animTeAmo 3.5s ease forwards; text-align: center; margin: 0; text-shadow: 0 0 30px rgba(255, 71, 87, 0.6); font-family: 'Poppins', sans-serif; font-weight: 700; }
-        @keyframes animTeAmo { 
-            0% { opacity: 0; transform: scale(0.5); } 
-            20% { opacity: 1; transform: scale(1.1); } 
-            80% { opacity: 1; transform: scale(1); } 
-            100% { opacity: 0; transform: scale(1.5); } 
-        }
-
-        button { font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
-        button:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
+    <!-- TOPBAR -->
     <div class="topbar">
-        <div class="logo-container" onclick="accesoPrivado()">
-            <span class="yt-icon">▶</span>
-            <span>Mi Camii ♥️</span>
+        <div class="logo-text" onclick="accesoPrivado()">Mi Camii ♥️</div>
+        <div class="top-icons">
+            <svg viewBox="0 0 24 24" onclick="alert('Tienes infinitas notificaciones de besos pendientes 😘')"><path fill="none" stroke="currentColor" stroke-width="2" d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.174.98 1.543 1.117 1.543s.277-.369 1.117-1.543a4.21 4.21 0 0 1 3.675-1.941z"></path></svg>
+            <svg viewBox="0 0 24 24" onclick="alert('Mensaje nuevo: Te amo mi niña hermosa')"><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M22 3.001 2 9.002l9 3.001 3 9 8-18.002z"></path><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M11 12.003 22 3.001"></path></svg>
         </div>
-        <div onclick="toggleSearch()" style="font-size: 20px; cursor:pointer; color: #ffb8bf;">🔍</div>
     </div>
 
-    <div class="search-container" id="search-box">
-        <input type="text" id="search-input" class="search-input" placeholder="Como me gusta que me digas 🥺">
-        <span onclick="toggleSearch()" style="margin-left:15px; cursor:pointer; color: #ff4757; font-size: 20px; font-weight: bold;">✕</span>
-    </div>
-
+    <!-- VISTA: INICIO (FEED) -->
     <div id="inicio" class="view active">
-        <div class="categories">
-            <div class="chip active" onclick="irA('inicio')">Todo</div>
-            <div class="chip" onclick="prepararCarta('cat1')">Nuestra historia</div>
-            <div class="chip" onclick="prepararCarta('cat2')">Recuerdos</div>
-            <div class="chip" onclick="prepararCarta('cat3')">Especiales</div>
+        <!-- Historias -->
+        <div class="stories-container">
+            <div class="story" onclick="abrirCarta('v1')">
+                <div class="story-ring"><img src="foto1.jpg"></div>
+                <div class="story-text">Cumpleaños</div>
+            </div>
+            <div class="story" onclick="abrirCarta('v2')">
+                <div class="story-ring"><img src="foto2.jpg"></div>
+                <div class="story-text">Me gustas</div>
+            </div>
+            <div class="story" onclick="abrirCarta('v3')">
+                <div class="story-ring"><img src="foto3.jpg"></div>
+                <div class="story-text">Mi niña</div>
+            </div>
+            <div class="story" onclick="abrirCarta('v4')">
+                <div class="story-ring"><img src="foto4.jpg"></div>
+                <div class="story-text">Mi lugar</div>
+            </div>
+            <div class="story" onclick="abrirCarta('v5')">
+                <div class="story-ring"><img src="foto5.jpg"></div>
+                <div class="story-text">Siempre</div>
+            </div>
         </div>
 
-        <div style="margin-top:15px;">
-            <div class="video" onclick="prepararCarta('v1')">
-                <div class="thumbnail-container"><img src="foto1.jpg" class="thumbnail"></div>
-                <div class="video-info">
-                    <img src="persona-amada.jpg" class="avatar-foto">
-                    <div class="v-text">
-                        <div class="title">Feliz cumpleaños mi cachetona</div>
-                        <div class="meta">Mi Camii • Hace 1 día</div>
-                    </div>
-                </div>
-            </div>
-            <div class="video" onclick="prepararCarta('v2')">
-                <div class="thumbnail-container"><img src="foto2.jpg" class="thumbnail"></div>
-                <div class="video-info">
-                    <img src="persona-amada.jpg" class="avatar-foto">
-                    <div class="v-text">
-                        <div class="title">Lo que más me gusta de ti</div>
-                        <div class="meta">Mi Camii • Hace 2 días</div>
-                    </div>
-                </div>
-            </div>
-            <div class="video" onclick="prepararCarta('v3')">
-                <div class="thumbnail-container"><img src="foto3.jpg" class="thumbnail"></div>
-                <div class="video-info">
-                    <img src="persona-amada.jpg" class="avatar-foto">
-                    <div class="v-text">
-                        <div class="title">Mi niña hemocha..</div>
-                        <div class="meta">Hace 3 días</div>
-                    </div>
-                </div>
-            </div>
-            <div class="video" onclick="prepararCarta('v4')">
-                <div class="thumbnail-container"><img src="foto4.jpg" class="thumbnail"></div>
-                <div class="video-info">
-                    <img src="persona-amada.jpg" class="avatar-foto">
-                    <div class="v-text">
-                        <div class="title">Mi lugar favorito en el mundo</div>
-                        <div class="meta">Hace 4 días</div>
-                    </div>
-                </div>
-            </div>
-            <div class="video" onclick="prepararCarta('v5')">
-                <div class="thumbnail-container"><img src="foto5.jpg" class="thumbnail"></div>
-                <div class="video-info">
-                    <img src="persona-amada.jpg" class="avatar-foto">
-                    <div class="v-text">
-                        <div class="title">Te amo ♥️</div>
-                        <div class="meta">Hace 5 días</div>
-                    </div>
-                </div>
-            </div>
+        <!-- Feed Generado por JS -->
+        <div id="feed-posts"></div>
+    </div>
 
-            <div class="video" onclick="window.location.href='pista1.html'">
-                <div class="thumbnail-container">
-                    <img src="foto-pista1.jpg" class="thumbnail" style="filter: brightness(0.7);">
-                    <div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 71, 87, 0.9); padding:6px 12px; border-radius:6px; font-size:12px; font-weight:bold; box-shadow: 0 2px 10px rgba(255,71,87,0.4);">🧩 Jugar</div>
-                </div>
-                <div class="video-info">
-                    <img src="persona-amada.jpg" class="avatar-foto">
-                    <div class="v-text">
-                        <div class="title">(Pista 1 Sopa de letras)</div>
-                        <div class="meta">Minijuego interactivo • Toca para ir</div>
-                    </div>
-                </div>
-            </div>
+    <!-- VISTA: EXPLORAR (BÚSQUEDA) -->
+    <div id="explorar" class="view">
+        <div class="search-bar-container">
+            <input type="text" id="search-input" class="search-input" placeholder="BUSCAR...">
+        </div>
+        
+        <!-- Contenedor para el resultado oculto (Perfil de Yerik) -->
+        <div id="search-results"></div>
 
-            <div class="video" onclick="window.location.href='pista2.html'">
-                <div class="thumbnail-container">
-                    <img src="foto-pista2.jpg" class="thumbnail" style="filter: brightness(0.7);">
-                    <div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 71, 87, 0.9); padding:6px 12px; border-radius:6px; font-size:12px; font-weight:bold; box-shadow: 0 2px 10px rgba(255,71,87,0.4);">🧩 Jugar</div>
-                </div>
-                <div class="video-info">
-                    <img src="persona-amada.jpg" class="avatar-foto">
-                    <div class="v-text">
-                        <div class="title">(Pista 2 Contexto)</div>
-                        <div class="meta">Minijuego interactivo • Toca para ir</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="video" onclick="abrirSorpresaGranFinal()">
-                <div class="thumbnail-container" style="filter: grayscale(0.8) blur(1px);">
-                    <img src="foto7.jpg" class="thumbnail" onerror="this.src='foto1.jpg'">
-                    <div style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold; color:white; font-size:20px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); letter-spacing: 2px;">🔒 ESTRENO</div>
-                </div>
-                <div class="video-info">
-                    <div class="avatar-foto" style="background:rgba(255,71,87,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid #555;">🔒</div>
-                    <div class="v-text">
-                        <div class="title">Sorpresa del 13 de marzo</div>
-                        <div class="meta">Estreno programado</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="video" onclick="accederEtapa1()">
-                <div class="thumbnail-container" id="thumb-etapa1" style="filter: grayscale(1) blur(2px);">
-                    <img src="foto-etapa1.jpg" class="thumbnail" onerror="this.src='foto7.jpg'">
-                    <div id="etiqueta-etapa1" style="position:absolute; top:40%; width:100%; text-align:center; font-weight:bold; color:white; font-size:20px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); letter-spacing: 2px;">🔒 BLOQUEADO</div>
-                </div>
-                <div class="video-info">
-                    <div class="avatar-foto" id="avatar-etapa1" style="background:rgba(255,71,87,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid #555;">🔒</div>
-                    <div class="v-text">
-                        <div class="title">El Viaje - Etapa 1</div>
-                        <div class="meta" id="meta-etapa1">Requiere pasar por el Ajedrez</div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="explore-grid" id="explore-grid-content">
+            <img src="foto-pista1.jpg" onclick="window.location.href='pista1.html'">
+            <img src="foto-pista2.jpg" onclick="window.location.href='pista2.html'">
+            <img src="foto7.jpg" onclick="alert('Estreno del 13 de marzo. ¡Ya puedes ir al ajedrez!')">
+            <img src="foto1.jpg">
+            <img src="foto2.jpg">
+            <img src="foto3.jpg">
+            <img src="foto4.jpg">
+            <img src="foto5.jpg">
+            <img src="foto-etapa1.jpg" onclick="accederEtapa1()">
         </div>
     </div>
 
-    <div id="seccion-carta" class="view">
-        <div class="content-area">
-            <button onclick="irA('inicio')" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:10px 22px; border-radius:25px; margin-bottom:20px; cursor:pointer; font-weight: 500; backdrop-filter: blur(5px);">← Volver</button>
-            <div class="carta-box">
-                <div id="carta-titulo" class="carta-titulo"></div>
-                <div id="carta-texto" class="carta-texto"></div><span id="cursor-type" class="cursor"></span>
-            </div>
+    <!-- VISTA: AGREGAR (CÁMARA Y FOTOS) -->
+    <div id="agregar" class="view">
+        <div class="crear-post-container">
+            <h3 style="margin-bottom: 20px; font-weight: 500;">Nuevo recuerdo</h3>
+            <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="cargarImagen(event)">
+            <button class="upload-btn" onclick="document.getElementById('input-foto').click()">
+                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.998 12.006c0 5.523-4.478 10-10 10-5.523 0-10-4.477-10-10s4.477-10 10-10c5.522 0 10 4.477 10 10z"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.001 7.001v10M7.001 12.001h10"></path></svg>
+                Tomar foto o subir
+            </button>
+            <img id="preview-img" src="">
+            <input type="text" id="input-caption" class="caption-input" placeholder="Escribe algo lindo sobre este momento...">
+            <button id="btn-publicar" class="upload-btn" style="background: #ff4757;" onclick="publicarFoto()">Publicar para mi niño</button>
         </div>
     </div>
 
-    <div id="notificaciones" class="view">
-        <div class="content-area" style="text-align:center;">
-            <img src="tu-notificacion.jpg" style="width:100%; border-radius:20px; margin-bottom:25px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.05);">
-            <div class="carta-box">
-                <div id="noti-texto" class="carta-texto"></div><span class="cursor noti-cur"></span>
-            </div>
+    <!-- VISTA: REELS -->
+    <div id="reels" class="view">
+        <div class="reels-scroll" id="reels-container">
+            <!-- Reels dinámicos -->
         </div>
     </div>
 
-    <div id="suscripciones" class="view">
-        <div class="content-area" style="text-align:center; padding-top:60px;">
-            <div style="position: relative; display: inline-block; margin-bottom: 25px;">
-                <img src="persona-amada.jpg" class="avatar-foto" style="width:130px; height:130px; border: 3px solid #ff4757; box-shadow: 0 0 25px rgba(255, 71, 87, 0.4);">
-            </div>
-            <h3 style="margin-bottom: 25px; font-weight: 600; letter-spacing: 0.5px;">Mi contenido favorito</h3>
-            <div class="carta-box">
-                <div id="sub-texto" class="carta-texto"></div><span class="cursor sub-cur"></span>
-            </div>
-        </div>
-    </div>
-
+    <!-- VISTA: PERFIL CAMII -->
     <div id="perfil" class="view">
-        <div class="content-area" style="text-align:center;">
-            <img src="persona-amada.jpg" style="width:220px; height:220px; border-radius:50%; object-fit:cover; border: 4px solid #ff4757; box-shadow: 0 0 30px rgba(255, 71, 87, 0.3); margin-top:50px;">
-            <h2 style="margin-top:30px; font-weight: 600; line-height: 1.4;">Esta es la persona que yo más amo</h2>
-            <div class="carta-box" style="margin-top:25px;">
-                <div id="perfil-texto" class="carta-texto"></div><span class="cursor per-cur"></span>
+        <div class="profile-header">
+            <img src="persona-amada.jpg" class="profile-pic">
+            <div class="profile-stats">
+                <div><div class="stat-num" id="stats-posts">5</div><div class="stat-label">Publicaciones</div></div>
+                <div><div class="stat-num">1</div><div class="stat-label">Seguidor</div></div>
+                <div><div class="stat-num">1</div><div class="stat-label">Único amor</div></div>
             </div>
+        </div>
+        <div class="profile-bio">
+            <strong>Mi Camii ♥️</strong><br>
+            La persona que le da sentido a mis días.<br>
+            ✨ Mi lugar seguro<br>
+            📍 Mi corazón<br>
+            <span style="color: #e0f7fa;">@el_amor_de_mi_vida</span>
+        </div>
+        <div class="profile-tabs">
+            <div class="tab">
+                <svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3z"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v18M15 3v18M3 9h18M3 15h18"></path></svg>
+            </div>
+        </div>
+        <div class="explore-grid" id="perfil-grid">
+            <!-- Rellenado dinámico -->
         </div>
     </div>
 
-    <div id="shorts" class="view">
-        <div class="shorts-scroll">
-            
-            <div class="short-item" style="background-image: url('foto-short1.jpg');">
-                <div class="short-overlay">
-                    <h3 class="short-title">El inicio de todo ♥️</h3>
-                    <div class="short-desc-container">
-                        <div class="short-desc">Mi amorr… yo a veces me pongo a pensar en todo, en cómo era mi vida antes de ti, y es raro… porque sí, yo vivía, hacía cosas, reía a veces, pero no era lo mismo. Era como si todo fuera en automático, como si nada tuviera ese “algo” especial. Pero desde que llegaste tú, desde ese primer momento, todo cambió sin que yo me diera cuenta. Tú no solo apareciste… tú te volviste el comienzo de todo lo bonito que siento ahora. Desde ahí empezó otra forma de ver la vida, otra forma de sentir. Empecé a querer más, a valorar más, a sentir más profundo… y todo fue por ti. Eres ese punto exacto donde mi historia dejó de ser simple y empezó a ser especial. Y te lo digo de corazón, mi niña… si ese fue el comienzo, no me quiero ni imaginar todo lo que nos falta por vivir juntos..</div>
-                        <span class="btn-more" onclick="toggleShortDesc(this)">Mostrar más</span>
-                    </div>
-                </div>
+    <!-- VISTA SECRETA: PERFIL YERIK -->
+    <div id="perfil-yerik" class="view">
+        <div class="profile-header">
+            <img src="foto-yerik.jpg" class="profile-pic" alt="Tu foto aquí">
+            <div class="profile-stats">
+                <div><div class="stat-num">∞</div><div class="stat-label">Te amo</div></div>
+                <div><div class="stat-num">1</div><div class="stat-label">Dueña</div></div>
+                <div><div class="stat-num">1</div><div class="stat-label">Mi vida</div></div>
             </div>
-
-            <div class="short-item" style="background-image: url('foto-short2.jpg');">
-                <div class="short-overlay">
-                    <h3 class="short-title">Esa sonrisa tuya ✨</h3>
-                    <div class="short-desc-container">
-                        <div class="short-desc">Mamorrr… esa sonrisa tuya no es normal, te lo juro. No es solo que sea linda, es que tiene algo que me llega directo al corazón. Cuando tú sonríes, todo en mí cambia, como si de verdad el mundo se pusiera más suave, más tranquilo. Es una sonrisa que me calma, que me hace sentir bien incluso cuando no estoy bien. Y lo más lindo es que es tuya… única, imperfectamente perfecta, así como eres tú. A veces me pongo a pensar y digo “¿cómo alguien puede tener algo tan bonito sin darse cuenta de lo mucho que vale?”… porque tú a veces no ves lo hermosa que eres, pero yo sí, mi vida. Y no sabes cuánto quiero ser siempre el motivo de esa sonrisa, el que te haga sentir feliz, el que te recuerde lo mucho que vales… porque si hay algo que yo quiero cuidar en esta vida, es esa sonrisa tuya..</div>
-                        <span class="btn-more" onclick="toggleShortDesc(this)">Mostrar más</span>
-                    </div>
-                </div>
+        </div>
+        <div class="profile-bio">
+            <strong>Yerik 👦🏻❤️</strong><br>
+            El niño que se ganó la lotería al conocerte.<br>
+            Todo mi perfil, mi mundo y mi corazón te pertenecen.<br>
+            Solo tengo ojos para ti.<br>
+            <span style="color: #0095f6;">@tu_niño_enamorado</span>
+        </div>
+        
+        <!-- HISTORIA DESTACADA DE YERIK -->
+        <div class="profile-highlights">
+            <div class="story" onclick="abrirCartaEspecial('Mi mayor orgullo', textosBusqueda['destacada-yerik'].c)">
+                <div class="story-ring destacada" style="border: 1px solid #fff;"><img src="foto-destacada.jpg"></div>
+                <div class="story-text">Para Ti 🥺</div>
             </div>
+        </div>
 
-            <div class="short-item" style="background-image: url('foto-short3.jpg');">
-                <div class="short-overlay">
-                    <h3 class="short-title">Mi lugar seguro 🥺</h3>
-                    <div class="short-desc-container">
-                        <div class="short-desc">Mi niña dinda… tú te volviste mi lugar seguro sin avisar, sin hacer ruido, solo siendo tú. Y eso es lo más lindo. Porque contigo yo no tengo que fingir nada, no tengo que aparentar ser alguien que no soy. Contigo puedo estar bien incluso cuando estoy mal. Cuando todo me pesa, cuando mi mente se llena de cosas, tú eres ese espacio donde todo se calma. Eres paz, eres tranquilidad, eres ese “todo va a estar bien” aunque no lo digas. Y eso no lo hace cualquiera… eso lo hace alguien que de verdad significa demasiado. Tú eres donde quiero quedarme cuando todo se pone difícil, donde mi corazón descansa. Y créeme, mi amorr… tenerte como mi lugar seguro es de las cosas más valiosas que tengo..</div>
-                        <span class="btn-more" onclick="toggleShortDesc(this)">Mostrar más</span>
-                    </div>
-                </div>
+        <div class="profile-tabs">
+            <div class="tab">
+                <svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3z"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v18M15 3v18M3 9h18M3 15h18"></path></svg>
             </div>
-
-            <div class="short-item" style="background-image: url('foto-short4.jpg');">
-                <div class="short-overlay">
-                    <h3 class="short-title">Tu luz 🌟</h3>
-                    <div class="short-desc-container">
-                        <div class="short-desc">Mamor… tú tienes una luz que no se explica fácil. No es algo de apariencia, es algo que se siente cuando estás, cuando hablas, cuando simplemente existes. Tu forma de ser ilumina todo sin que tú te des cuenta. Hay días en los que yo no estoy al cien, días raros, pesados… y llegas tú, con cualquier cosita, con una palabra, con tu forma de ser, y cambias todo. Eso es tu luz. No es algo que cualquiera tenga, es algo muy tuyo. Y me pone triste a veces que tú no te veas como yo te veo, porque mi niña… tú brillas demasiado. Y no solo para mí, sino en todo lo que tocas. Pero yo sí lo veo, y te lo voy a recordar siempre: tú eres luz, incluso cuando crees que estás apagada..</div>
-                        <span class="btn-more" onclick="toggleShortDesc(this)">Mostrar más</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="short-item" style="background-image: url('foto-short5.jpg');">
-                <div class="short-overlay">
-                    <h3 class="short-title">Para siempre ♾️</h3>
-                    <div class="short-desc-container">
-                        <div class="short-desc">Mi amorr… yo sé que “para siempre” suena grande, incluso da un poquito de miedo pensarlo, pero cuando se trata de ti… se siente diferente. No es presión, no es algo forzado, es algo que nace solo. Porque tú no eres alguien pasajero en mi vida, tú eres alguien que se quedó en todo: en mi forma de pensar, en lo que siento, en lo que sueño. Yo no sé qué pase con el tiempo, pero sí sé algo… y es que quiero intentarlo contigo siempre. En los días bonitos y en los difíciles, en las risas y en los momentos donde toque aprender. Porque amarte no es algo que hago a medias, yo te quiero de verdad, con todo. Y si existe un “para siempre” en esta vida, mi niña… yo quiero que tenga tu nombre.</div>
-                        <span class="btn-more" onclick="toggleShortDesc(this)">Mostrar más</span>
-                    </div>
-                </div>
-            </div>
-
+        </div>
+        <div class="explore-grid" id="perfil-yerik-grid">
+            <!-- Fotos de ELLA en tu perfil -->
+            <img src="foto1.jpg">
+            <img src="foto2.jpg">
+            <img src="foto3.jpg">
+            <img src="foto4.jpg">
+            <img src="foto5.jpg">
+            <img src="persona-amada.jpg">
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" id="btn-inicio" onclick="irA('inicio')"><span class="nav-icon">🏠</span><span>Inicio</span></div>
-        <div class="nav-item" id="btn-shorts-nav" onclick="accederShorts()"><span class="nav-icon">⚡</span><span>Shorts</span></div>
-        <div class="nav-item" id="btn-sub" onclick="prepararNav('suscripciones')"><span class="nav-icon">📺</span><span>Suscripciones</span></div>
-        <div class="nav-item" id="btn-noti" onclick="prepararNav('notificaciones')"><span class="nav-icon">🔔</span><span>Notificaciones</span></div>
-        <div class="nav-item" id="btn-per" onclick="prepararNav('perfil')"><span class="nav-icon">👤</span><span>Tú ♥️</span></div>
+    <!-- VISTA INDIVIDUAL PARA CARTAS -->
+    <div id="seccion-carta" class="view carta-view">
+        <button onclick="volverAtras()" style="background:transparent; border:none; color:#fff; font-size:16px; margin-bottom:20px; display: flex; align-items: center; gap: 5px;">
+            <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+            Volver
+        </button>
+        <h2 id="carta-titulo" style="color: #ff4757; margin-bottom: 15px;"></h2>
+        <div id="carta-texto" style="font-size: 15px; line-height: 1.6; white-space: pre-wrap; color: #f5f5f5;"></div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="cerrarPopup()"></div>
-    <div class="popup" id="popup">
-        <h2 style="color:#ff4757; margin-top: 0; font-size: 26px; text-shadow: 0 2px 10px rgba(255, 71, 87, 0.2);">🔒 Sorpresa Final</h2>
-        <p id="instruccion-popup" style="font-size: 15px; color: #ffb8bf; margin-bottom: 20px;">Ingresa la frase secreta de tus pistas:</p>
-        
-        <input type="text" id="pass-13marzo" placeholder="Escribe la frase completa..." style="width:100%; padding:14px; border-radius:15px; border:1px solid rgba(255,71,87,0.4); background:rgba(0,0,0,0.5); color:#fff; margin-bottom:12px; outline:none; font-family: 'Poppins', sans-serif; text-align: center;">
-        <p id="error-13marzo" style="color:#ff4757; font-size:13px; display:none; margin-top: 0; font-weight: 500;">Esa no es la frase correcta 🥺</p>
-        
-        <button id="btn-verificar" onclick="verificarFraseFinal()" style="width:100%; padding:14px; border-radius:25px; border:none; background:linear-gradient(135deg, #ff4757 0%, #ff6b81 100%); color:#fff; font-weight:600; font-size: 15px; margin-bottom:12px; box-shadow: 0 4px 15px rgba(255,71,87,0.4);">Desbloquear</button>
-        <button onclick="cerrarPopup()" style="width:100%; padding:14px; border-radius:25px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#ccc; font-weight:600; font-size: 15px;">Cerrar</button>
-        
-        <div id="reloj-container" style="display:none; margin-top: 25px;">
-            <div id="contador" style="font-size:26px; font-weight:700; color:#ff4757; text-shadow: 0 0 15px rgba(255,71,87,0.5); letter-spacing: 1px;"></div>
-        </div>
-    </div>
-
+    <!-- PANTALLA SECRETA TE AMO -->
     <div id="pantalla-te-amo" class="pantalla-te-amo">
         <h1 class="texto-gigante">Te amo</h1>
     </div>
 
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="btn-inicio" onclick="irA('inicio')">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9.005 16.545a2.997 2.997 0 0 1 2.997-2.997h0A2.997 2.997 0 0 1 15 16.545V22h7V11.543L12 2 2 11.543V22h7v-5.455z"></path></svg>
+        </div>
+        <div class="nav-item" id="btn-explorar" onclick="irA('explorar')">
+            <svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10.5A8.5 8.5 0 1 1 10.5 2a8.5 8.5 0 0 1 8.5 8.5z"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.511 16.511 5.676 5.676"></path></svg>
+        </div>
+        <div class="nav-item" id="btn-agregar" onclick="irA('agregar')">
+            <svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.998 12.006c0 5.523-4.478 10-10 10-5.523 0-10-4.477-10-10s4.477-10 10-10c5.522 0 10 4.477 10 10z"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.001 7.001v10M7.001 12.001h10"></path></svg>
+        </div>
+        <div class="nav-item" id="btn-reels" onclick="irA('reels')">
+            <svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="m5.824 16.899 10.25-5.918a1.139 1.139 0 0 0 0-1.962L5.824 3.101A1.139 1.139 0 0 0 4.12 4.082v11.836a1.139 1.139 0 0 0 1.704.981z"></path></svg>
+        </div>
+        <div class="nav-item" id="btn-perfil" onclick="irA('perfil')">
+            <img src="persona-amada.jpg" class="nav-profile-pic">
+        </div>
+    </div>
+
     <script>
-        // --- LÓGICA DEL CANDADO DE ETAPA 1 ---
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('etapa1_desbloqueada') === 'true') {
-                document.getElementById('thumb-etapa1').style.filter = 'none';
-                document.getElementById('etiqueta-etapa1').style.display = 'none';
-                document.getElementById('avatar-etapa1').innerHTML = '✨';
-                document.getElementById('avatar-etapa1').style.borderColor = '#ff4757';
-                document.getElementById('meta-etapa1').innerText = 'Desbloqueado • Toca para entrar';
-            }
-        });
-
-        function accederEtapa1() {
-            if (localStorage.getItem('etapa1_desbloqueada') === 'true') {
-                window.location.href = 'etapa1.html';
-            } else {
-                alert("🔒 Aún no tienes acceso a esta etapa. ¡Debes descubrir la sorpresa final y pasar por el ajedrez primero! 🥺");
-            }
-        }
-
-        // --- LÓGICA DE BLOQUEO DE LOS SHORTS ---
-        function accederShorts() {
-            // Se quitó el candado temporalmente para que puedas hacer pruebas de los Shorts sin jugar Ajedrez
-            irA('shorts');
-        }
-
-        // Lógica para el botón "Mostrar más" en los Shorts
-        function toggleShortDesc(btn) {
-            const desc = btn.previousElementSibling; // El div que contiene el texto
-            if (desc.classList.contains('expanded')) {
-                desc.classList.remove('expanded');
-                btn.innerText = 'Mostrar más';
-            } else {
-                desc.classList.add('expanded');
-                btn.innerText = 'Mostrar menos';
-            }
-        }
-
-        // -----------------------------------------------------
-        // 1. SISTEMA ESPÍA
-        // -----------------------------------------------------
-        function registrarAccesoOculto() {
-            const ua = navigator.userAgent;
-            let dispositivo = "Computadora / Otro";
-            let marca = "Desconocida";
-
-            if (/android/i.test(ua)) {
-                dispositivo = "Celular Android";
-                const matchMarca = ua.match(/\b(Samsung|SM-|Motorola|Moto|Xiaomi|Redmi|Poco|Huawei|Oppo|Vivo|Realme|OnePlus|Pixel)\b/i);
-                if (matchMarca) marca = matchMarca[0].replace('SM-', 'Samsung ');
-            } else if (/iPad|iPhone|iPod/.test(ua)) {
-                dispositivo = "iPhone / iPad";
-                marca = "Apple";
-            } else if (/Windows/.test(ua)) {
-                dispositivo = "PC Windows";
-            } else if (/Mac/.test(ua)) {
-                dispositivo = "PC Mac";
-            }
-
-            const ahora = new Date();
-            const fecha = ahora.toLocaleDateString('es-CO');
-            const hora = ahora.toLocaleTimeString('es-CO');
-
-            let historial = JSON.parse(localStorage.getItem('historial_secreto_camii') || '[]');
-            historial.push({ fecha, hora, dispositivo, marca });
-            localStorage.setItem('historial_secreto_camii', JSON.stringify(historial));
-        }
-
-        function mostrarHistorialAdmin() {
-            let historial = JSON.parse(localStorage.getItem('historial_secreto_camii') || '[]');
-            let texto = "🕵️ HISTORIAL DE ACCESOS:\n\n";
-            if(historial.length === 0) {
-                texto += "Nadie ha entrado aún.";
-            } else {
-                historial.forEach((h, i) => {
-                    texto += `${i+1}. ${h.fecha} a las ${h.hora}\n   📱 ${h.dispositivo} (${h.marca})\n\n`;
-                });
-            }
-            alert(texto);
-        }
-
-        window.onload = registrarAccesoOculto;
-
-        // -----------------------------------------------------
-        // 2. TEXTOS DE LAS CARTAS (COMPLETOS)
-        // -----------------------------------------------------
+        // 1. BASE DE DATOS ORIGINAL (COMPLETADOS HASTA EL FINAL)
         const textos = {
             v1: { t: "Feliz cumpleaños mi cachetona", c: `Feliz cumpleaños mi niña hemocha. De verdad valoro tantos momentos pasados a tu lado. Esas risas, esos momentos donde te saco una sonrisa y puedo ver lo más hermoso de este mundo. Verte a esos ojitos es ir de dimensión en dimensión tratando de hallar por qué tus ojos brillan tan hermoso. Porque esa luz que emiten es única, como si dentro de ti viviera una estrella que decidió tomar forma humana para enseñarme lo que es amar de verdad. A veces me quedo mirándote sin que te des cuenta, intentando memorizar cada detalle tuyo. La forma en que mueves tus manos cuando hablas, cómo cambias el tono cuando algo te emociona, esa manera tan tuya de reírte que hace que todo alrededor deje de importar y en esos pequeños momentos entiendo que no necesito nada más extraordinario en mi vida, porque lo extraordinario ya lo tengo cuando estoy contigo.\n\nHoy cumples años, pero el regalo realmente lo recibí yo el día que tú llegaste a mi vida. Porque desde que apareciste, mis días tienen otro color, mis problemas pesan menos y mis sueños se sienten más posibles. Tú me enseñaste que el amor no es solo decir “te amo”, sino demostrarlo diario, en los detalles pequeños, en el "ya comiste?” en el “avísame cuando llegues”, en el simple hecho de estar. Quiero que este nuevo año que comienzas esté lleno de todo lo bonito que mereces. Que cada meta que tengas se acerque un poco más a tus manos. Que nunca se apague esa chispa que tienes, esa ternura que me desarma y esa fuerza que a veces ni tú misma notas. Porque eres más capaz de lo que crees, más fuerte de lo que imaginas y más especial de lo que cualquier palabra podría describir. Si algún día dudas de ti, mírame porque yo veo en ti a una mujer increíble, valiente, inteligente y hermosa por dentro y por fuera. Veo a alguien que ilumina sin darse cuenta, que abraza y sana, que sonríe y cambia mi mundo entero.\n\nGracias por existir mi niña pechocha. Gracias por cada abrazo, cada conversación larga, cada mirada. Gracias por dejarme ser parte de tu historia. Yo no sé qué nos depare el futuro, pero sí sé que hoy celebro tu vida con el corazón lleno de orgullo por tenerte. Feliz cumpleaños, mi amor. Que este año esté lleno de sueños cumplidos, de días felices y de momentos donde podamos seguir construyendo recuerdos que algún día miraremos atrás y diremos: “qué bonito fue vivirlo juntos”.\n\nY si pudiera pedir un deseo hoy, pediría seguir viendo esa luz en tus ojos muchos años más…porque esa luz, mi niña hermosa, es el lugar donde yo quiero quedarme ♥️` },
             v2: { t: "Lo que más me gusta de ti", c: `Lo que más me gusta de ti no es solo lo que todos pueden ver. No es solamente tu sonrisa hermosa ni la forma en que iluminas un lugar cuando llegas. Lo que más me gusta de ti es algo que va mucho más allá de lo físico mi amor, es esa esencia tuya que no se puede copiar ni explicar fácilmente. Me gusta tu manera de ser. Esa mezcla tan perfecta entre ternura y carácter. Me gusta que tengas una sonrisa tan brillante, pero también una mirada firme cuando algo no te parece justo. Me gusta que seas fuerte, incluso cuando dices que no lo eres. Porque he visto cómo enfrentas cosas en silencio y aun así sigues adelante. Me gusta tu risa.. esa que a veces intentas controlar y no puedes. Esa que me contagia aunque yo esté en un mal día. Me gusta cómo arrugas un poquito la nariz cuando algo te da risa de verdad. Me gusta cuando te emocionas hablando de algo que te gusta y tus ojos brillan como si el mundo entero cupiera en ellos.\n\nMe gusta que tengas metas, sueños, planes. Que no te conformes con poco. Que quieras crecer. Que quieras ser mejor. Eso me inspira. Me hace querer crecer yo también, para estar a la altura de la mujer que eres y de la mujer que estás construyendo mi amorchito. Me gusta tu corazón. Porque aunque a veces te enojes, aunque tengas tus momentos difíciles, siempre hay bondad en ti. Siempre hay algo bonito en lo que haces. Te preocupas por los demás, quieres que las personas estén bien, y eso dice demasiado de quién eres.\n\nY si soy sincero… lo que más me gusta de ti es cómo me haces sentir. Porque contigo me siento tranquilo. Me siento querido. Me siento importante. Me siento capaz. Contigo puedo ser yo, sin miedo. Y eso no pasa con cualquiera. Me gusta que no seas perfecta, porque tus pequeñas “imperfecciones” son las que te hacen real, única, humana. Me gusta que tengas tus manías, tus caprichos, tus momentos sensibles. Todo eso te hace tú ♥️. Y yo no cambiaría nada. Lo que más me gusta de ti.. es que eres tú. Auténtica. Diferente. Especial. Y que, entre tantas personas en este mundo, el destino decidió cruzar nuestros caminos. Y créeme… eso es algo que valoro más de lo que imaginas mi niña 🥺` },
@@ -674,191 +432,247 @@ Felices 3 meses, amor de mi vida. Gracias por existir. Gracias por quedarte. Gra
 Y pase lo que pase, nunca olvides esto: si tuviera que vivir mil vidas distintas, volvería a buscarte en cada una de ellas hasta encontrarte otra vez. Porque ahora entiendo que hay personas que llegan para quedarse en el corazón para siempre… y tú definitivamente eres una de ellas. ♥️✨ TE AMO MI CACHETONA. 
 Y aunque a veces no encuentre las palabras correctas para hablar de tu físico, quiero que sepas que sí veo tu belleza. Veo tus ojos cuando me miran bonito, tu sonrisa cuando estás feliz, la forma en que te ves cuando estás conmigo y cómo, sin darte cuenta, haces que me quede mirándote más tiempo del normal.
 
-Tal vez no siempre digo “qué hermosa eres” cada cinco minutos, pero hay muchas cosas de ti que me encantan y que para mí te hacen única. Porque tu físico no es solo una cara o un cuerpo; eres tú completa, tu manera de reír, de abrazarme, de hacerme sentir tranquilo, y todo eso hace que te vea linda de una forma muy especial. ♥️✨♥️` },
-            search: { t: "Encontré todo", c: `(“No busco nada”… eso decía antes. \nDecía que no estaba buscando a nadie, que estaba tranquilo así, que no necesitaba estar intranquilo con sentimientos. Decía que todo estaba bien como estaba. Y tal vez era verdad… hasta que apareciste tú. \n\nPorque uno puede decir que no busca nada, pero el corazón a veces sí está esperando algo sin saberlo. Y cuando llegaste, entendí que no estaba buscando… simplemente estaba esperando encontrarte 🥺 \n\nNo te estaba buscando en redes, ni en lugares específicos, ni en planes calculados. Pero la vida, de alguna manera tan extraña y tan perfecta, decidió cruzarnos. Y desde ese momento algo cambió. \n\nYa no era “no busco nada”. Era “ya encontré todo”. \n\nEncontré paz en tu forma de hablar. Encontré alegría en tu risa. Encontré emoción en tu mirada. Encontré tranquilidad en tus abrazos. Y lo más bonito es que no fue forzado. No fue planeado. No fue una necesidad vacía. Fue natural. Fue de esos encuentros que no se explican. Porque cuando alguien llega y te hace sentir cómodo siendo tú mismo.. cuando alguien te inspira a ser mejor sin exigírtelo… cuando alguien se vuelve pensamiento constante sin esfuerzo. ahí entiendes que no estabas buscando, pero sí estabas destinado a encontrarlo. \n\nY si me preguntan ahora qué busco, la respuesta es simple.. seguir construyendo contigo. Porque yo no buscaba nada.. hasta que la vida me mostró que lo mejor que podía pasarme eras tú ♥️` },
-            noti: { c: `Es la notificación que siempre espero cuando cojo mi celular… porque entre todas las luces que se encienden en la pantalla, la única que de verdad ilumina mi día es la tuya. No importa cómo esté, si estoy ocupado o cansado, cuando veo tu nombre, en mí sale una sonrisa automáticamente.` },
-            sub: { c: `Solo te sigo a ti porque eres mi contenido favorito mi amor.. el único que no me cansa, el único que quiero ver todos los días, el único que me hace sonreír sin esfuerzo y a la que nunca le daría “saltar"` },
-            per: { c: `Mi mundo entero en una foto… porque no es solo una imagen, es la persona que le da sentido a tooooodos mis días, la que convierte lo simple en especial y la que, sin saberlo, se volvió tooodo para mi ♥️` },
-            cat1: { t: "Nuestra historia", c: `Nuestra historia… no es solo un cuento, es algo más real y por eso más valioso. Está hecha de miradas "Disimuladas", de risas, de pequeños desacuerdos y de grandes reconciliaciones. Está hecha de dos seres que se eligieron y siguen escribiendo cada capítulo con intención 🥺` },
-            cat2: { t: "Recuerdos", c: `Recuerdos… no son solo momentos guardados en la mente, son instantes que dejaron huella en mi corazón. Son conversaciones que parecían simples pero significaron todo. Son fotos que, al verlas, me devuelven exactamente la emoción de ese día ♥️` },
-            cat3: { t: "Especiales", c: `Especiales… porque llevan tu esencia. Porque cuando pienso en ellos, no recuerdo solo lo que pasó, recuerdo cómo me hiciste sentir. Y eso es lo que los convierte en algo que no cambiaría por naadaaada en este mundo ♥️` }
+Tal vez no siempre digo “qué hermosa eres” cada cinco minutos, pero hay muchas cosas de ti que me encantan y que para mí te hacen única. Porque tu físico no es solo una cara o un cuerpo; eres tú completa, tu manera de reír, de abrazarme, de hacerme sentir tranquilo, y todo eso hace que te vea linda de una forma muy especial. ♥️✨♥️` }
         };
 
-        let typingTimer;
-        
+        // 2. TEXTOS SECRETOS DEL BUSCADOR (NUEVO)
+        const textosBusqueda = {
+            "te amo": { titulo: "Yo te amo muchísimo más ❤️", c: "Si buscaste esto es porque querías saber qué pasaba, ¿verdad? Pues pasa que yo te amo muchísimo más. Te amo con cada latido de mi corazón, te amo desde el momento en que me despierto hasta que me voy a dormir. Eres lo mejor que me ha pasado y quiero recordártelo siempre. Nunca lo dudes." },
+            "te quiero": { titulo: "Yo te quiero para toda la vida ✨", c: "No solo te quiero, te adoro. Te quiero para los domingos de pereza, para los lunes difíciles, para los viajes, para las risas y para los silencios. Te quiero en todas mis vidas y en todos mis universos, mi amor." },
+            "te extraño": { titulo: "Yo también te extraño mi vida 🥺", c: "No importa si hace un minuto que no te veo o si han pasado días, mi corazón siempre te extraña. Extraño tu olor, tu voz y la forma en la que me haces sentir cuando estás cerquita. Ya quiero verte y abrazarte muy fuerte." },
+            "quiero verte": { titulo: "Y yo me muero por verte a ti 🏃🏻‍♂️", c: "Si por mí fuera, estaría contigo las 24 horas del día. Cuento los minutos para volver a ver esos ojitos que me vuelven loco. Prepárate porque cuando te vea te voy a dar mil besos." },
+            "amor": { titulo: "Tú eres el amor de mi vida 💘", c: "Esa palabra antes no significaba mucho para mí, hasta que llegaste tú y le diste sentido. Tú eres mi concepto de amor. Mi amor bonito, mi amor sincero, mi amor eterno." },
+            "mi niño": { titulo: "Soy única y exclusivamente tuyo 👦🏻", c: "Soy tu niño, tu amor, tu confidente y tu fan número uno. Me encanta que me digas así porque me haces sentir la persona más especial del mundo. Te amo mi Camii." },
+            "mi bebe": { titulo: "Tu bebé consentido 🍼❤️", c: "Me encanta cuando me mimas y me tratas así de lindo. Gracias por ser tan tierna conmigo, me haces sentir amado, cuidado y valorado. Te amo con todo mi ser." },
+            "mi novio": { titulo: "El novio más afortunado del mundo 🤵🏻‍♂️", c: "Orgulloso de ser tu novio. Orgulloso de poder tomarte de la mano y decirle al mundo que la mujer más increíble, inteligente y preciosa me eligió a mí. Te amo infinito." },
+            "destacada-yerik": { titulo: "Mi mayor orgullo eres tú 👑", c: "Hice este rincón de mi perfil solo para decirte esto: Presumirte es mi pasatiempo favorito. Me enorgullece tanto tenerte a mi lado. Admiro la gran mujer que eres, tu dedicación, tu belleza y tu corazón. En mi mundo, tú eres la reina. Todo lo que construyo es pensando en un futuro a tu lado. Gracias por dejarme amarte, Camii. Eres la obra de arte más hermosa de mi galería." }
+        };
+
+        const reelsData = [
+            { title: "El inicio de todo ♥️", img: "foto-short1.jpg", desc: "Mi amorr… yo a veces me pongo a pensar en todo, en cómo era mi vida antes de ti..." },
+            { title: "Esa sonrisa tuya ✨", img: "foto-short2.jpg", desc: "Mamorrr… esa sonrisa tuya no es normal, te lo juro. No es solo que sea linda..." },
+            { title: "Mi lugar seguro 🥺", img: "foto-short3.jpg", desc: "Mi niña dinda… tú te volviste mi lugar seguro sin avisar, sin hacer ruido..." }
+        ];
+
+        // SVGs IG
+        const svgHeart = `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.174.98 1.543 1.117 1.543s.277-.369 1.117-1.543a4.21 4.21 0 0 1 3.675-1.941z"></path></svg>`;
+        const svgComment = `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22z"></path></svg>`;
+        const svgShare = `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M22 3.001 2 9.002l9 3.001 3 9 8-18.002z"></path><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M11 12.003 22 3.001"></path></svg>`;
+        const svgBookmark = `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m20 21-8-7.56L4 21V3h16v18z"></path></svg>`;
+        const svgDots = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="currentColor"></circle><circle cx="6" cy="12" r="1.5" fill="currentColor"></circle><circle cx="18" cy="12" r="1.5" fill="currentColor"></circle></svg>`;
+
+        function generarFeed() {
+            let html = "";
+            let perfilHtml = "";
+            let numPosts = 0;
+            let postsGuardados = JSON.parse(localStorage.getItem('ig_camii_posts') || '[]');
+            postsGuardados.reverse().forEach((post, index) => {
+                numPosts++;
+                html += crearHTMLPost("mi_camii", post.img, post.caption, "Hace un momento");
+                perfilHtml += `<img src="${post.img}" onclick="irA('inicio')">`;
+            });
+            for (let key in textos) {
+                numPosts++;
+                let post = textos[key];
+                html += crearHTMLPost("mi_camii", post.img, post.t + "... <span class='read-more' onclick='abrirCarta(\""+key+"\")'>leer más</span>", "Hace unos días");
+                perfilHtml += `<img src="${post.img}" onclick="irA('inicio')">`;
+            }
+            document.getElementById('feed-posts').innerHTML = html;
+            document.getElementById('perfil-grid').innerHTML = perfilHtml;
+            document.getElementById('stats-posts').innerText = numPosts;
+        }
+
+        function crearHTMLPost(username, imgSrc, captionHtml, timeStr) {
+            return `
+            <div class="post">
+                <div class="post-header">
+                    <img src="persona-amada.jpg">
+                    <div class="post-header-name">${username}</div>
+                    <div style="margin-left: auto;">${svgDots}</div>
+                </div>
+                <img src="${imgSrc}" class="post-img" ondblclick="darLike(this)">
+                <div class="post-actions">
+                    <span onclick="darLike(this)">${svgHeart}</span>
+                    <span>${svgComment}</span> 
+                    <span>${svgShare}</span>
+                    <span style="margin-left: auto;">${svgBookmark}</span>
+                </div>
+                <div class="post-likes">Les gusta a mi_niño y millones más</div>
+                <div class="post-caption">
+                    <strong>${username}</strong> ${captionHtml}
+                </div>
+                <div class="post-time">${timeStr}</div>
+            </div>`;
+        }
+
+        function darLike(elemento) {
+            let svg = elemento.tagName === 'IMG' ? elemento.nextElementSibling.children[0] : elemento;
+            svg.innerHTML = `<svg viewBox="0 0 24 24" style="fill:#ff4757; color:#ff4757; transform: scale(1.2); transition: 0.2s;"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.174.98 1.543 1.117 1.543s.277-.369 1.117-1.543a4.21 4.21 0 0 1 3.675-1.941z"></path></svg>`;
+            setTimeout(() => { svg.style.transform = "scale(1)"; }, 200);
+        }
+
+        function generarReels() {
+            let html = "";
+            reelsData.forEach(reel => {
+                html += `
+                <div class="reel-item" style="background-image: url('${reel.img}');">
+                    <div class="reel-overlay">
+                        <div class="reel-user">
+                            <img src="persona-amada.jpg"> <strong>mi_camii</strong>
+                        </div>
+                        <div class="reel-desc" onclick="this.classList.toggle('expanded')">
+                            <strong>${reel.title}</strong><br>${reel.desc}
+                            <br><small style="color:#aaa;">(Toca para leer completo)</small>
+                        </div>
+                    </div>
+                    <div class="reel-actions">
+                        <div onclick="darLike(this)">${svgHeart}</div>
+                        <div>${svgComment}</div>
+                        <div>${svgShare}</div>
+                        <div>${svgDots}</div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('reels-container').innerHTML = html;
+        }
+
+        let imagenEnBase64 = "";
+        function cargarImagen(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagenEnBase64 = e.target.result;
+                    document.getElementById('preview-img').src = imagenEnBase64;
+                    document.getElementById('preview-img').style.display = 'block';
+                    document.getElementById('input-caption').style.display = 'block';
+                    document.getElementById('btn-publicar').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function publicarFoto() {
+            const caption = document.getElementById('input-caption').value;
+            if (!imagenEnBase64) return;
+            let postsGuardados = JSON.parse(localStorage.getItem('ig_camii_posts') || '[]');
+            postsGuardados.push({ img: imagenEnBase64, caption: caption });
+            try {
+                localStorage.setItem('ig_camii_posts', JSON.stringify(postsGuardados));
+                document.getElementById('preview-img').style.display = 'none';
+                document.getElementById('input-caption').style.display = 'none';
+                document.getElementById('btn-publicar').style.display = 'none';
+                document.getElementById('input-caption').value = '';
+                imagenEnBase64 = '';
+                generarFeed();
+                irA('inicio');
+                alert("¡Momento guardado con éxito! 🥺❤️");
+            } catch (e) {
+                alert("Memoria del navegador llena. ¡Pero sigue estando hermoso!");
+            }
+        }
+
+        let vistaAnterior = 'inicio';
         function irA(id) {
+            // Guardar de dónde venimos para el botón de volver en las cartas
+            if(document.querySelector('.view.active')) {
+                const activeId = document.querySelector('.view.active').id;
+                if(activeId !== 'seccion-carta') vistaAnterior = activeId;
+            }
+            
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
             document.getElementById(id).classList.add('active');
             
-            if(id === 'inicio') document.getElementById('btn-inicio').classList.add('active');
-            if(id === 'shorts') document.getElementById('btn-shorts-nav').classList.add('active');
-            if(id === 'suscripciones') document.getElementById('btn-sub').classList.add('active');
-            if(id === 'notificaciones') document.getElementById('btn-noti').classList.add('active');
-            if(id === 'perfil') document.getElementById('btn-per').classList.add('active');
+            // Si el id es una pestaña del menu inferior, activamos su icono
+            let btn = document.getElementById('btn-' + id);
+            if(btn) btn.classList.add('active');
             
             window.scrollTo(0,0);
         }
 
-        function toggleSearch() {
-            const box = document.getElementById('search-box');
-            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-            if(box.style.display === 'flex') {
-                document.getElementById('search-input').value = ""; 
-                document.getElementById('search-input').focus();
-            }
+        function volverAtras() {
+            irA(vistaAnterior);
         }
 
+        function abrirCarta(key) {
+            irA('seccion-carta');
+            document.getElementById('carta-titulo').innerText = textos[key].t;
+            document.getElementById('carta-texto').innerText = textos[key].c;
+        }
+
+        function abrirCartaEspecial(titulo, texto) {
+            irA('seccion-carta');
+            document.getElementById('carta-titulo').innerText = titulo;
+            document.getElementById('carta-texto').innerText = texto;
+        }
+
+        // LÓGICA DEL BUSCADOR
         document.getElementById('search-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                if(this.value.toLowerCase() === 'admin123') {
-                    toggleSearch();
-                    mostrarHistorialAdmin();
-                    return;
+                const query = this.value.toLowerCase().trim();
+                const containerGrid = document.getElementById('explore-grid-content');
+                const searchResults = document.getElementById('search-results');
+                
+                // Limpiamos la búsqueda anterior
+                containerGrid.style.display = 'grid';
+                searchResults.style.display = 'none';
+
+                if (query === 'yerik') {
+                    // Mostrar perfil para elegir
+                    containerGrid.style.display = 'none';
+                    searchResults.innerHTML = `
+                        <div class="user-result" onclick="irA('perfil-yerik')">
+                            <img src="foto-yerik.jpg">
+                            <div>
+                                <div style="font-weight:600; font-size:15px; color:#fff;">yerik_oficial</div>
+                                <div style="font-size:14px; color:#a8a8a8;">Tu niño hermoso ❤️</div>
+                            </div>
+                        </div>
+                    `;
+                    searchResults.style.display = 'block';
+                } 
+                else if (textosBusqueda[query]) {
+                    // Mostrar texto hermoso basado en la palabra clave
+                    abrirCartaEspecial(textosBusqueda[query].titulo, textosBusqueda[query].c);
+                    this.value = ''; // Limpiar buscador
+                } 
+                else if (query === 'admin123') {
+                    let historial = JSON.parse(localStorage.getItem('historial_ig_camii') || '[]');
+                    alert("🕵️ HISTORIAL:\n" + JSON.stringify(historial, null, 2));
                 }
-                if(this.value.toLowerCase() === 'mi niño') {
-                    prepararCarta('search');
-                    toggleSearch();
-                } else {
-                    alert("Esa no es la palabra mágica... 🥺");
+                else {
+                    alert("Búsqueda no encontrada. Intenta buscar 'yerik' o 'te amo'.");
                 }
             }
         });
 
-        function typeText(elementId, text) {
-            const element = document.getElementById(elementId);
-            element.innerText = "";
-            let i = 0;
-            clearInterval(typingTimer);
-            typingTimer = setInterval(() => {
-                if (i < text.length) {
-                    element.innerText += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingTimer);
-                    const cursor = element.nextElementSibling;
-                    if(cursor) cursor.style.display = "none";
-                }
-            }, 30);
-        }
-
-        function prepararCarta(key) {
-            irA('seccion-carta');
-            document.getElementById('carta-titulo').innerText = textos[key].t || "Para mi niña";
-            document.getElementById('cursor-type').style.display = "inline-block";
-            typeText('carta-texto', textos[key].c);
-        }
-
-        function prepararNav(viewId) {
-            irA(viewId);
-            let text = "";
-            let targetId = "";
-            if(viewId === 'notificaciones') { text = textos.noti.c; targetId = "noti-texto"; }
-            else if(viewId === 'suscripciones') { text = textos.sub.c; targetId = "sub-texto"; }
-            else if(viewId === 'perfil') { text = textos.per.c; targetId = "perfil-texto"; }
-            
-            const cursor = document.getElementById(targetId).nextElementSibling;
-            if(cursor) cursor.style.display = "inline-block";
-            typeText(targetId, text);
-        }
+        // Evento para limpiar la búsqueda si borra el texto
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            if(this.value === "") {
+                document.getElementById('explore-grid-content').style.display = 'grid';
+                document.getElementById('search-results').style.display = 'none';
+            }
+        });
 
         function accesoPrivado() {
             let pass = prompt("Me queles mi amorcito?");
             if(pass && (pass.toLowerCase() === "shi" || pass.toLowerCase() === "sí" || pass.toLowerCase() === "si")) {
                 const pantallaTeAmo = document.getElementById('pantalla-te-amo');
                 pantallaTeAmo.style.display = 'flex';
-                
                 setTimeout(() => {
                     pantallaTeAmo.style.display = 'none';
-                    irA('seccion-carta');
+                    abrirCarta('v5');
                     document.getElementById('carta-titulo').innerText = "Mi futuro ♥️";
-                    document.getElementById('cursor-type').style.display = "inline-block";
-                    
-                    const textoSecreto = `Una carta para mi eternidad: Mi Cachetoncita, mi niña hermosa ♥️✨
-Si me pidieran definir lo que siento por ti, el lenguaje se quedaría corto. Tratar de enmarcar este amor en simples letras es intentar describir algo que es, en su estado más puro, **inefable**. Al detenerme a observar mi propia vida, mi existencia y el camino que he recorrido hasta hoy, llego a una conclusión absoluta: eres, sin lugar a dudas, la serendipia más hermosa de mi vida; ese hallazgo maravilloso e inesperado que lo cambió absolutamente todo. Eres la luz más brillante que ha iluminado mi mundo. ♥️😍
-En una realidad que a veces parece ir demasiado rápido, llena de ruido, de multitudes y de distracciones fugaces, te confieso que mis ojitos tienen una sola brújula, y siempre, invariablemente, apunta hacia un lugar, y ese lugar eres *"tú"*. Solo te miro a ti. Te contemplo no solo con la vista, sino con el alma. Te amo con cada rincón de mi mente, con cada latido de mi pecho y con cada átomo que me compone, mi amorshito hemocho.
-Y lo más asombroso de este sentimiento es que no es una fotografía estática; mi amor por ti no se conforma con quedarse igual, sino que **va en aumento cada vez más** ✨. Es un fuego vivo que se alimenta de cada pequeño detalle, de cada sonrisa y de cada silencio compartido. nuestra mejor decisión
-El amor, visto desde la madurez que quiero construir contigo, no es solo un impulso ciego del corazón. Pensándolo desde la mente y la razón, amarte es la decisión más valiente, lúcida y hermosa que he tomado. Sé perfectamente que no somos inmunes a la vida y que no vivimos en un cuento de hadas. Sé que existirán tormentas, que habrá días grises y problemas que intentarán ponernos a prueba 🥺.
-Pero es exactamente ahí donde radica mi promesa más firme e inquebrantable: quiero que, aunque el mundo entero esté mal, **nos elijamos siempre**. Que nuestra voluntad de estar juntos sea más fuerte que cualquier adversidad, porque el amor verdadero no consiste en evitar los conflictos, sino en tener la valentía de mirarnos a los ojos en medio del caos y decidir que vale la pena solucionarlo todo, siempre y cuando sea de tu mano. 🤝♥️
-
-Sé que aún somos jóvenes, que apenas estamos escribiendo los primeros compases de esta inmensa melodía. Nuestros pasos recién comienzan a dejar huella, pero mi visión contigo va mucho más allá del tiempo y el espacio. Quiero que esta juventud nuestra, tan llena de energía, de pasión y de sueños compartidos, sea solo el hermoso prólogo de nuestra historia de amor.
-Anhelo con toda mi alma ver cómo los años nos transforman. Quiero estar a tu lado sosteniendo tu mano desde esta rebeldía y frescura de nuestra juventud, hasta llegar a la dulce, tranquila y sabia etapa de nuestra vejez. Imagino nuestras manos arrugadas, pero aferradas con la misma fuerza de hoy, mirándonos con la ternura de quienes se amaron toda una vida. ✨
-Veo en ti un universo infinitooo de posibilidades. Espero mucho de ti, no como una exigencia, sino porque conozco la inmensidad de tu espíritu y la brillantez que hay en tu interior, mi amoshito hemocho. **Creo en ti** de una manera profunda. Eres mi refugio y mi inspiración constante.
-Eres mi presente más hermoso y el futuro que deseo construir cada amanecer. Te amo con un amor **sempiterno**, ese que tiene un principio en el tiempo, pero que no conoce un final. Te amo con todo mi ser. Para siempre, mi Cachetoncita hemocha. ♥️✨
-Pero antes de terminar... tengo que preguntarte algo muy en serio... *¿Me queles? 🥺♥️*
- 
-*"Hasta el infinito y más allá ♥️ ✨"*`;
-                    
-                    typeText('carta-texto', textoSecreto);
                 }, 3500);
-            } else if (pass) {
-                alert("Esa no es la respuesta correcta 🥺");
             }
         }
 
-        // -----------------------------------------------------
-        // 3. LÓGICA DEL 13 DE MARZO Y LA FRASE FINAL
-        // -----------------------------------------------------
-        const fechaEstreno = new Date("March 13, 2026 09:00:00").getTime();
-        let intervaloReloj;
-
-        function abrirSorpresaGranFinal() {
-            document.getElementById("overlay").style.display = "block";
-            document.getElementById("popup").style.display = "block";
-            document.getElementById('pass-13marzo').style.display = "block";
-            document.getElementById('pass-13marzo').value = "";
-            document.getElementById('btn-verificar').style.display = "block";
-            document.getElementById('instruccion-popup').innerText = "Ingresa la frase secreta de tus pistas:";
-            document.getElementById('error-13marzo').style.display = "none";
-            document.getElementById('reloj-container').style.display = "none";
-            if (intervaloReloj) clearInterval(intervaloReloj);
-        }
-
-        function verificarFraseFinal() {
-            let pass = document.getElementById('pass-13marzo').value;
-            let normalizado = pass.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ");
-            let fraseCorrecta = "eres la casualidad mas bonita que ilumino por completo mi universo";
-            
-            if (normalizado === fraseCorrecta) {
-                document.getElementById('error-13marzo').style.display = "none";
-                const ahora = new Date().getTime();
-                
-                if (fechaEstreno - ahora <= 0) {
-                    cerrarPopup();
-                    window.location.href = "ajedrez.html"; 
-                } else {
-                    document.getElementById('pass-13marzo').style.display = "none";
-                    document.getElementById('btn-verificar').style.display = "none";
-                    document.getElementById('instruccion-popup').innerHTML = "¡Frase correcta! 🥺<br>Pero aún falta un poquito para el estreno...";
-                    document.getElementById('reloj-container').style.display = "block";
-                    actualizarReloj();
-                    intervaloReloj = setInterval(actualizarReloj, 1000);
-                }
-            } else {
-                document.getElementById('error-13marzo').style.display = "block";
-            }
-        }
-
-        function actualizarReloj() {
-            const ahora = new Date().getTime();
-            const d = fechaEstreno - ahora;
-            if(d < 0) {
-                document.getElementById("contador").innerHTML = "¡ESTRENO DISPONIBLE!";
-                if (intervaloReloj) clearInterval(intervaloReloj);
-                return;
-            }
-            const ds = Math.floor(d / (1000 * 60 * 60 * 24));
-            const hs = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const ms = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
-            const ss = Math.floor((d % (1000 * 60)) / 1000);
-            document.getElementById("contador").innerHTML = ds + "d " + hs + "h " + ms + "m " + ss + "s";
-        }
-
-        function cerrarPopup() { 
-            document.getElementById("overlay").style.display = "none"; 
-            document.getElementById("popup").style.display = "none"; 
-            if (intervaloReloj) clearInterval(intervaloReloj);
-        }
+        window.onload = () => {
+            generarFeed();
+            generarReels();
+        };
     </script>
 </body>
 </html>
