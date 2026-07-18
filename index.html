@@ -34,8 +34,13 @@
         .post-actions { padding: 12px 15px 8px; display: flex; align-items: center; gap: 18px; }
         .post-actions svg { width: 26px; height: 26px; }
         .post-likes { padding: 0 15px; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        
         .post-caption { padding: 0 15px; font-size: 14px; line-height: 1.5; }
         .post-caption strong { font-weight: 600; }
+        .post-caption-content { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+        .post-caption-content.expanded { display: block; -webkit-line-clamp: unset; }
+        .btn-mostrar-mas { color: #a8a8a8; cursor: pointer; font-size: 14px; margin-top: 4px; display: inline-block; font-weight: 500; }
+        
         .post-time { padding: 0 15px; font-size: 11px; color: #a8a8a8; margin-top: 6px; text-transform: uppercase; }
 
         .search-bar-container { padding: 10px 15px; }
@@ -57,12 +62,14 @@
         .reels-scroll { height: calc(100vh - 50px); overflow-y: scroll; scroll-snap-type: y mandatory; }
         .reels-scroll::-webkit-scrollbar { display: none; }
         .reel-item { height: 100%; width: 100%; scroll-snap-align: start; position: relative; background-size: cover; background-position: center; }
-        .reel-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 110px 20px; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, transparent 100%); pointer-events: none; }
+        
+        /* Ajuste de márgenes en Reels para celulares */
+        .reel-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 140px 20px; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, transparent 100%); pointer-events: none; }
         .reel-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; pointer-events: auto; }
         .reel-user img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; }
         .reel-desc { font-size: 14.5px; max-height: 45px; overflow: hidden; transition: 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.9); pointer-events: auto; line-height: 1.4; }
         .reel-desc.expanded { max-height: 250px; overflow-y: auto; }
-        .reel-actions { position: absolute; right: 15px; bottom: 110px; display: flex; flex-direction: column; gap: 22px; align-items: center; z-index: 10; }
+        .reel-actions { position: absolute; right: 15px; bottom: 140px; display: flex; flex-direction: column; gap: 22px; align-items: center; z-index: 10; cursor: pointer; }
 
         .profile-header { padding: 20px 15px 10px; display: flex; align-items: center; gap: 25px; }
         .profile-pic { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 1px solid #262626; }
@@ -111,15 +118,15 @@
         </div>
         <div id="search-results"></div>
         <div class="explore-grid" id="explore-grid-content">
-            <img src="foto-ajedrez.jpg" alt="Ajedrez" onclick="window.location.href='ajedrez.html'">
-            <img src="foto-pista1.jpg" onclick="window.location.href='pista1.html'">
-            <img src="foto-pista2.jpg" onclick="window.location.href='pista2.html'">
-            <img src="post1.jpg">
-            <img src="post2.jpg">
-            <img src="post3.jpg">
-            <img src="post4.jpg">
-            <img src="post5.jpg">
-            <img src="foto-etapa1.jpg" onclick="accederEtapa1()">
+            <img src="foto-ajedrez.jpg" onerror="this.src='https://placehold.co/400x400/111/fff?text=Ajedrez+(Pon+tu+foto)'" alt="Ajedrez" onclick="window.location.href='ajedrez.html'">
+            <img src="foto-pista1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Pista+1'" onclick="window.location.href='pista1.html'">
+            <img src="foto-pista2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Pista+2'" onclick="window.location.href='pista2.html'">
+            <img src="post1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+1'">
+            <img src="post2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+2'">
+            <img src="post3.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+3'">
+            <img src="post4.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+4'">
+            <img src="post5.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+5'">
+            <img src="foto-etapa1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Etapa+1'" onclick="accederEtapa1()">
         </div>
     </div>
 
@@ -140,19 +147,15 @@
 
     <div id="perfil" class="view">
         <div class="profile-header">
-            <img src="persona-amada.jpg" class="profile-pic">
+            <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" class="profile-pic">
             <div class="profile-stats">
                 <div><div class="stat-num" id="stats-posts">0</div><div class="stat-label">Publicaciones</div></div>
                 <div><div class="stat-num">1</div><div class="stat-label">Seguidor</div></div>
                 <div><div class="stat-num">1</div><div class="stat-label">Único amor</div></div>
             </div>
         </div>
-        <div class="profile-bio">
-            <strong>Mi Camii ♥️</strong><br>
-            La persona que le da sentido a mis días.<br>
-            ♥️ Mi lugar seguro<br>
-            📍 Mi corazón<br>
-            <span style="color: #e0f7fa;">@el_amor_de_mi_vida</span>
+        <div class="profile-bio" id="bio-dinamica">
+            <!-- Se carga desde JS -->
         </div>
         <div class="profile-tabs">
             <div class="tab" style="border-bottom: 1px solid #fff;"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 3h18v18H3z M9 3v18 M15 3v18 M3 9h18 M3 15h18"></path></svg></div>
@@ -183,12 +186,12 @@
         </div>
         <div class="profile-highlights">
             <div class="story" onclick="abrirCartaEspecial('Mi mayor orgullo ♥️', textosBusqueda['destacada-yerik'].c)">
-                <div class="story-ring destacada" style="border: 1px solid #fff;"><img src="foto-destacada.jpg"></div>
+                <div class="story-ring destacada" style="border: 1px solid #fff;"><img src="foto-destacada.jpg" onerror="this.src='https://placehold.co/100x100/222/fff?text=Fav'"></div>
                 <div class="story-text">Para Ti 🥺</div>
             </div>
         </div>
         <div class="explore-grid">
-            <img src="post1.jpg"><img src="post2.jpg"><img src="post3.jpg"><img src="historia1.jpg"><img src="historia2.jpg"><img src="persona-amada.jpg">
+            <img src="post1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="post2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="post3.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="historia1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="historia2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="persona-amada.jpg" onerror="this.src='https://placehold.co/400x400/ff4757/fff?text=Perfil'">
         </div>
     </div>
 
@@ -200,7 +203,7 @@
             <div class="search-input" style="margin-bottom: 20px;">Buscar...</div>
             <div class="user-result" onclick="sorpresaSharon()">
                 <div class="story-ring" style="width:56px; height:56px; padding:2px; flex-shrink:0;">
-                    <img src="persona-amada.jpg" style="width:100%; height:100%; border:2px solid #000;">
+                    <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" style="width:100%; height:100%; border:2px solid #000;">
                 </div>
                 <div style="flex: 1;">
                     <div style="font-weight:600; font-size:15px; color:#fff;">Sharonc_04</div>
@@ -237,10 +240,24 @@
         <div class="nav-item" id="btn-explorar" onclick="irA('explorar')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10.5A8.5 8.5 0 1 1 10.5 2a8.5 8.5 0 0 1 8.5 8.5z M16.511 16.511l5.676 5.676"></path></svg></div>
         <div class="nav-item" id="btn-agregar" onclick="irA('agregar')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.998 12.006c0 5.523-4.478 10-10 10-5.523 0-10-4.477-10-10s4.477-10 10-10c5.522 0 10 4.477 10 10z M12.001 7.001v10 M7.001 12.001h10"></path></svg></div>
         <div class="nav-item" id="btn-reels" onclick="irA('reels')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="m5.824 16.899 10.25-5.918a1.139 1.139 0 0 0 0-1.962L5.824 3.101A1.139 1.139 0 0 0 4.12 4.082v11.836a1.139 1.139 0 0 0 1.704.981z"></path></svg></div>
-        <div class="nav-item" id="btn-perfil" onclick="irA('perfil')"><img src="persona-amada.jpg" class="nav-profile-pic"></div>
+        <div class="nav-item" id="btn-perfil" onclick="irA('perfil')"><img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" class="nav-profile-pic"></div>
     </div>
 
     <script>
+        // =====================================================================
+        // ✏️ ZONA DE EDICIÓN: CAMBIA TUS TEXTOS Y FOTOS AQUÍ FÁCILMENTE ✏️
+        // =====================================================================
+        
+        // 1. BIOGRAFÍA DEL PERFIL
+        const bioPerfil = `
+            <strong>Mi Camii ♥️</strong><br>
+            La persona que le da sentido a mis días.<br>
+            ♥️ Mi lugar seguro<br>
+            📍 Mi corazón<br>
+            <span style="color: #e0f7fa;">@el_amor_de_mi_vida</span>
+        `;
+
+        // 2. HISTORIAS DESTACADAS
         const historiasData = {
             h1: { titulo: "Cumpleaños", img: "historia1.jpg", texto: "Feliz cumpleaños mi niña hemocha... Hoy es un día tan especial, no solo para ti, sino para el universo entero que tuvo la suerte de verte nacer. Eres el regalo más grande que la vida pudo haberme dado. Amo cada pequeño detalle de ti... ¡Feliz día, amor de mi vida! ♥️" },
             h2: { titulo: "Me gustas", img: "historia2.jpg", texto: "Lo que más me gusta de ti no es solo lo que todos pueden ver... Me gusta tu forma de ver el mundo, tu paciencia, tu inteligencia y esa fuerza que tienes. Lo que más me gusta de ti... es absolutamente todo. No le cambiaría ni una sola coma a tu forma de ser. ♥️" },
@@ -250,26 +267,9 @@
             h6: { titulo: "Suerte", img: "historia6.jpg", texto: "A veces pienso que me gasté toda mi suerte al encontrarte. ¿Y sabes qué? Valió totalmente la pena. Eres mi tesoro más grande. ♥️" }
         };
 
+        // 3. PUBLICACIONES (FEED)
         const publicacionesData = {
-            p1: { caption: `Feliz cinco meses, mi amor. ♥️
-
-Cinco meses… y todavía siento que las palabras se quedan pequeñas para todo lo que has significado en mi vida. Parece increíble cómo el tiempo pudo pasar tan rápido y, al mismo tiempo, dejar tantos recuerdos que parecen suficientes para llenar una vida entera. Han sido cinco meses de sonrisas, de abrazos que, aunque a veces solo existan en mis pensamientos, ya se sienten como mi lugar favorito; cinco meses en los que descubrí que el amor tiene tu nombre, tu mirada y esa forma tan hermosa de hacer que cualquier día común se convierta en uno inolvidable.
-
-Gracias por aparecer en mi vida y enseñarme que el amor no solo se dice, también se demuestra en los pequeños detalles, en los buenos días, en las conversaciones largas, en los silencios que nunca son incómodos, en las risas que compartimos y hasta en las veces que nos apoyamos cuando el mundo parece ponerse un poquito más pesado.
-
-Dicen que el amor verdadero se parece a un jardín: mientras más lo cuidas, más florece. Y el nuestro, mi vida, cada día tiene una flor nueva. Cada amanecer encuentro una razón distinta para enamorarme más de ti, como si mi corazón nunca pudiera llegar al límite de todo lo que siente. Es un cielo que nunca deja de llenarse de estrellas, un mar que jamás termina de abrazar la orilla, una melodía que siempre encuentra una nota más bonita para seguir sonando.
-
-Cinco meses pueden parecer poco para algunas personas, pero para mí han sido suficientes para entender que quiero seguir escribiendo esta historia contigo. Porque no sueño solamente con nuestro presente; también sueño con todos esos capítulos que aún no existen. Sueño con los días en los que despertemos juntos, con una casita llena de risas, con nuestros sueños cumpliéndose de la mano, con cada meta celebrada contigo y con una vida en la que nunca deje de elegirte.
-
-Quiero que pasen seis meses, un año, dos, cinco, diez… toda una vida, y seguir mirándote con la misma ilusión con la que te miro hoy. Quiero seguir sintiendo mariposas cuando aparezca una notificación tuya, seguir sonriendo cada vez que escuche tu voz y seguir encontrando paz en tus abrazos, porque contigo entendí que el hogar no siempre es un lugar; a veces es una persona.
-
-Gracias por cada momento, por cada palabra bonita, por cada risa, por cada te amo, por cada vez que me has permitido conocer un pedacito más de tu corazón. Gracias por confiar en mí, por hacerme sentir tan amado y por regalarme el privilegio más grande que he tenido: poder caminar a tu lado.
-
-Hoy no solo celebramos cinco meses. Celebramos cinco meses de una historia que deseo que nunca tenga un final. Cinco meses de un amor que ha crecido tanto que ya no cabe en las palabras. Cinco meses de demostrarme que, entre todos los caminos que pudo tomar mi vida, el más bonito fue el que me llevó hasta ti.
-
-Feliz cinco meses, mi mujer hermosa. Que este sea apenas el comienzo de todos los meses, años y vidas que quiero compartir contigo. Y si algún día el tiempo intenta borrar nuestros recuerdos, prometo volver a escribirlos contigo una y otra vez, porque hay historias que nacieron para durar toda la eternidad.
-
-Te amo con todo mi corazón. Te amo más de lo que las estrellas pueden contarse, más de lo que el mar puede abrazar la arena y más de lo que cualquier poema podría explicar. Hoy, mañana y todos los días que me regale la vida, mi lugar favorito seguirá siendo el mismo: **a tu lado.** ♥️`, img: "post1-5meses.jpg", time: "Hace un momento" },
+            p1: { caption: "Feliz cinco meses, mi amor. ♥️\n\nCinco meses… y todavía siento que las palabras se quedan pequeñas para todo lo que has significado en mi vida. Parece increíble cómo el tiempo pudo pasar tan rápido y, al mismo tiempo, dejar tantos recuerdos que parecen suficientes para llenar una vida entera. Han sido cinco meses de sonrisas, de abrazos que, aunque a veces solo existan en mis pensamientos, ya se sienten como mi lugar favorito...\n\n(Texto largo... puedes editarlo a tu gusto)", img: "post1-5meses.jpg", time: "Hace un momento" },
             p2: { caption: "Mi lugar favorito en el mundo no aparece en ningún mapa... Mi lugar favorito tiene nombre, apellido, y una sonrisa que me vuelve loco. Mi lugar favorito son tus brazos. Eres mi refugio, mi paz, y ese rinconcito seguro donde siempre quiero volver. ♥️", img: "post2.jpg", time: "Hace 2 horas" },
             p3: { caption: "Mi amor… pase lo que pase, vengan los días buenos o los malos, yo siempre estaré contigo. Te elijo hoy, te elegiré mañana, y te seguiré eligiendo todos los días de mi vida. Porque un amor como el nuestro no se encuentra dos veces. Te amo, mi futuro, mi todo. ♥️", img: "post3.jpg", time: "Ayer" },
             p4: { caption: "No hay un solo día en el que no agradezca por tenerte en mi vida. Eres mi rayito de sol en los días nublados y la calma en mis tormentas. Nunca sueltes mi mano, mi Camii. ♥️", img: "post4.jpg", time: "Hace 3 días" },
@@ -277,51 +277,22 @@ Te amo con todo mi corazón. Te amo más de lo que las estrellas pueden contarse
             p6: { caption: "Cinco meses construyendo recuerdos increíbles, pero siento que te conozco de toda la vida. Eres mi alma gemela, mi compañera de aventuras y el amor de mi vida. Te amo de aquí a la luna a pasitos de caracol. ♥️", img: "post6.jpg", time: "Hace 2 semanas" }
         };
 
-        const textosBusqueda = {
-            "te amo": { titulo: "Yo te amo muchísimo más ♥️", c: `¿Que tú me amas más? Mi amor, yo sé que me amas con todo tu corazón, y créeme que es una de las cosas más bonitas que me han pasado en la vida. Pero déjame llevarte la contraria esta vez, porque estoy completamente seguro de que yo te amo muchísimo más.♥️
-
-Te amo más de lo que mis palabras pueden explicar. Más de lo que puedo escribir en un mensaje, más de lo que puedo demostrar en un solo día. Hay momentos en los que quisiera abrir mi corazón para que vieras todo lo que siento por ti, porque solo así entenderías por qué siempre insisto en decir que yo te amo más.
-
-Te amo cuando hablamos durante horas y también cuando el silencio nos acompaña. Te amo cuando sonríes, cuando haces esas caritas que me derriten el corazón, cuando te emocionas por cosas pequeñas, cuando me cuentas cómo estuvo tu día y hasta cuando te enojas un poquito. Te amo en cada versión de ti, incluso en esos días donde tú misma no logras ver lo increíble que eres, porque yo sí lo veo, siempre.
-
-Yo te amo más porque desde que llegaste cambiaste mi manera de ver la vida. Ahora cualquier plan bonito tiene tu nombre. Cuando pienso en el futuro, no imagino un lugar; te imagino a ti. Imagino una casa llena de risas, abrazos, recuerdos y sueños cumplidos, siempre contigo de la mano. Imagino despertar y saber que la primera persona que voy a ver eres tú, y acostarme agradeciendo porque la vida me permitió encontrarte.
-
-Te amo más porque cada día encuentro una razón nueva para enamorarme de ti. Y cuando creo que ya no puedo quererte más, apareces con una sonrisa, con una palabra, con un detalle tan pequeño que vuelve a hacer crecer todo este amor que siento por ti. Es como si mi corazón nunca encontrara un límite cuando se trata de amarte.
-
-Así que sí, voy a seguir discutiéndote esto todas las veces que sea necesario. Voy a seguir diciéndote que yo te amo más, porque mi amor por ti no deja de crecer. Ayer te amaba muchísimo, hoy te amo todavía más, y mañana estoy seguro de que volveré a descubrir una nueva forma de quererte.
-
-Si existiera una balanza para pesar el amor, creo que se rompería intentando medir lo que siento por ti. Si existiera un libro capaz de contener todo lo que significas para mí, tendría más páginas que estrellas tiene el cielo. Y aun así, seguiría faltando espacio para escribir todo lo que mi corazón siente cuando piensa en ti.
-
-Por eso nunca voy a cansarme de repetírtelo: yo te amo más. Más que ayer, menos que mañana. Más de lo que imaginé que podía amar a alguien. Más de lo que cualquier palabra puede explicar. Más de lo que cualquier promesa puede demostrar. Más de lo que este mundo podría llegar a entender.
-
-Y si algún día volvemos a discutir quién ama más, puedes decir todo lo que quieras… pero yo jamás voy a dejar de responder lo mismo, porque es la verdad más bonita que conozco: yo te amo más, infinitamente más, con todo mi corazón y con todo lo que soy. ♥️✨
-` },
-            "destacada-yerik": { titulo: "Mi mayor orgullo eres tú ♥️", c: "Presumirte es mi pasatiempo favorito. Me enorgullece tanto tenerte a mi lado. Admiro la gran mujer que eres. En mi mundo, tú eres la reina. ♥️" }
-        };
-
+        // 4. REELS (VIDEOS CORTOS FALSOS)
         const reelsData = [
             { title: "El inicio de todo ♥️", img: "foto-short1.jpg", desc: "Mi amorr… yo a veces me pongo a pensar en todo, en cómo era mi vida antes de ti y la verdad no sé cómo podía vivir sin conocerte. Eres todo para mí ♥️" },
             { title: "Esa sonrisa tuya ♥️", img: "foto-short2.jpg", desc: "Mamorrr… esa sonrisa tuya no es normal, te lo juro. No es solo que sea linda, es que tiene el poder de alegrarme hasta el día más gris del mundo. Te amo ♥️" },
-            { title: "Mi lugar seguro ♥️", img: "foto-short3.jpg", desc: `Mi niña linda… tú te volviste mi lugar seguro sin avisar, sin hacer ruido, sin tocar la puerta de mi corazón. Simplemente llegaste con esa forma tan bonita de existir, me abrazaste un día, y sin darme cuenta, todo dentro de mí susurró: "Aquí es. Aquí quiero quedarme para siempre." ♥️
-
-Desde entonces entendí que un lugar seguro no siempre es una casa con cuatro paredes; a veces tiene dos brazos que abrazan con tanta ternura que son capaces de detener cualquier tormenta. A veces tiene una sonrisa que ilumina más que el amanecer, unos ojitos donde caben todos los cielos y una voz que convierte mis días grises en un jardín lleno de primavera.
-
-Tú eres ese refugio al que mi alma corre incluso cuando mi cuerpo está lejos. Eres el rincón donde descansan mis miedos, donde mis inseguridades se quedan sin fuerza y donde mi corazón aprende, una y otra vez, que amar también significa sentirse en paz.
-
-Hay personas que buscan su hogar durante toda la vida. Yo tuve la suerte de encontrar el mío en tus abrazos. Porque cuando estoy contigo, el tiempo deja de correr y comienza a bailar despacito; los problemas hacen silencio y el mundo entero parece hacerse pequeño para que solo existamos tú y yo.
-
-Dicen que las estrellas guían a los viajeros perdidos, pero yo tuve mucha más suerte que eso. A mí me guió tu luz. Como un faro que nunca deja de brillar, apareciste justo cuando mi corazón necesitaba un lugar donde descansar. Y desde entonces entendí que hay abrazos que curan más que mil palabras, miradas que hablan más que cualquier poema y personas que llegan para cambiar el significado de la palabra "hogar".
-
-Si mi corazón fuera un barco, tú serías el puerto al que siempre quiere regresar. Si mi vida fuera un cielo, tú serías esa estrella que nunca deja de brillar, incluso cuando las nubes intentan esconderla. Y si mis sentimientos fueran un jardín, tú serías la flor más hermosa, esa que hace que todas las demás parezcan simples hojas llevadas por el viento.
-
-Porque contigo aprendí que el amor no siempre hace ruido. A veces llega en silencio, se sienta al lado de uno, toma su mano con delicadeza y transforma la vida entera sin pedir permiso. Así llegaste tú: sin promesas exageradas, sin anunciarte, pero dejando una huella tan profunda que ahora todo lo bonito lleva un poquito de tu nombre.
-
-Y qué bonita casualidad fue encontrarte. O quizá ni siquiera fue una casualidad; quizá el universo llevaba mucho tiempo escribiendo nuestra historia mientras nosotros ni siquiera lo sabíamos. Porque hay encuentros que parecen destinados a ocurrir, como el mar con la orilla, como la luna con la noche, como el sol con el amanecer. Y yo siento que mi corazón estaba destinado a encontrarse con el tuyo.
-
-Ahora, cuando alguien me pregunta dónde me siento en paz, ya no pienso en un lugar. Pienso en ti. Pienso en tu risa, en tu voz, en tus abrazos, en la manera en que haces que todo sea más bonito simplemente por estar. Porque mi lugar seguro dejó de ser un sitio en el mapa hace mucho tiempo; ahora tiene tu nombre, tu esencia y el calor de tu corazón.
-
-Y si algún día la vida vuelve a llenarse de tormentas, no voy a buscar dónde esconderme. Voy a buscarte a ti. Porque entendí que, mientras exista un abrazo tuyo esperándome, siempre habrá un hogar al que regresar. Porque mi paz tiene tus ojos, mi felicidad tiene tu sonrisa y mi lugar favorito en el universo… siempre va a ser contigo. ♥️` }
+            { title: "Mi lugar seguro ♥️", img: "foto-short3.jpg", desc: "Mi niña linda… tú te volviste mi lugar seguro sin avisar, sin hacer ruido, sin tocar la puerta de mi corazón...\n\n(Puedes editar todo este texto también ♥️)" }
         ];
+
+        // 5. BÚSQUEDAS SECRETAS (LUPITA)
+        const textosBusqueda = {
+            "te amo": { titulo: "Yo te amo muchísimo más ♥️", c: "Y si algún día volvemos a discutir quién ama más, puedes decir todo lo que quieras… pero yo jamás voy a dejar de responder lo mismo, porque es la verdad más bonita que conozco: yo te amo más, infinitamente más, con todo mi corazón y con todo lo que soy. ♥️✨" },
+            "destacada-yerik": { titulo: "Mi mayor orgullo eres tú ♥️", c: "Presumirte es mi pasatiempo favorito. Me enorgullece tanto tenerte a mi lado. Admiro la gran mujer que eres. En mi mundo, tú eres la reina. ♥️" }
+        };
+
+        // =====================================================================
+        // FIN DE LA ZONA DE EDICIÓN - (A partir de aquí es código funcional)
+        // =====================================================================
 
         const svgHeart = `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.174.98 1.543 1.117 1.543s.277-.369 1.117-1.543a4.21 4.21 0 0 1 3.675-1.941z"></path></svg>`;
         const svgComment = `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22z"></path></svg>`;
@@ -332,17 +303,22 @@ Y si algún día la vida vuelve a llenarse de tormentas, no voy a buscar dónde 
         let todosLosPosts = [];
 
         function renderizarContenido() {
+            // Cargar biografía
+            document.getElementById('bio-dinamica').innerHTML = bioPerfil;
+
+            // Cargar historias
             let historiasHtml = "";
             for (let key in historiasData) {
                 let h = historiasData[key];
                 historiasHtml += `
                 <div class="story" onclick="abrirCartaDesdeHistorias('${key}')">
-                    <div class="story-ring"><img src="${h.img}"></div>
+                    <div class="story-ring"><img src="${h.img}" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=H'"></div>
                     <div class="story-text">${h.titulo}</div>
                 </div>`;
             }
             document.getElementById('stories-dinamicas').innerHTML = historiasHtml;
 
+            // Cargar posts
             let feedHtml = "";
             let perfilHtml = "";
             todosLosPosts = [];
@@ -359,7 +335,7 @@ Y si algún día la vida vuelve a llenarse de tormentas, no voy a buscar dónde 
             }
 
             todosLosPosts.forEach((post, index) => {
-                perfilHtml += `<img src="${post.img}" onclick="verPostDetalle(${index})">`;
+                perfilHtml += `<img src="${post.img}" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'" onclick="verPostDetalle(${index})">`;
             });
 
             document.getElementById('feed-posts').innerHTML = feedHtml;
@@ -368,26 +344,41 @@ Y si algún día la vida vuelve a llenarse de tormentas, no voy a buscar dónde 
         }
 
         function crearHTMLPost(username, imgSrc, captionHtml, timeStr) {
+            let captionFormat = captionHtml.replace(/\n/g, '<br>');
             return `
             <div class="post">
                 <div class="post-header">
-                    <img src="persona-amada.jpg">
+                    <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'">
                     <div class="post-header-name">${username}</div>
                     <div style="margin-left: auto;">${svgDots}</div>
                 </div>
-                <img src="${imgSrc}" class="post-img" ondblclick="darLike(this)">
+                <img src="${imgSrc}" class="post-img" ondblclick="darLike(this)" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'">
                 <div class="post-actions">
                     <span onclick="darLike(this)">${svgHeart}</span>
                     <span>${svgComment}</span>
                     <span>${svgShare}</span>
-                    <span style="margin-left: auto;">${svgBookmark}</span>
+                    <span style="margin-left: auto;" onclick="guardarPost(this)">${svgBookmark}</span>
                 </div>
                 <div class="post-likes">Les gusta a mi_niño y millones más</div>
                 <div class="post-caption">
-                    <strong>${username}</strong> ${captionHtml}
+                    <div class="post-caption-content">
+                        <strong>${username}</strong> ${captionFormat}
+                    </div>
+                    <span class="btn-mostrar-mas" onclick="toggleText(this)">...más</span>
                 </div>
                 <div class="post-time">${timeStr}</div>
             </div>`;
+        }
+
+        function toggleText(btn) {
+            let content = btn.previousElementSibling;
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.innerText = '...más';
+            } else {
+                content.classList.add('expanded');
+                btn.innerText = 'ocultar';
+            }
         }
 
         function verPostDetalle(index) {
@@ -398,7 +389,29 @@ Y si algún día la vida vuelve a llenarse de tormentas, no voy a buscar dónde 
 
         function darLike(elemento) {
             let svg = elemento.tagName === 'IMG' ? elemento.nextElementSibling.children[0] : elemento;
+            if(svg.tagName !== 'SVG') svg = svg.querySelector('svg');
             svg.innerHTML = `<svg viewBox="0 0 24 24" style="fill:#ff4757; color:#ff4757; transform: scale(1.2); transition: 0.2s;"><path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.174.98 1.543 1.117 1.543s.277-.369 1.117-1.543a4.21 4.21 0 0 1 3.675-1.941z"></path></svg>`;
+            setTimeout(() => { svg.style.transform = "scale(1)"; }, 200);
+        }
+
+        // Nueva función para Guardar/Bookmark
+        function guardarPost(elemento) {
+            let svg = elemento.querySelector('svg') || elemento;
+            let path = svg.querySelector('path');
+            
+            // Si no está relleno, lo rellenamos de amarillo
+            if (path.getAttribute('fill') === 'none') {
+                path.setAttribute('fill', '#feca57');
+                path.setAttribute('stroke', '#feca57');
+            } else {
+                // Si ya estaba relleno, lo vaciamos
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', 'currentColor');
+            }
+            
+            // Animación pequeña
+            svg.style.transform = "scale(1.2)";
+            svg.style.transition = "0.2s ease";
             setTimeout(() => { svg.style.transform = "scale(1)"; }, 200);
         }
 
@@ -406,10 +419,10 @@ Y si algún día la vida vuelve a llenarse de tormentas, no voy a buscar dónde 
             let html = "";
             reelsData.forEach(reel => {
                 html += `
-                <div class="reel-item" style="background-image: url('${reel.img}');">
+                <div class="reel-item" style="background-image: url('${reel.img}'), url('https://placehold.co/400x800/111/fff?text=Reel');">
                     <div class="reel-overlay">
                         <div class="reel-user">
-                            <img src="persona-amada.jpg"> <strong>mi_camii</strong>
+                            <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'"> <strong>mi_camii</strong>
                         </div>
                         <div class="reel-desc" onclick="this.classList.toggle('expanded')">
                             <strong>${reel.title}</strong><br>${reel.desc} <span style="color:#a8a8a8;">...más</span>
@@ -419,6 +432,7 @@ Y si algún día la vida vuelve a llenarse de tormentas, no voy a buscar dónde 
                         <div onclick="darLike(this)">${svgHeart}</div>
                         <div>${svgComment}</div>
                         <div>${svgShare}</div>
+                        <div onclick="guardarPost(this)">${svgBookmark}</div>
                         <div>${svgDots}</div>
                     </div>
                 </div>`;
