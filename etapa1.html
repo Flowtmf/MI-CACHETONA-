@@ -3,69 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>El Viaje - Etapa 1</title>
+<title>El Viaje - La Cueva de los Recuerdos</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Montserrat:wght@300;400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Montserrat:wght@300;400;600&family=Cinzel+Decorative:wght@700&display=swap');
+
+  /* VARIABLES TEMA CUEVA/PIRÁMIDE */
+  :root {
+    --color-glow: #f4c562;
+    --color-glow-alt: #8b6b23;
+    --bg-centro: #1a1305;
+    --bg-borde: #050401;
+    --texto-brillo: #f4c562;
+    --color-inactivo: #2a2215;
+  }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
   
+  /* BLOQUEO TOTAL DEL SCROLL PARA EL JUGADOR */
   body, html {
-    margin: 0; padding: 0; background-color: #050505; font-family: 'Montserrat', sans-serif; color: white;
-    overscroll-behavior-y: none; -webkit-overflow-scrolling: touch;
+    margin: 0; padding: 0; 
+    background-color: var(--bg-borde); 
+    font-family: 'Montserrat', sans-serif; 
+    color: white;
+    overflow: hidden; /* Evita que el usuario deslice la pantalla */
   }
 
-  /* --- INTRO MATRIX --- */
-  #matrix-intro {
+  /* --- INTRO ARENA / LIBRO ANTIGUO --- */
+  #arena-intro {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: #000; z-index: 9999; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     transition: opacity 1.5s ease;
   }
-  #canvas-matrix {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.5; z-index: 1; pointer-events: none;
+  
+  #canvas-arena {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    opacity: 0.6; z-index: 1; pointer-events: none;
   }
+  
+  /* Estilo de página de libro antiguo oscuro */
   #contenedor-poema {
-    position: relative; z-index: 2; width: 90%; max-width: 600px;
-    height: 75vh; overflow-y: auto; color: #fff;
-    font-family: monospace; font-size: 1.1rem; line-height: 1.6;
-    text-shadow: 0 0 10px #00e5ff; padding: 25px; 
-    background: rgba(5, 5, 8, 0.85); border-radius: 15px;
-    border: 1px solid rgba(0,229,255,0.4);
-    box-shadow: 0 0 30px rgba(0, 229, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
+    position: absolute; top: 5%; left: 5%; width: 90vw; height: 90vh;
+    z-index: 2; padding: 10vh 5vw; 
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    background: radial-gradient(circle at center, rgba(30, 22, 10, 0.95) 0%, rgba(10, 7, 2, 0.98) 100%);
+    border: 2px solid rgba(244, 197, 98, 0.2);
+    border-radius: 15px;
+    box-shadow: inset 0 0 50px rgba(0,0,0,1), 0 0 30px rgba(244, 197, 98, 0.1);
+    overflow-y: auto;
   }
-  #contenedor-poema::-webkit-scrollbar { width: 6px; }
-  #contenedor-poema::-webkit-scrollbar-thumb { background: #00e5ff; border-radius: 10px; }
   
-  #texto-poema { white-space: pre-wrap; margin-bottom: 20px; }
-  
+  /* Ocultar barra de scroll en el poema */
+  #contenedor-poema::-webkit-scrollbar { width: 0px; }
+
+  #texto-poema {
+    font-family: 'Cinzel Decorative', serif; font-size: 1.3rem; line-height: 2.2;
+    color: var(--texto-brillo); text-shadow: 0 0 10px rgba(244, 197, 98, 0.5);
+    white-space: pre-wrap; margin-bottom: 40px; max-width: 600px;
+  }
+
+  .btn-saltar {
+    position: absolute; top: 25px; right: 25px; z-index: 10;
+    background: transparent; border: 1px solid var(--color-glow-alt);
+    color: var(--color-glow-alt); padding: 8px 15px; border-radius: 5px;
+    font-family: 'Montserrat', sans-serif; font-size: 0.7rem;
+    letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
+    transition: 0.3s;
+  }
+  .btn-saltar:active { background: var(--color-glow); color: #000; }
+
   #input-continuar-box {
-    display: none; text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px dashed rgba(0, 229, 255, 0.4);
+    display: none; text-align: center; margin-top: auto; padding-bottom: 20px; width: 100%;
   }
   #input-continuar {
-    background: rgba(0,0,0,0.5); border: 1px solid #00e5ff; color: #00e5ff;
-    padding: 12px 20px; border-radius: 20px; outline: none; text-align: center;
-    font-family: monospace; font-size: 1rem; width: 80%; text-transform: lowercase;
-    box-shadow: 0 0 15px rgba(0,229,255,0.3); transition: 0.3s;
+    background: rgba(0,0,0,0.8); border: 1px solid var(--color-glow); color: var(--color-glow);
+    padding: 15px 30px; border-radius: 10px; outline: none; text-align: center;
+    font-family: 'Cinzel Decorative', serif; font-size: 1.2rem; width: 80%; max-width: 300px;
+    box-shadow: 0 0 20px rgba(244, 197, 98, 0.3); transition: 0.3s; text-transform: uppercase;
   }
-  #input-continuar:focus { box-shadow: 0 0 25px rgba(0,229,255,0.6); }
+  #input-continuar:focus { box-shadow: 0 0 30px var(--color-glow); }
 
-  /* FONDO MÍSTICO ETAPA 1 */
-  .fondo-estrellas {
+  /* FONDO MÍSTICO CUEVA */
+  .fondo-cueva {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: radial-gradient(circle at center, #111 0%, #000 100%); z-index: -2;
+    background: radial-gradient(circle at center, var(--bg-centro) 0%, var(--bg-borde) 100%); z-index: -2;
   }
   .respiracion {
     position: fixed; top: 50%; left: 50%; width: 150vw; height: 150vw; margin-top: -75vw; margin-left: -75vw;
-    background: radial-gradient(circle, rgba(0, 229, 255, 0.05) 0%, rgba(213, 0, 249, 0.03) 30%, rgba(0,0,0,0) 60%);
+    background: radial-gradient(circle, rgba(244, 197, 98, 0.08) 0%, rgba(139, 107, 35, 0.04) 30%, rgba(0,0,0,0) 60%);
     pointer-events: none; z-index: -1; animation: respirar 8s ease-in-out infinite;
   }
-  @keyframes respirar { 0%, 100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+  @keyframes respirar { 0%, 100% { transform: scale(0.9); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
 
   /* --- HEADER HUD --- */
   .header-hud {
     position: fixed; top: 0; left: 0; width: 100%; height: 85px;
-    background: rgba(5, 5, 8, 0.85); border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: rgba(26, 19, 5, 0.85); border-bottom: 1px solid rgba(244, 197, 98, 0.1);
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 20px; z-index: 100; backdrop-filter: blur(15px);
   }
@@ -73,204 +106,205 @@
   .controles-izq { display: flex; align-items: center; gap: 10px; }
   
   .btn-accion-top {
-    background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); 
-    color: #00e5ff; width: 38px; height: 38px; border-radius: 50%; 
+    background: rgba(244, 197, 98, 0.05); border: 1px solid rgba(244, 197, 98, 0.3); 
+    color: var(--color-glow); width: 38px; height: 38px; border-radius: 50%; 
     display: flex; align-items: center; justify-content: center; 
     cursor: pointer; backdrop-filter: blur(5px); font-size: 1.1rem; transition: 0.3s;
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
   }
-  .btn-accion-top:active { transform: scale(0.9); background: rgba(0, 229, 255, 0.3); }
+  .btn-accion-top:active { transform: scale(0.9); background: var(--color-glow); color: black; }
 
-  .titulo-seccion { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.4rem; color: #e0f7fa; margin: 0; }
-  .subtitulo-seccion { font-size: 0.65rem; color: #00e5ff; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .titulo-seccion { font-family: 'Cinzel Decorative', serif; font-size: 1.4rem; color: #fff; margin: 0; text-shadow: 0 0 10px var(--color-glow); }
+  .subtitulo-seccion { font-size: 0.65rem; color: var(--color-glow); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
 
-  /* --- DISEÑO BATERÍA REAL --- */
-  .battery-wrapper { display: flex; align-items: center; gap: 8px; }
-  .battery-body { width: 35px; height: 18px; border: 2px solid #555; border-radius: 4px; position: relative; padding: 1px; }
-  .battery-body::after { content: ''; position: absolute; right: -5px; top: 4px; width: 3px; height: 6px; background: #555; border-radius: 0 2px 2px 0; }
-  .battery-level-fill { height: 100%; width: 0%; background: #fff; border-radius: 1px; transition: width 0.5s, background 0.5s; }
-  .charging .battery-body { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.4); }
-  .charging .battery-level-fill { background: #00e5ff; box-shadow: 0 0 5px #00e5ff; }
-  .charging .rayo-carga { display: block; }
-  .rayo-carga { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 12px; color: #00e5ff; text-shadow: 0 0 5px #fff; z-index: 10; }
-  .battery-text { font-family: monospace; font-size: 0.85rem; color: #888; }
-  .charging .battery-text { color: #00e5ff; }
+  /* --- ÁREA DE CÁMARA Y MAPA --- */
+  /* Este contenedor funciona como la "lente" de la cámara */
+  .camara-viewport {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 10; pointer-events: none; /* Deja pasar los clics */
+  }
 
-  /* --- ÁREA DE SCROLL Y NODOS --- */
-  .scroll-area { width: 100%; padding-top: 130px; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
-  .nodo-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; position: relative; transition: all 0.3s ease; opacity: 0.25; filter: grayscale(100%); pointer-events: none; }
-  .nodo-wrapper.desbloqueado { opacity: 1; filter: grayscale(0%); pointer-events: auto; }
-  .orbe-nivel { width: 75px; height: 75px; border-radius: 50%; background: #0f0f13; border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2); }
-  .desbloqueado .orbe-nivel { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); }
-  .desbloqueado .orbe-nivel:active { transform: scale(0.9); border-color: #d500f9; }
-  .numero-nivel { font-weight: 600; font-size: 1.4rem; color: rgba(255,255,255,0.3); }
-  .desbloqueado .numero-nivel { color: #fff; text-shadow: 0 0 10px rgba(0,229,255,0.8); }
-  .titulo-nodo { margin-top: 10px; font-size: 0.75rem; color: #555; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
-  .desbloqueado .titulo-nodo { color: #00e5ff; }
+  /* Este es el lienzo gigante que se mueve arriba y abajo */
+  #lienzo-mapa {
+    position: absolute; top: 0; left: 0; width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    padding-top: 50vh; padding-bottom: 50vh; /* Margen para centrar el primero y el último */
+    pointer-events: auto; /* Reactiva los clics aquí */
+    transition: transform 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+  
+  #svg-caminos {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+  }
+  
+  .camino-base { stroke: transparent; fill: none; } /* Camino base invisible */
+  .camino-activo { 
+    stroke: var(--color-glow); stroke-width: 4; fill: none; 
+    filter: drop-shadow(0 0 8px var(--color-glow));
+    transition: stroke-dashoffset 2s cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
 
-  /* --- MODAL CONTADOR --- */
-  #modal-contador { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.4s; }
-  #modal-contador.activo { opacity: 1; visibility: visible; }
-  .caja-modal { background: #0f0f14; border: 1px solid #d500f9; width: 85%; max-width: 320px; border-radius: 20px; padding: 35px 20px; text-align: center; transform: scale(0.8); transition: 0.4s; }
-  #modal-contador.activo .caja-modal { transform: scale(1); }
-  .titulo-modal { font-family: 'Playfair Display', serif; font-style: italic; color: #d500f9; font-size: 1.6rem; margin: 0 0 15px; }
-  .reloj-neon { font-family: monospace; font-size: 1.5rem; color: #00e5ff; text-shadow: 0 0 10px #00e5ff; padding: 15px; border: 1px solid rgba(0,229,255,0.2); margin: 20px 0; border-radius: 10px; }
-  .btn-cerrar { background: transparent; border: 1px solid #d500f9; color: #d500f9; padding: 10px 25px; border-radius: 20px; cursor: pointer; }
+  .nodo-wrapper { 
+    display: flex; flex-direction: column; align-items: center; 
+    margin-bottom: 90px; position: relative; z-index: 2;
+    transition: all 1s ease; 
+    opacity: 0; visibility: hidden; pointer-events: none; /* Ocultos por defecto */
+    transform: scale(0.5);
+  }
+  
+  .nodo-wrapper.desbloqueado { 
+    opacity: 1; visibility: visible; pointer-events: auto; 
+    transform: scale(1);
+  }
+  
+  .orbe-nivel { 
+    width: 70px; height: 70px; border-radius: 5px; transform: rotate(45deg);
+    background: rgba(26, 19, 5, 0.9); border: 2px solid var(--color-glow); 
+    display: flex; align-items: center; justify-content: center; cursor: pointer; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 20px rgba(244, 197, 98, 0.4), inset 0 0 15px rgba(244, 197, 98, 0.2); 
+    transition: all 0.3s;
+  }
+  
+  .orbe-nivel:active { transform: rotate(45deg) scale(0.9); border-color: #fff; }
+  
+  .numero-nivel { 
+    transform: rotate(-45deg); 
+    font-family: 'Cinzel Decorative', serif; font-size: 1.5rem; 
+    color: var(--texto-brillo); font-weight: bold;
+    text-shadow: 0 0 10px var(--color-glow);
+  }
+  
+  .titulo-nodo { 
+    margin-top: 25px; font-size: 0.8rem; color: #fff; letter-spacing: 3px; 
+    text-transform: uppercase; font-family: 'Cinzel Decorative', serif; 
+    text-shadow: 0 0 10px var(--color-glow);
+  }
+
 </style>
 </head>
 <body>
 
-  <div id="matrix-intro" style="display: none;">
-    <canvas id="canvas-matrix"></canvas>
+  <!-- ============================================================== -->
+  <!-- 📝 ZONA EDITABLE 1: EL POEMA Y LA PALABRA CLAVE                -->
+  <!-- ============================================================== -->
+  <script>
+    // Poema ampliado
+    const poemaLargo = [
+      "Entre las sombras de la arena,",
+      "donde el viento guarda susurros,",
+      "encontramos nuestro refugio.",
+      "",
+      "Un santuario de tiempo detenido,",
+      "donde los secretos del mundo",
+      "se revelan solo para nosotros.",
+      "",
+      "Cada paso en esta cueva,",
+      "es un capítulo de nuestra historia,",
+      "escrita con polvo de oro y luz.",
+      "",
+      "Tus ojos son mi faro,",
+      "tu risa, la melodía antigua",
+      "que despierta estos muros.",
+      "",
+      "Este es nuestro camino,",
+      "nuestro lienzo en la eternidad.",
+      "",
+      "Te amo, porque eres tú.",
+      "Mi misterio favorito."
+    ];
+
+    const palabraSecreta = "continuar";
+  </script>
+  <!-- ============================================================== -->
+
+  <div id="arena-intro" style="display: none;">
+    <button class="btn-saltar" onclick="saltarPoema()">Saltar</button>
+    <canvas id="canvas-arena"></canvas>
+    
     <div id="contenedor-poema">
         <div id="texto-poema"></div>
+        
         <div id="input-continuar-box">
-            <p style="margin-bottom: 15px; color: #00e5ff; text-shadow: none;">Escribe <b style="color:#fff;">continuar</b> para avanzar...</p>
+            <p style="margin-bottom: 15px; color: #f4c562; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">Escribe <b style="color:#fff; text-transform: uppercase;">continuar</b> para adentrarte...</p>
             <input type="text" id="input-continuar" placeholder="..." autocomplete="off">
-            <p id="error-continuar" style="color: #ff4757; font-size: 0.85rem; display: none; margin-top: 10px; text-shadow: none;">Palabra incorrecta...</p>
+            <p id="error-continuar" style="color: #ff4757; font-size: 0.85rem; display: none; margin-top: 10px;">Palabra incorrecta...</p>
         </div>
     </div>
   </div>
 
-  <div class="fondo-estrellas"></div>
+  <div class="fondo-cueva"></div>
   <div class="respiracion"></div>
 
   <div class="header-hud">
     <div class="controles-izq">
       <button class="btn-accion-top" onclick="window.location.href='index.html'">←</button>
-      <button class="btn-accion-top" onclick="forzarIntroMatrix()" title="Volver a leer el poema">📜</button>
+      <button class="btn-accion-top" onclick="forzarIntroArena()" title="Volver a leer">📜</button>
       
       <div style="margin-left: 8px;">
         <div class="subtitulo-seccion">Etapa 1</div>
-        <h1 class="titulo-seccion">El Camino</h1>
-      </div>
-    </div>
-    
-    <div class="battery-wrapper" id="battery-status">
-      <span class="battery-text" id="battery-level-text">--%</span>
-      <div class="battery-body">
-        <div class="rayo-carga">⚡</div>
-        <div class="battery-level-fill" id="battery-fill"></div>
+        <h1 class="titulo-seccion">El Sendero</h1>
       </div>
     </div>
   </div>
 
-  <div class="scroll-area" id="mapa-niveles"></div>
-
-  <div id="modal-contador">
-    <div class="caja-modal">
-      <h2 class="titulo-modal">El Fuego Final</h2>
-      <p style="font-size: 0.85rem; color: #888;">Este misterio se revelará en:</p>
-      <div class="reloj-neon" id="reloj-display">00d 00h 00m 00s</div>
-      <button class="btn-cerrar" onclick="cerrarContador()">Cerrar</button>
-    </div>
+  <!-- CÁMARA Y LIENZO DEL MAPA -->
+  <div class="camara-viewport">
+      <div id="lienzo-mapa">
+        <svg id="svg-caminos"></svg>
+        <div id="nodos-contenedor" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
+      </div>
   </div>
 
 <script>
   // -----------------------------------------------------
-  // 1. LÓGICA DEL POEMA MATRIX
+  // 1. LÓGICA DEL POEMA Y ARENA DORADA (ANIMACIÓN FONDO)
   // -----------------------------------------------------
-  const poemaLargo = [
-    "Te amo, porque eres tú,",
-    "y esa es la única ciencia,",
-    "la más bella coincidencia",
-    "que me ha llenado de luz.",
-    "",
-    "Eres mi brújula, mi sur,",
-    "el centro de mis mañanas,",
-    "la brisa en mis ventanas",
-    "con su inmensa gratitud.",
-    "",
-    "A veces creo inventarte",
-    "como un poeta en su lienzo,",
-    "donde el fin es un comienzo",
-    "y el aire se vuelve arte.",
-    "",
-    "Los relojes, al mirarte,",
-    "derriten todas sus horas,",
-    "y las luces de las auroras",
-    "se dibujan para amarte.",
-    "",
-    "Sharon, en tu propio nombre",
-    "descubrí constelaciones,",
-    "resolví las ecuaciones",
-    "que el universo nos esconde.",
-    "",
-    "Eres la voz que responde",
-    "al silencio de mi pecho,",
-    "mi camino y mi derecho,",
-    "el refugio en que me escondo.",
-    "",
-    "Te encuentro en cada compás,",
-    "en los giros de bachata,",
-    "cuando la música nos ata",
-    "y no pido nada más.",
-    "",
-    "O en un merengue fugaz",
-    "que nos enreda los pies,",
-    "amándote una y otra vez",
-    "con un ritmo que da paz.",
-    "",
-    "Te amo por tus silencios,",
-    "por tu risa desatada,",
-    "por la magia inesperada",
-    "de tus infinitos comienzos.",
-    "",
-    "Por los mundos tan inmensos",
-    "que construimos de la nada,",
-    "por tu voz enamorada",
-    "y tus latidos intensos.",
-    "",
-    "Construiré un rincón distinto,",
-    "un espacio interactivo,",
-    "para que sepas que vivo",
-    "siguiendo solo mi instinto.",
-    "",
-    "Un lugar donde te pinto",
-    "con códigos mi pasión,",
-    "para que tu corazón",
-    "se pierda en mi laberinto.",
-    "",
-    "Te amo, porque eres tú,",
-    "la mujer del espejito,",
-    "la que vuelve el infinito",
-    "un mar de sereno azul.",
-    "",
-    "Y aunque se apague la luz",
-    "y el mundo pierda su giro,",
-    "sabrás en cada suspiro:",
-    "Te amo, porque eres tú."
-  ];
-
   let lineaIdx = 0;
   let charIdx = 0;
-  let intervalMatrix;
+  let animacionArenaReq;
+  let tipeoTimeout;
 
-  function iniciarMatrixVisual() {
-      const canvasMatrix = document.getElementById('canvas-matrix');
-      const ctxMatrix = canvasMatrix.getContext('2d');
-      canvasMatrix.width = window.innerWidth;
-      canvasMatrix.height = window.innerHeight;
+  function iniciarArenaVisual() {
+      const canvas = document.getElementById('canvas-arena');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       
-      const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&♥️".split("");
-      const fontSize = 16;
-      const columnas = canvasMatrix.width / fontSize;
-      const drops = [];
-      for(let x = 0; x < columnas; x++) drops[x] = 1;
+      const particulas = [];
+      const cantidad = window.innerWidth < 600 ? 50 : 120; // Menos partículas en móvil
+      
+      for(let i=0; i<cantidad; i++) {
+          particulas.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              r: Math.random() * 2 + 0.5,
+              vx: (Math.random() * 1) - 0.5,
+              vy: Math.random() * 1.5 + 0.5,
+              opacidad: Math.random() * 0.5 + 0.2
+          });
+      }
 
-      intervalMatrix = setInterval(() => {
-          ctxMatrix.fillStyle = "rgba(0, 0, 0, 0.05)";
-          ctxMatrix.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
-          ctxMatrix.fillStyle = "#00e5ff"; // Verde Matrix cambiado a Cian Neón
-          ctxMatrix.font = fontSize + "px monospace";
+      function dibujarArena() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
           
-          for(let i = 0; i < drops.length; i++) {
-              const text = letras[Math.floor(Math.random() * letras.length)];
-              ctxMatrix.fillText(text, i * fontSize, drops[i] * fontSize);
-              if(drops[i] * fontSize > canvasMatrix.height && Math.random() > 0.975) drops[i] = 0;
-              drops[i]++;
+          for(let i=0; i<particulas.length; i++) {
+              let p = particulas[i];
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(244, 197, 98, ${p.opacidad})`;
+              ctx.fill();
+              
+              p.y += p.vy;
+              p.x += Math.sin(p.y * 0.01) * 0.5 + p.vx;
+              
+              if(p.y > canvas.height) {
+                  p.y = -10;
+                  p.x = Math.random() * canvas.width;
+              }
           }
-      }, 33);
+          animacionArenaReq = requestAnimationFrame(dibujarArena);
+      }
+      dibujarArena();
   }
 
   function escribirPoema() {
@@ -281,174 +315,237 @@
           if (charIdx < poemaLargo[lineaIdx].length) {
               textoPoema.innerHTML += poemaLargo[lineaIdx].charAt(charIdx);
               charIdx++;
-              contenedor.scrollTop = contenedor.scrollHeight;
-              setTimeout(escribirPoema, 35); // Velocidad de tipeo por letra
+              tipeoTimeout = setTimeout(escribirPoema, 45); 
           } else {
               textoPoema.innerHTML += '<br>';
               charIdx = 0;
               lineaIdx++;
-              contenedor.scrollTop = contenedor.scrollHeight;
-              setTimeout(escribirPoema, 400); // Pausa al final de cada línea
+              tipeoTimeout = setTimeout(escribirPoema, 600); 
           }
       } else {
-          document.getElementById('input-continuar-box').style.display = 'block';
-          contenedor.scrollTop = contenedor.scrollHeight;
-          document.getElementById('input-continuar').focus();
+          mostrarInput();
       }
+      contenedor.scrollTop = contenedor.scrollHeight;
   }
 
-  function verificarContinuar(e) {
+  function mostrarInput() {
+      document.getElementById('input-continuar-box').style.display = 'block';
+      const contenedor = document.getElementById('contenedor-poema');
+      contenedor.scrollTop = contenedor.scrollHeight;
+      document.getElementById('input-continuar').focus();
+  }
+
+  function saltarPoema() {
+      clearTimeout(tipeoTimeout);
+      const textoPoema = document.getElementById('texto-poema');
+      textoPoema.innerHTML = poemaLargo.join('<br>'); 
+      mostrarInput();
+  }
+
+  document.getElementById('input-continuar').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
           let valor = e.target.value.toLowerCase().trim();
-          if (valor === 'continuar') {
-              localStorage.setItem('intro_matrix_vista', 'true');
-              document.getElementById('matrix-intro').style.opacity = '0';
+          if (valor === palabraSecreta) {
+              localStorage.setItem('intro_cueva_vista', 'true');
+              document.getElementById('arena-intro').style.opacity = '0';
               setTimeout(() => {
-                  document.getElementById('matrix-intro').style.display = 'none';
-                  clearInterval(intervalMatrix);
+                  document.getElementById('arena-intro').style.display = 'none';
+                  cancelAnimationFrame(animacionArenaReq);
               }, 1500);
           } else {
-              document.getElementById('error-continuar').style.display = 'block';
-              setTimeout(() => { document.getElementById('error-continuar').style.display = 'none'; }, 2000);
+              const err = document.getElementById('error-continuar');
+              err.style.display = 'block';
+              setTimeout(() => { err.style.display = 'none'; }, 2000);
           }
       }
-  }
+  });
 
-  document.getElementById('input-continuar').addEventListener('keypress', verificarContinuar);
-
-  function forzarIntroMatrix() {
-      localStorage.removeItem('intro_matrix_vista');
+  function forzarIntroArena() {
+      localStorage.removeItem('intro_cueva_vista');
       location.reload();
   }
 
   function chequearIntro() {
-      if(localStorage.getItem('intro_matrix_vista') !== 'true') {
-          document.getElementById('matrix-intro').style.display = 'flex';
-          iniciarMatrixVisual();
-          // Retraso de 1 segundo antes de empezar a escribir
+      if(localStorage.getItem('intro_cueva_vista') !== 'true') {
+          document.getElementById('arena-intro').style.display = 'flex';
+          iniciarArenaVisual();
           setTimeout(escribirPoema, 1000); 
       }
   }
 
   // -----------------------------------------------------
-  // 2. LÓGICA DEL MAPA (Etapa 1)
+  // 2. LÓGICA DEL MAPA Y LA CÁMARA
   // -----------------------------------------------------
-  const nombresNiveles = ["Voz", "Carga", "Luz", "Puerta", "Fuego"];
-  const totalNiveles = 30; 
   
-  // ¡NOTA IMPORTANTE! He cambiado el "|| 1" a "|| 5" para que puedas probar el botón Fuego ahora mismo.
-  // Cuando vayas a entregarle la página, vuelve a cambiar este "5" por un "1"
-  let nivelActualDesbloqueado = parseInt(localStorage.getItem('progreso_camii_etapa1')) || 5; 
-  const contenedorMapa = document.getElementById('mapa-niveles');
-  const fechaObjetivo = new Date(2026, 2, 25, 0, 0, 0).getTime(); 
+  const nombresNiveles = [
+      "( reloj )",       
+      "( preguntas )",   
+      "( memoria )",     
+      "",                
+      "",                
+      "",                
+      "",                
+      "",                
+      "",                
+      "( nuestro libro )"
+  ];
+  const totalNiveles = 10;
+  
+  // Variables de progreso
+  // 'progreso_camii_cueva' es el avance real (actualizado por los minijuegos)
+  // 'progreso_visual_cueva' es lo que la página ya animó.
+  let nivelReal = parseInt(localStorage.getItem('progreso_camii_cueva')) || 1; 
+  let nivelVisual = parseInt(localStorage.getItem('progreso_visual_cueva')) || nivelReal;
 
   function generarMapa() {
-    contenedorMapa.innerHTML = ''; 
+    const contenedor = document.getElementById('nodos-contenedor');
+    contenedor.innerHTML = ''; 
+    
     for (let i = 1; i <= totalNiveles; i++) {
       const wrapper = document.createElement('div');
       wrapper.className = 'nodo-wrapper';
-      if (i <= nivelActualDesbloqueado) wrapper.classList.add('desbloqueado');
+      wrapper.id = 'nodo-' + i;
       
-      const desplazamiento = Math.sin(i * 0.7) * 65; 
-      wrapper.style.transform = `translateX(${desplazamiento}px)`;
+      // Solo mostramos los niveles que ya han sido animados/desbloqueados visualmente
+      if (i <= nivelVisual) {
+          wrapper.classList.add('desbloqueado');
+      }
+      
+      // Patrón en ZigZag 
+      const desplazamientoX = Math.sin(i * 1.3) * 85; 
+      wrapper.style.transform = wrapper.classList.contains('desbloqueado') 
+        ? `translateX(${desplazamientoX}px) scale(1)` 
+        : `translateX(${desplazamientoX}px) scale(0.5)`;
 
-      let nombre = i <= 5 ? nombresNiveles[i-1] : `Misterio ${i}`;
-      
       wrapper.innerHTML = `
-        <div class="orbe-nivel" onclick="tocarNivel(${i})">
+        <div class="orbe-nivel" id="orbe-${i}" onclick="tocarNivel(${i})">
           <span class="numero-nivel">${i}</span>
         </div>
-        <div class="titulo-nodo">${nombre}</div>
+        <div class="titulo-nodo">${nombresNiveles[i-1]}</div>
       `;
-      contenedorMapa.appendChild(wrapper);
+      contenedor.appendChild(wrapper);
     }
+
+    setTimeout(dibujarCaminos, 100);
+    setTimeout(() => enfocarCamara(nivelVisual, false), 200); // Enfocar sin animar al cargar
+    setTimeout(verificarAnimacionPendiente, 1000); // Revisar si hay un nivel nuevo que animar
   }
 
+  // ENFOCAR CÁMARA EN UN NODO (Bloqueo de Scroll)
+  function enfocarCamara(numNodo, animar = true) {
+      const lienzo = document.getElementById('lienzo-mapa');
+      const nodo = document.getElementById('nodo-' + numNodo);
+      if(!nodo) return;
+
+      // Calcular el centro de la pantalla
+      const centroPantalla = window.innerHeight / 2;
+      // Calcular la posición Y del nodo dentro del lienzo
+      const centroNodo = nodo.offsetTop + (nodo.offsetHeight / 2);
+      
+      // Mover el lienzo entero para que el nodo quede en el centro
+      const desplazamientoY = centroPantalla - centroNodo;
+
+      lienzo.style.transition = animar ? 'transform 1.5s cubic-bezier(0.4, 0.0, 0.2, 1)' : 'none';
+      lienzo.style.transform = `translateY(${desplazamientoY}px)`;
+  }
+
+  // DIBUJAR LOS CAMINOS SVG
+  function dibujarCaminos() {
+      const svg = document.getElementById('svg-caminos');
+      const contenedorNodos = document.getElementById('nodos-contenedor');
+      const lienzo = document.getElementById('lienzo-mapa');
+      
+      svg.setAttribute('height', lienzo.scrollHeight);
+      svg.innerHTML = ''; 
+
+      for (let i = 1; i < totalNiveles; i++) {
+          const nodoA = document.getElementById(`orbe-${i}`);
+          const nodoB = document.getElementById(`orbe-${i+1}`);
+
+          const rectA = nodoA.getBoundingClientRect();
+          const rectB = nodoB.getBoundingClientRect();
+          const lienzoRect = lienzo.getBoundingClientRect();
+
+          const x1 = (rectA.left - lienzoRect.left) + (rectA.width / 2);
+          const y1 = (rectA.top - lienzoRect.top) + (rectA.height / 2);
+          const x2 = (rectB.left - lienzoRect.left) + (rectB.width / 2);
+          const y2 = (rectB.top - lienzoRect.top) + (rectB.height / 2);
+
+          const controlY = (y1 + y2) / 2;
+          const pathD = `M ${x1} ${y1} C ${x1} ${controlY}, ${x2} ${controlY}, ${x2} ${y2}`;
+
+          const caminoActivo = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          caminoActivo.setAttribute("d", pathD);
+          caminoActivo.setAttribute("class", "camino-activo");
+          caminoActivo.id = `camino-animado-${i}`;
+          
+          const longitud = 500; // Valor aproximado fijo para asegurar la animación
+          caminoActivo.style.strokeDasharray = longitud;
+          
+          // Si ya está visualmente superado, lo mostramos lleno
+          if (i < nivelVisual) {
+              caminoActivo.style.strokeDashoffset = "0";
+          } else {
+              caminoActivo.style.strokeDashoffset = longitud;
+          }
+          
+          svg.appendChild(caminoActivo);
+      }
+  }
+
+  // LÓGICA AUTOMÁTICA DE ANIMACIÓN AL COMPLETAR UN NIVEL
+  function verificarAnimacionPendiente() {
+      if (nivelReal > nivelVisual) {
+          // El usuario completó un nivel en otra página y regresó aquí
+          const nodoSiguiente = nivelVisual + 1;
+          const camino = document.getElementById(`camino-animado-${nivelVisual}`);
+          const elementoSiguiente = document.getElementById(`nodo-${nodoSiguiente}`);
+          
+          if(camino && elementoSiguiente) {
+              // 1. Empezamos a llenar el camino dorado
+              camino.style.strokeDashoffset = "0";
+              
+              // 2. Movemos la cámara lentamente hacia el nuevo nodo
+              setTimeout(() => {
+                  enfocarCamara(nodoSiguiente, true);
+              }, 500);
+
+              // 3. Encendemos el nuevo nodo cuando la cámara llega
+              setTimeout(() => {
+                  elementoSiguiente.classList.add('desbloqueado');
+                  // Actualizamos el progreso visual
+                  nivelVisual = nodoSiguiente;
+                  localStorage.setItem('progreso_visual_cueva', nivelVisual);
+                  
+                  // Si por alguna razón completó varios niveles de golpe, animar el siguiente en cadena
+                  setTimeout(verificarAnimacionPendiente, 1000);
+              }, 2000); 
+          }
+      }
+  }
+
+  window.addEventListener('resize', () => {
+      dibujarCaminos();
+      enfocarCamara(nivelVisual, false); // Re-centrar si cambia el tamaño de la pantalla
+  });
+
+  // ACCIÓN AL TOCAR UN NODO
   function tocarNivel(num) {
-    if (num > nivelActualDesbloqueado) return;
+    if (num > nivelVisual) return;
 
     switch(num) {
-      case 1: window.location.href = 'voz.html'; break;
-      case 2: window.location.href = 'carga.html'; break;
-      case 3: window.location.href = 'luz.html'; break;
-      case 4: window.location.href = 'puerta_reveladora.html'; break;
-      case 5: window.location.href = 'fuego.html'; break; /* ¡MODIFICADO AQUÍ PARA IR A FUEGO.HTML! */
+      case 1: alert("Abriendo ( reloj )..."); break;
+      case 2: alert("Abriendo ( preguntas )..."); break;
+      case 3: alert("Abriendo ( memoria )..."); break;
+      case 10: alert("Abriendo ( nuestro libro )..."); break;
       default:
-        alert("Este misterio está en construcción...");
+        alert("Este misterio (" + num + ") aún está oculto en la arena...");
     }
-  }
-
-  // LÓGICA DE BATERÍA ESTILO CELULAR
-  async function iniciarBateria() {
-    const activarBateriaMagica = () => {
-      const text = document.getElementById('battery-level-text');
-      const fill = document.getElementById('battery-fill');
-      const status = document.getElementById('battery-status');
-      const rayo = document.querySelector('.rayo-carga');
-      
-      text.innerText = '100%';
-      text.style.color = '#d500f9';
-      fill.style.width = '100%';
-      fill.style.background = '#d500f9';
-      fill.style.boxShadow = '0 0 10px #d500f9';
-      status.style.borderColor = '#d500f9';
-      status.classList.add('charging');
-      rayo.innerHTML = '♥️'; 
-      rayo.style.color = '#fff';
-      rayo.style.textShadow = '0 0 5px #d500f9';
-    };
-
-    if (!('getBattery' in navigator)) {
-      activarBateriaMagica();
-      return;
-    }
-
-    try {
-      const battery = await navigator.getBattery();
-      function update() {
-        const level = Math.round(battery.level * 100);
-        document.getElementById('battery-level-text').innerText = level + '%';
-        document.getElementById('battery-fill').style.width = level + '%';
-        
-        const status = document.getElementById('battery-status');
-        if (battery.charging) status.classList.add('charging');
-        else status.classList.remove('charging');
-
-        const fill = document.getElementById('battery-fill');
-        if (level <= 20) fill.style.background = '#ff4444';
-        else if (!battery.charging) fill.style.background = '#fff';
-      }
-      update();
-      battery.addEventListener('levelchange', update);
-      battery.addEventListener('chargingchange', update);
-    } catch (e) { 
-      activarBateriaMagica(); 
-    }
-  }
-
-  // CONTADOR
-  let interval;
-  function abrirContador() {
-    document.getElementById('modal-contador').classList.add('activo');
-    interval = setInterval(() => {
-      const dist = fechaObjetivo - new Date().getTime();
-      if (dist < 0) { clearInterval(interval); return; }
-      const d = Math.floor(dist/(1000*60*60*24)).toString().padStart(2,'0');
-      const h = Math.floor((dist%(1000*60*60*24))/(1000*60*60)).toString().padStart(2,'0');
-      const m = Math.floor((dist%(1000*60*60))/(1000*60)).toString().padStart(2,'0');
-      const s = Math.floor((dist%(1000*60))/1000).toString().padStart(2,'0');
-      document.getElementById('reloj-display').innerText = `${d}d ${h}h ${m}m ${s}s`;
-    }, 1000);
-  }
-  function cerrarContador() {
-    document.getElementById('modal-contador').classList.remove('activo');
-    clearInterval(interval);
   }
 
   window.onload = () => { 
       chequearIntro();
       generarMapa(); 
-      iniciarBateria(); 
   };
 </script>
 </body>
