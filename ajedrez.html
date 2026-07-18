@@ -3,9 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Para mi Reina</title>
+<title>El Pasadizo Oculto</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@1,600&family=Satisfy&family=Montserrat:ital,wght@0,400;1,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@1,600&family=Satisfy&family=Montserrat:ital,wght@0,400;1,400&family=Creepster&display=swap');
+
+  /* VARIABLES DE TEMA */
+  :root {
+    --color-glow: #00e5ff;
+    --color-glow-alt: #d500f9;
+    --bg-centro: #110526;
+    --bg-borde: #010613;
+    --texto-brillo: #e0f7fa;
+    --velo-opacidad: 0.8;
+  }
+
+  /* TEMA CUEVA / PIRÁMIDE (Se activa por JS) */
+  body.tema-cueva {
+    --color-glow: #f4c562;
+    --color-glow-alt: #8b6b23;
+    --bg-centro: #1a1305;
+    --bg-borde: #050401;
+    --texto-brillo: #f4c562;
+    --velo-opacidad: 0.95;
+  }
 
   * { box-sizing: border-box; }
 
@@ -13,9 +33,10 @@
     margin: 0; padding: 0; height: 100%;
     background-color: #000; color: white; 
     overflow: hidden; font-family: 'Montserrat', sans-serif;
+    transition: background-color 0.5s ease;
   }
 
-  /* VELO DE TRANSICIÓN */
+  /* VELOS DE TRANSICIÓN */
   #velo-negro {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: #000; z-index: 9999;
@@ -26,6 +47,32 @@
   #velo-negro.oculto { opacity: 0; }
   #velo-negro.oscuro { opacity: 1; pointer-events: all; }
 
+  /* EFECTO PIXELADO DE TRANSICIÓN */
+  #velo-pixel {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), 
+                repeating-linear-gradient(45deg, #000 25%, #1a1a1a 25%, #1a1a1a 75%, #000 75%, #000);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  #velo-pixel.activo {
+    animation: glitch-pixel 1.5s steps(10) forwards;
+    visibility: visible;
+  }
+  @keyframes glitch-pixel {
+    0% { opacity: 0; filter: contrast(1) blur(0); transform: scale(1); }
+    20% { opacity: 1; filter: contrast(5) blur(4px) invert(1); transform: scale(1.1) skew(5deg); background-size: 40px 40px; }
+    40% { opacity: 0.8; filter: contrast(10) blur(2px) sepia(1); transform: scale(0.9) skew(-5deg); background-size: 10px 10px; }
+    60% { opacity: 1; filter: contrast(2) blur(8px) hue-rotate(90deg); transform: scale(1.2); background-size: 50px 50px; }
+    80% { opacity: 0.9; filter: contrast(4) blur(1px); transform: scale(1) skew(2deg); background-size: 20px 20px; }
+    100% { opacity: 0; filter: contrast(1) blur(0); transform: scale(1); }
+  }
+
   /* SISTEMA DE PANTALLAS */
   .pantalla {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -34,11 +81,11 @@
   .pantalla.activa { opacity: 1; visibility: visible; }
 
   /* --- PANTALLA 1: AJEDREZ --- */
-  #pantalla-ajedrez { background: radial-gradient(circle at center, #110526 0%, #010613 100%); }
+  #pantalla-ajedrez { background: radial-gradient(circle at center, var(--bg-centro) 0%, var(--bg-borde) 100%); transition: background 1s ease; }
   #particulas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
   .orbe {
     position: absolute; bottom: -20px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 229, 255, 0.8) 0%, rgba(213, 0, 249, 0) 70%);
+    background: radial-gradient(circle, var(--color-glow) 0%, transparent 70%);
     animation: flotar linear infinite; will-change: transform, opacity; opacity: 0;
   }
   @keyframes flotar {
@@ -49,101 +96,155 @@
   }
 
   .grupo-titulos-flotantes { position: fixed; top: 10%; width: 100%; text-align: center; z-index: 5; transition: opacity 1.5s ease; pointer-events: none; }
-  .titulo-flotante { font-family: 'Cinzel Decorative', serif; font-size: 3.5rem; color: #e0f7fa; letter-spacing: 8px; margin-bottom: 10px; text-shadow: 0 0 15px #00e5ff, 0 0 30px #d500f9; }
-  .subtitulo-flotante { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; color: #b3e5fc; font-style: italic; letter-spacing: 2px; text-shadow: 0 0 10px #00b0ff; }
+  .titulo-flotante { font-family: 'Cinzel Decorative', serif; font-size: 3.5rem; color: var(--texto-brillo); letter-spacing: 8px; margin-bottom: 10px; text-shadow: 0 0 15px var(--color-glow), 0 0 30px var(--color-glow-alt); transition: color 1s, text-shadow 1s; }
+  .subtitulo-flotante { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; color: #fff; font-style: italic; letter-spacing: 2px; text-shadow: 0 0 10px var(--color-glow); transition: text-shadow 1s; }
 
-  .escena-3d { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1000px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; }
+  .escena-3d { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1000px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; transition: opacity 1s; }
+  .escena-3d.oculta { opacity: 0; pointer-events: none; }
+
   .tablero {
     --tamano-casilla: min(10vw, 7vh, 42px); display: grid;
     grid-template-columns: repeat(8, var(--tamano-casilla)); grid-template-rows: repeat(8, var(--tamano-casilla));
-    border: 1px solid rgba(0, 229, 255, 0.3); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(213, 0, 249, 0.3);
+    border: 1px solid var(--color-glow); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px var(--color-glow-alt);
     transform: rotateX(55deg) rotateZ(-45deg) scale(1.0); transform-style: preserve-3d;
-    transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.8s, filter 1.8s;
+    transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.8s, filter 1.8s, box-shadow 1s, border 1s;
   }
-  .tablero.revelado { transform: rotateX(15deg) rotateZ(0deg) scale(0.9); opacity: 0.25; filter: blur(3px); pointer-events: none; }
   .casilla { width: var(--tamano-casilla); height: var(--tamano-casilla); display: flex; justify-content: center; align-items: center; font-size: min(5.5vw, 22px); position: relative; }
-  .oscura-sharon { background-color: rgba(20, 8, 36, 0.85); } .clara-tú { background-color: rgba(26, 75, 140, 0.75); } 
-  .pieza { transform: rotateZ(45deg) rotateX(-55deg) translateY(-6px); text-shadow: 2px 2px 6px rgba(0,0,0,0.9); transition: transform 1.8s ease; pointer-events: none; color: rgba(255,255,255,0.9); }
-  .tablero.revelado .pieza { transform: rotateZ(0) rotateX(0) translateY(0); }
+  .oscura-sharon { background-color: rgba(20, 8, 36, var(--velo-opacidad)); transition: background-color 1s; } 
+  body.tema-cueva .oscura-sharon { background-color: rgba(26, 19, 5, 0.95); }
+  .clara-tú { background-color: rgba(26, 75, 140, 0.75); transition: background-color 1s; } 
+  body.tema-cueva .clara-tú { background-color: rgba(92, 67, 20, 0.85); }
   
-  .vacia-reina { box-shadow: inset 0 0 15px #00e5ff, 0 0 30px #d500f9; animation: latido-neon 1.5s infinite alternate; border: 2px solid #00e5ff; cursor: pointer; z-index: 10; }
+  .pieza { transform: rotateZ(45deg) rotateX(-55deg) translateY(-6px); text-shadow: 2px 2px 6px rgba(0,0,0,0.9); pointer-events: none; color: rgba(255,255,255,0.9); }
+  
+  .vacia-reina { box-shadow: inset 0 0 15px var(--color-glow), 0 0 30px var(--color-glow-alt); animation: latido-neon 1.5s infinite alternate; border: 2px solid var(--color-glow); cursor: pointer; z-index: 10; transition: box-shadow 1s, border 1s; }
   @keyframes latido-neon { 0% { filter: brightness(0.8); } 100% { filter: brightness(1.3); } }
 
   .instruccion { 
     position: fixed; bottom: 40px; left: 0; width: 100%; 
     font-family: 'Montserrat', sans-serif; font-size: 0.95rem; 
-    color: #b3e5fc; font-style: italic; letter-spacing: 2px; 
-    text-shadow: 0 0 10px #00b0ff; text-align: center; z-index: 5; 
-    transition: opacity 0.5s ease;
-    animation: fade 2s infinite alternate;
+    color: #fff; font-style: italic; letter-spacing: 2px; 
+    text-shadow: 0 0 10px var(--color-glow); text-align: center; z-index: 5; 
+    transition: opacity 0.5s ease; animation: fade 2s infinite alternate;
   }
   @keyframes fade { from { opacity: 0.3; } to { opacity: 1; } }
 
-  .contenedor-scroll { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: hidden; z-index: 10; pointer-events: none; scroll-behavior: smooth; }
-  .mensaje-contenedor { position: relative; margin: 15vh auto 150px auto; text-align: center; width: 90%; max-width: 650px; pointer-events: none; }
-  .linea-texto { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s ease; margin-bottom: 30px; }
-  .titulo-ajedrez { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 600; font-size: 2.2rem; color: #e0f7fa; text-shadow: 0 0 15px #00b0ff, 0 0 25px #d500f9; margin-bottom: 40px; }
-  .texto-poema { font-family: 'Satisfy', cursive; font-size: 1.8rem; line-height: 1.5; color: #fdfcff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-  .mensaje-contenedor.activo .delay-1 { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
-  .mensaje-contenedor.activo .delay-2 { opacity: 1; transform: translateY(0); transition-delay: 2.5s; }
-  .mensaje-contenedor.activo .delay-3 { opacity: 1; transform: translateY(0); transition-delay: 4.5s; }
-  .mensaje-contenedor.activo .delay-4 { opacity: 1; transform: translateY(0); transition-delay: 9.5s; }
-  .btn-continuar { position: relative; display: block; margin: 40px auto; font-family: 'Cinzel Decorative', serif; font-size: 1.5rem; color: #fff; background: transparent; border: 1px solid rgba(0,229,255,0.5); padding: 10px 30px; border-radius: 30px; cursor: pointer; opacity: 0; pointer-events: none; transition: all 1.5s ease; }
-  .btn-continuar.visible { opacity: 1; pointer-events: auto; }
+  /* CONTENEDOR MISTERIO Y LIBRO */
+  .contenedor-misterio {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 10; pointer-events: none;
+  }
 
-  /* --- PANTALLA 2: MENÚ WARDEN --- */
-  #pantalla-menu { background-color: #050505; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .respiracion-warden {
+  /* Animación Libro */
+  #animacion-libro {
+    font-size: 7rem;
+    color: var(--color-glow);
+    text-shadow: 0 0 30px var(--color-glow);
+    opacity: 0; visibility: hidden;
+  }
+  #animacion-libro.activo {
+    animation: blurLibro 4s forwards;
+    visibility: visible;
+  }
+  @keyframes blurLibro {
+    0% { filter: blur(20px); opacity: 0; transform: scale(0.5) rotate(10deg); }
+    30% { filter: blur(0px); opacity: 1; transform: scale(1.2) rotate(0deg); }
+    70% { filter: blur(0px); opacity: 1; transform: scale(1.2) rotate(0deg); }
+    100% { filter: blur(30px); opacity: 0; transform: scale(2) rotate(-10deg); }
+  }
+
+  /* Texto Misterio */
+  #texto-misterio {
+    text-align: center; width: 90%; max-width: 650px;
+    opacity: 0; transform: translateY(30px); transition: opacity 2s ease, transform 2s ease;
+    visibility: hidden; position: absolute;
+  }
+  #texto-misterio.activo {
+    opacity: 1; transform: translateY(0); visibility: visible; pointer-events: auto;
+  }
+  .linea-misterio {
+    font-family: 'Cinzel Decorative', serif; font-size: 1.8rem; line-height: 1.6;
+    color: var(--texto-brillo); text-shadow: 0 2px 10px rgba(0,0,0,1), 0 0 15px var(--color-glow);
+    margin-bottom: 25px; opacity: 0; transform: scale(0.95); transition: opacity 1.5s, transform 1.5s;
+  }
+  .linea-misterio.revelada { opacity: 1; transform: scale(1); }
+
+  .btn-continuar { 
+    display: inline-block; margin-top: 20px; font-family: 'Cinzel Decorative', serif; 
+    font-size: 1.3rem; color: var(--bg-centro); background: var(--color-glow); 
+    border: 2px solid #fff; padding: 12px 35px; border-radius: 5px; 
+    cursor: pointer; opacity: 0; transition: all 1.5s ease; 
+    box-shadow: 0 0 20px var(--color-glow); text-transform: uppercase;
+    font-weight: bold; letter-spacing: 3px;
+  }
+  .btn-continuar.visible { opacity: 1; pointer-events: auto; }
+  .btn-continuar:hover { background: #fff; color: #000; box-shadow: 0 0 40px var(--color-glow); }
+
+  /* --- PANTALLA 2: MENÚ MISTERIOSO --- */
+  #pantalla-menu { background: radial-gradient(circle at center, var(--bg-centro) 0%, var(--bg-borde) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .respiracion-piramide {
     position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vw; margin-top: -75vw; margin-left: -75vw;
-    background: radial-gradient(circle, rgba(30, 58, 138, 0.4) 0%, rgba(142, 36, 170, 0.2) 20%, rgba(0,0,0,0) 60%);
-    pointer-events: none; z-index: 0; animation: respirar 8s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(244, 197, 98, 0.15) 0%, rgba(139, 107, 35, 0.05) 30%, rgba(0,0,0,0) 70%);
+    pointer-events: none; z-index: 0; animation: respirar 6s ease-in-out infinite;
   }
-  @keyframes respirar { 0%, 100% { transform: scale(0.8); opacity: 0.3; } 50% { transform: scale(1.2); opacity: 0.9; } }
-  .menu-contenedor { display: flex; flex-direction: column; gap: 20px; width: 90%; max-width: 500px; text-align: center; z-index: 5; }
-  .menu-titulo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.5rem; color: #fff; margin-bottom: 30px; }
-  .btn-menu {
-    background: rgba(10, 10, 15, 0.85); border: 1px solid rgba(213, 0, 249, 0.4); color: #e0f7fa; font-family: 'Montserrat', sans-serif;
-    font-size: 1.1rem; padding: 18px 20px; border-radius: 12px; cursor: pointer; transition: all 0.4s ease;
+  @keyframes respirar { 0%, 100% { transform: scale(0.9); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+  
+  .menu-contenedor { display: flex; flex-direction: column; gap: 40px; width: 90%; max-width: 500px; text-align: center; z-index: 5; }
+  .menu-titulo { font-family: 'Cinzel Decorative', serif; font-size: 2.5rem; color: var(--texto-brillo); text-shadow: 0 0 20px var(--color-glow); letter-spacing: 5px; }
+  
+  /* Botón Bizarro (Camino) */
+  .btn-bizarro {
+    background: transparent; border: none; color: var(--color-glow); 
+    font-family: 'Creepster', 'Cinzel Decorative', cursive;
+    font-size: 3rem; cursor: pointer; position: relative;
+    text-shadow: 0 0 15px var(--color-glow), 2px 2px 0px rgba(0,0,0,0.8);
+    transition: all 0.1s; letter-spacing: 8px; text-transform: uppercase;
   }
-  .btn-menu:hover { background: rgba(213, 0, 249, 0.2); border-color: #00e5ff; box-shadow: 0 0 25px rgba(0, 229, 255, 0.4); transform: translateY(-3px); }
+  .btn-bizarro::before {
+    content: ''; position: absolute; top: 50%; left: -20px; right: -20px; height: 2px;
+    background: var(--color-glow); transform: scaleX(0); transition: transform 0.5s;
+    box-shadow: 0 0 10px var(--color-glow);
+  }
+  .btn-bizarro:hover::before { transform: scaleX(1); }
 
 </style>
 </head>
 <body>
 
   <div id="velo-negro"></div>
+  <div id="velo-pixel"></div>
 
   <section id="pantalla-ajedrez" class="pantalla activa">
     <div id="particulas"></div>
     <div class="grupo-titulos-flotantes" id="textosFlotantes">
-        <div class="titulo-flotante">Amor</div>
-        <div class="subtitulo-flotante">¿Sabes qué ficha me falta?</div>
+        <div class="titulo-flotante">Misterio</div>
+        <div class="subtitulo-flotante">Encuentra el pasaje...</div>
     </div>
-    <div class="escena-3d">
+    
+    <div class="escena-3d" id="escenaAjedrez">
       <div class="tablero" id="tablero"></div>
     </div>
     
-    <div class="instruccion" id="instruccion">Toca la casilla que brilla...</div>
+    <div class="instruccion" id="instruccion">Toca la anomalía...</div>
 
-    <div class="contenedor-scroll" id="zonaScroll">
-      <div class="mensaje-contenedor" id="mensaje">
-        <div class="linea-texto delay-1 titulo-ajedrez">En este tablero de ajedrez...</div>
-        <div class="linea-texto delay-2 texto-poema">Me falta la pieza más importante, y esa eres tú, mi Reina.</div>
-        <div class="linea-texto delay-3 texto-poema">Sin ti, las casillas pierden su gravedad. Mi mundo solo tiene sentido cuando decides reinar en el centro exacto de mi pecho.</div>
-        <div class="linea-texto delay-4" style="font-size:3rem;">♥️</div>
-        <button class="btn-continuar" id="btnContinuar" onclick="cambiarSeccion('pantalla-menu')">Continuar</button>
-      </div>
+    <div class="contenedor-misterio">
+        <div id="animacion-libro">📖</div>
+        
+        <div id="texto-misterio">
+            <div class="linea-misterio" id="lm1">Las paredes de arena se estremecen...</div>
+            <div class="linea-misterio" id="lm2">Un pasadizo oculto ha despertado de su sueño milenario.</div>
+            <div class="linea-misterio" id="lm3">¿Te atreves a cruzar el umbral?</div>
+            <button class="btn-continuar" id="btnContinuar" onclick="cambiarSeccion('pantalla-menu')">Adentrarse</button>
+        </div>
     </div>
   </section>
 
   <section id="pantalla-menu" class="pantalla">
-    <div class="respiracion-warden"></div> 
+    <div class="respiracion-piramide"></div> 
     <div class="menu-contenedor">
-        <div class="menu-titulo">Para mi niña dinda</div>
-        <button class="btn-menu" onclick="irAEtapa1()">?</button>
-        <button class="btn-menu" onclick="irAPagina('cartas.html')">Cartas infinitassss para mi niña hermosa</button>
-        <button class="btn-menu" onclick="irAPagina('porque.html')">¿Por qué te amo?</button>
-        <button class="btn-menu" onclick="irAPagina('emociones.html')">Léeme cuando te sientas mal</button>
+        <div class="menu-titulo">Elige tu destino</div>
+        <button class="btn-bizarro" id="btnCamino" onclick="irAEtapa1()">( c a m i n o )</button>
     </div>
   </section>
 
@@ -155,17 +256,18 @@
   window.onload = () => {
     const velo = document.getElementById('velo-negro');
     if (vVieneDeRegreso) {
+        document.body.classList.add('tema-cueva'); // Mantiene el tema si regresa[cite: 1]
         document.querySelector('.pantalla.activa').classList.remove('activa');
         document.getElementById('pantalla-menu').classList.add('activa');
     }
     velo.classList.add('oculto');
   };
 
-  // 2. LUCIÉRNAGAS
+  // 2. ORBES DINÁMICOS
   const cp = document.getElementById('particulas');
-  for(let i=0; i<30; i++) {
+  for(let i=0; i<35; i++) {
     let o = document.createElement('div'); o.className = 'orbe';
-    o.style.width = o.style.height = (Math.random()*8+2)+'px';
+    o.style.width = o.style.height = (Math.random()*6+2)+'px';
     o.style.left = Math.random()*100+'vw';
     o.style.animationDuration = (Math.random()*8+8)+'s';
     o.style.animationDelay = '-'+(Math.random()*15)+'s';
@@ -181,31 +283,53 @@
       cas.className = 'casilla ' + ((f+c)%2===0 ? 'clara-tú' : 'oscura-sharon');
       let p = '';
       if(f===0) p=bP[c]; if(f===1) p='♟︎'; if(f===6) p='♙';
-      if(f===7) { if(c===3) { cas.className += ' vacia-reina'; cas.id='q'; } else p=['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'][c]; }
+      if(f===7) { 
+        if(c===3) { cas.className += ' vacia-reina'; cas.id='q'; } // Casilla objetivo[cite: 1]
+        else p=['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'][c]; 
+      }
       if(p) { let dP = document.createElement('div'); dP.className='pieza'; dP.innerText=p; cas.appendChild(dP); }
       t.appendChild(cas);
     }
   }
 
-  // 4. EVENTO CLIC EN LA REINA
-  let mS;
+  // 4. EVENTO CLIC: LA TRANSICIÓN A LA CUEVA
   document.getElementById('q').addEventListener('click', () => {
     const inst = document.getElementById('instruccion');
     const txtF = document.getElementById('textosFlotantes');
-    
+    const veloPixel = document.getElementById('velo-pixel');
+    const escenaAj = document.getElementById('escenaAjedrez');
+    const animLibro = document.getElementById('animacion-libro');
+    const cajaMisterio = document.getElementById('texto-misterio');
+
+    // Desaparece texto inicial
     txtF.style.opacity = '0';
     inst.style.opacity = '0';
-    setTimeout(() => { 
-        txtF.style.display = 'none'; 
-        inst.style.display = 'none';
-    }, 1000);
-
-    t.classList.add('revelado'); 
-    document.getElementById('mensaje').classList.add('activo');
     
-    setTimeout(() => { document.getElementById('zonaScroll').style.pointerEvents = 'auto'; }, 500);
-    setTimeout(() => { mS = setInterval(() => { document.getElementById('zonaScroll').scrollBy(0, 1); }, 15); }, 4000);
-    setTimeout(() => { clearInterval(mS); document.getElementById('btnContinuar').classList.add('visible'); }, 11500);
+    // Dispara Efecto Glitch/Pixelado
+    veloPixel.classList.add('activo');
+
+    // Cambia el tema a mitad del glitch
+    setTimeout(() => {
+        document.body.classList.add('tema-cueva');
+        escenaAj.classList.add('oculta'); // Oculta el ajedrez para siempre
+    }, 750);
+
+    // Inicia secuencia del libro borroso
+    setTimeout(() => {
+        animLibro.classList.add('activo');
+    }, 1500);
+
+    // Muestra el texto de misterio después del libro
+    setTimeout(() => {
+        animLibro.style.display = 'none'; // Quita el libro
+        cajaMisterio.classList.add('activo');
+        
+        // Revela textos uno por uno
+        setTimeout(() => document.getElementById('lm1').classList.add('revelada'), 500);
+        setTimeout(() => document.getElementById('lm2').classList.add('revelada'), 2500);
+        setTimeout(() => document.getElementById('lm3').classList.add('revelada'), 4500);
+        setTimeout(() => document.getElementById('btnContinuar').classList.add('visible'), 6000);
+    }, 5500);
   });
 
   // 5. NAVEGACIÓN Y BOTONES
@@ -221,20 +345,41 @@
     }, 800);
   }
 
-  function irAPagina(url) {
-    const velo = document.getElementById('velo-negro');
-    velo.classList.remove('oculto');
-    velo.classList.add('oscuro');
-    setTimeout(() => { window.location.href = url; }, 800);
-  }
-
-  // FUNCIÓN PARA IR AL MAPA DE MISTERIOS
   function irAEtapa1() {
     const velo = document.getElementById('velo-negro');
     velo.classList.remove('oculto');
     velo.classList.add('oscuro');
-    setTimeout(() => { window.location.href = 'etapa1.html'; }, 800);
+    setTimeout(() => { window.location.href = 'etapa1.html'; }, 800); // Mantiene ruta original[cite: 1]
   }
+
+  // 6. EFECTO BIZARRO EN EL BOTÓN "CAMINO"
+  const btnCamino = document.getElementById('btnCamino');
+  const textoOriginal = "( c a m i n o )";
+  const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+<>?";
+  
+  setInterval(() => {
+    // Probabilidad de hacer un glitch
+    if(Math.random() > 0.6) {
+        let distorsionado = textoOriginal.split('').map(char => {
+            if(char === ' ' || char === '(' || char === ')') return char;
+            return Math.random() > 0.6 ? caracteres[Math.floor(Math.random() * caracteres.length)] : char;
+        }).join('');
+        
+        btnCamino.innerText = distorsionado;
+        
+        // Movimiento errático
+        btnCamino.style.transform = `skew(${Math.random() * 20 - 10}deg) translate(${Math.random() * 6 - 3}px, ${Math.random() * 6 - 3}px)`;
+        btnCamino.style.filter = `blur(${Math.random() * 2}px) hue-rotate(${Math.random() * 40}deg)`;
+
+        // Vuelve a la normalidad rápidamente
+        setTimeout(() => {
+            btnCamino.innerText = textoOriginal;
+            btnCamino.style.transform = 'none';
+            btnCamino.style.filter = 'none';
+        }, 150); // Duración del parpadeo
+    }
+  }, 300); // Frecuencia de verificación del glitch
+
 </script>
 </body>
 </html>
