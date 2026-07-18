@@ -6,18 +6,27 @@
     <title>Mi Camii ♥️</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* =========================================
+           ESTILOS GENERALES Y RESET
+           ========================================= */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
         body { background-color: #000; color: #f5f5f5; overflow-x: hidden; }
         .view { display: none; padding-bottom: 70px; min-height: 100vh; animation: fadeIn 0.2s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         svg { fill: #f5f5f5; color: #f5f5f5; width: 24px; height: 24px; cursor: pointer; }
+        
+        /* =========================================
+           BARRA SUPERIOR
+           ========================================= */
         .topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; position: sticky; top: 0; z-index: 100; background: #000; border-bottom: 1px solid #262626; }
         .logo-text { font-family: 'Georgia', serif; font-size: 26px; font-weight: bold; font-style: italic; cursor: pointer; letter-spacing: -0.5px;}
         .top-icons { display: flex; gap: 20px; align-items: center; }
         .back-btn { display: flex; align-items: center; gap: 5px; font-size: 16px; font-weight: 500; cursor: pointer; }
 
+        /* =========================================
+           HISTORIAS
+           ========================================= */
         .stories-container { display: flex; gap: 15px; padding: 12px 15px; overflow-x: auto; border-bottom: 1px solid #262626; }
         .stories-container::-webkit-scrollbar { display: none; }
         .story { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; min-width: 76px; }
@@ -26,6 +35,9 @@
         .story-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #000; background-color: #262626; }
         .story-text { font-size: 11px; color: #f5f5f5; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 70px; }
 
+        /* =========================================
+           PUBLICACIONES (FEED)
+           ========================================= */
         .post { margin-bottom: 10px; border-bottom: 1px solid #262626; padding-bottom: 15px; }
         .post-header { display: flex; align-items: center; padding: 10px 15px; gap: 10px; }
         .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
@@ -34,15 +46,16 @@
         .post-actions { padding: 12px 15px 8px; display: flex; align-items: center; gap: 18px; }
         .post-actions svg { width: 26px; height: 26px; }
         .post-likes { padding: 0 15px; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-        
         .post-caption { padding: 0 15px; font-size: 14px; line-height: 1.5; }
         .post-caption strong { font-weight: 600; }
         .post-caption-content { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
         .post-caption-content.expanded { display: block; -webkit-line-clamp: unset; }
         .btn-mostrar-mas { color: #a8a8a8; cursor: pointer; font-size: 14px; margin-top: 4px; display: inline-block; font-weight: 500; }
-        
         .post-time { padding: 0 15px; font-size: 11px; color: #a8a8a8; margin-top: 6px; text-transform: uppercase; }
 
+        /* =========================================
+           EXPLORAR Y BÚSQUEDA
+           ========================================= */
         .search-bar-container { padding: 10px 15px; }
         .search-input { width: 100%; background: #262626; border: none; padding: 10px 15px; border-radius: 10px; color: white; outline: none; font-size: 15px; }
         .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
@@ -52,24 +65,30 @@
         .user-result:active { background: #333; }
         .user-result img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #fff;}
 
+        /* =========================================
+           REELS
+           ========================================= */
+        #reels { background: #000; padding-bottom: 0; }
+        .reels-scroll { height: calc(100vh - 50px); overflow-y: scroll; scroll-snap-type: y mandatory; }
+        .reels-scroll::-webkit-scrollbar { display: none; }
+        .reel-item { height: 100%; width: 100%; scroll-snap-align: start; position: relative; background-size: cover; background-position: center; }
+        .reel-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 140px 20px; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, transparent 100%); pointer-events: none; }
+        .reel-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; pointer-events: auto; }
+        .reel-user img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; }
+        .reel-desc-container { pointer-events: auto; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
+        .reel-desc { font-size: 14.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+        .reel-desc.expanded { display: block; -webkit-line-clamp: unset; }
+        .btn-mostrar-mas-reel { color: #fff; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-block; margin-top: 4px; }
+        .reel-actions { position: absolute; right: 15px; bottom: 140px; display: flex; flex-direction: column; gap: 22px; align-items: center; z-index: 10; cursor: pointer; }
+
+        /* =========================================
+           AGREGAR Y PERFIL
+           ========================================= */
         .crear-post-container { padding: 20px; text-align: center; }
         .upload-btn { background: #0095f6; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 10px; }
         #preview-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; display: none; margin-bottom: 15px; }
         .caption-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #262626; color: white; padding: 10px 0; outline: none; font-size: 15px; margin-bottom: 20px; display: none; }
         #btn-publicar { display: none; width: 100%; }
-
-        #reels { background: #000; padding-bottom: 0; }
-        .reels-scroll { height: calc(100vh - 50px); overflow-y: scroll; scroll-snap-type: y mandatory; }
-        .reels-scroll::-webkit-scrollbar { display: none; }
-        .reel-item { height: 100%; width: 100%; scroll-snap-align: start; position: relative; background-size: cover; background-position: center; }
-        
-        /* Ajuste de márgenes en Reels para celulares */
-        .reel-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 140px 20px; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, transparent 100%); pointer-events: none; }
-        .reel-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; pointer-events: auto; }
-        .reel-user img { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; }
-        .reel-desc { font-size: 14.5px; max-height: 45px; overflow: hidden; transition: 0.3s; text-shadow: 0 1px 3px rgba(0,0,0,0.9); pointer-events: auto; line-height: 1.4; }
-        .reel-desc.expanded { max-height: 250px; overflow-y: auto; }
-        .reel-actions { position: absolute; right: 15px; bottom: 140px; display: flex; flex-direction: column; gap: 22px; align-items: center; z-index: 10; cursor: pointer; }
 
         .profile-header { padding: 20px 15px 10px; display: flex; align-items: center; gap: 25px; }
         .profile-pic { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 1px solid #262626; }
@@ -82,6 +101,9 @@
         .profile-highlights { display: flex; gap: 15px; padding: 0 15px 15px; overflow-x: auto; }
         .profile-highlights::-webkit-scrollbar { display: none; }
 
+        /* =========================================
+           NAVEGACIÓN INFERIOR Y EFECTOS
+           ========================================= */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top: 1px solid #262626; z-index: 100; }
         .nav-item svg { opacity: 0.5; transition: 0.2s; width: 28px; height: 28px; }
         .nav-item.active svg { opacity: 1; transform: scale(1.1); }
@@ -107,29 +129,31 @@
         </div>
     </div>
 
+    <!-- VISTA INICIO -->
     <div id="inicio" class="view active">
         <div class="stories-container" id="stories-dinamicas"></div>
         <div id="feed-posts"></div>
     </div>
 
+    <!-- VISTA EXPLORAR -->
     <div id="explorar" class="view">
         <div class="search-bar-container">
             <input type="text" id="search-input" class="search-input" placeholder="BUSCAR...">
         </div>
         <div id="search-results"></div>
         <div class="explore-grid" id="explore-grid-content">
-            <img src="foto-ajedrez.jpg" onerror="this.src='https://placehold.co/400x400/111/fff?text=Ajedrez+(Pon+tu+foto)'" alt="Ajedrez" onclick="window.location.href='ajedrez.html'">
-            <img src="foto-pista1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Pista+1'" onclick="window.location.href='pista1.html'">
+            <!-- Fotos distribuidas usando los nombres correctos -->
+            <img src="foto-pista1.jpg" onerror="this.src='https://placehold.co/400x400/111/fff?text=Pista+1'" onclick="window.location.href='pista1.html'">
             <img src="foto-pista2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Pista+2'" onclick="window.location.href='pista2.html'">
-            <img src="post1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+1'">
-            <img src="post2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+2'">
-            <img src="post3.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+3'">
-            <img src="post4.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+4'">
-            <img src="post5.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Post+5'">
-            <img src="foto-etapa1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Etapa+1'" onclick="accederEtapa1()">
+            <img src="foto1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto+1'">
+            <img src="foto2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto+2'">
+            <img src="foto3.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto+3'">
+            <img src="foto4.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto+4'">
+            <img src="foto5.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto+5'" onclick="accederEtapa1()">
         </div>
     </div>
 
+    <!-- VISTA AGREGAR (CÁMARA) -->
     <div id="agregar" class="view">
         <div class="crear-post-container">
             <h3 style="margin-bottom: 20px; font-weight: 500;">Nuevo recuerdo</h3>
@@ -141,28 +165,30 @@
         </div>
     </div>
 
+    <!-- VISTA REELS -->
     <div id="reels" class="view">
         <div class="reels-scroll" id="reels-container"></div>
     </div>
 
+    <!-- VISTA PERFIL -->
     <div id="perfil" class="view">
         <div class="profile-header">
-            <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" class="profile-pic">
+            <!-- Perfil principal usa foto1.jpg -->
+            <img src="foto1.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" class="profile-pic">
             <div class="profile-stats">
                 <div><div class="stat-num" id="stats-posts">0</div><div class="stat-label">Publicaciones</div></div>
                 <div><div class="stat-num">1</div><div class="stat-label">Seguidor</div></div>
                 <div><div class="stat-num">1</div><div class="stat-label">Único amor</div></div>
             </div>
         </div>
-        <div class="profile-bio" id="bio-dinamica">
-            <!-- Se carga desde JS -->
-        </div>
+        <div class="profile-bio" id="bio-dinamica"></div>
         <div class="profile-tabs">
             <div class="tab" style="border-bottom: 1px solid #fff;"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 3h18v18H3z M9 3v18 M15 3v18 M3 9h18 M3 15h18"></path></svg></div>
         </div>
         <div class="explore-grid" id="perfil-grid"></div>
     </div>
 
+    <!-- PERFIL YERIK (SECRETO) -->
     <div id="perfil-yerik" class="view">
         <div class="topbar" style="border-bottom:none; margin-bottom:-10px;">
             <div class="back-btn" onclick="irA('explorar')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path></svg> yerik_oficial</div>
@@ -186,15 +212,16 @@
         </div>
         <div class="profile-highlights">
             <div class="story" onclick="abrirCartaEspecial('Mi mayor orgullo ♥️', textosBusqueda['destacada-yerik'].c)">
-                <div class="story-ring destacada" style="border: 1px solid #fff;"><img src="foto-destacada.jpg" onerror="this.src='https://placehold.co/100x100/222/fff?text=Fav'"></div>
+                <div class="story-ring destacada" style="border: 1px solid #fff;"><img src="foto4.jpg" onerror="this.src='https://placehold.co/100x100/222/fff?text=Fav'"></div>
                 <div class="story-text">Para Ti 🥺</div>
             </div>
         </div>
         <div class="explore-grid">
-            <img src="post1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="post2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="post3.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="historia1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="historia2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="persona-amada.jpg" onerror="this.src='https://placehold.co/400x400/ff4757/fff?text=Perfil'">
+            <img src="foto1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="foto2.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="foto3.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="foto4.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="foto5.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'"><img src="foto-pista1.jpg" onerror="this.src='https://placehold.co/400x400/222/fff?text=Foto'">
         </div>
     </div>
 
+    <!-- LISTA DE SEGUIDOS (SHARON) -->
     <div id="lista-seguidos" class="view">
         <div class="topbar">
             <div class="back-btn" onclick="irA('perfil-yerik')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path></svg> Seguidos</div>
@@ -203,7 +230,7 @@
             <div class="search-input" style="margin-bottom: 20px;">Buscar...</div>
             <div class="user-result" onclick="sorpresaSharon()">
                 <div class="story-ring" style="width:56px; height:56px; padding:2px; flex-shrink:0;">
-                    <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" style="width:100%; height:100%; border:2px solid #000;">
+                    <img src="foto1.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" style="width:100%; height:100%; border:2px solid #000;">
                 </div>
                 <div style="flex: 1;">
                     <div style="font-weight:600; font-size:15px; color:#fff;">Sharonc_04</div>
@@ -214,6 +241,7 @@
         </div>
     </div>
 
+    <!-- DETALLE PUBLICACIÓN -->
     <div id="post-detalle" class="view">
         <div class="topbar">
             <div class="back-btn" onclick="volverAtras()"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path></svg> Publicación</div>
@@ -221,6 +249,7 @@
         <div id="post-detalle-content"></div>
     </div>
 
+    <!-- CARTA TEXTO -->
     <div id="seccion-carta" class="view carta-view">
         <button onclick="volverAtras()" style="background:transparent; border:none; color:#fff; font-size:16px; margin-bottom:20px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
             <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path></svg> Volver
@@ -229,23 +258,25 @@
         <div id="carta-texto" style="font-size: 15px; line-height: 1.6; white-space: pre-wrap; color: #f5f5f5;"></div>
     </div>
 
+    <!-- OVERLAYS Y EFECTOS -->
     <div id="pantalla-te-amo" class="pantalla-te-amo">
         <h1 class="texto-gigante">Te amo ♥️</h1>
     </div>
-
     <div id="animacion-overlay" class="animacion-overlay"></div>
 
+    <!-- BARRA NAVEGACIÓN INFERIOR -->
     <div class="bottom-nav">
         <div class="nav-item active" id="btn-inicio" onclick="irA('inicio')"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M9.005 16.545a2.997 2.997 0 0 1 2.997-2.997h0A2.997 2.997 0 0 1 15 16.545V22h7V11.543L12 2 2 11.543V22h7v-5.455z"></path></svg></div>
         <div class="nav-item" id="btn-explorar" onclick="irA('explorar')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10.5A8.5 8.5 0 1 1 10.5 2a8.5 8.5 0 0 1 8.5 8.5z M16.511 16.511l5.676 5.676"></path></svg></div>
         <div class="nav-item" id="btn-agregar" onclick="irA('agregar')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.998 12.006c0 5.523-4.478 10-10 10-5.523 0-10-4.477-10-10s4.477-10 10-10c5.522 0 10 4.477 10 10z M12.001 7.001v10 M7.001 12.001h10"></path></svg></div>
         <div class="nav-item" id="btn-reels" onclick="irA('reels')"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="m5.824 16.899 10.25-5.918a1.139 1.139 0 0 0 0-1.962L5.824 3.101A1.139 1.139 0 0 0 4.12 4.082v11.836a1.139 1.139 0 0 0 1.704.981z"></path></svg></div>
-        <div class="nav-item" id="btn-perfil" onclick="irA('perfil')"><img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" class="nav-profile-pic"></div>
+        <div class="nav-item" id="btn-perfil" onclick="irA('perfil')"><img src="foto1.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'" class="nav-profile-pic"></div>
     </div>
 
     <script>
         // =====================================================================
-        // ✏️ ZONA DE EDICIÓN: CAMBIA TUS TEXTOS Y FOTOS AQUÍ FÁCILMENTE ✏️
+        // ✏️ ZONA DE EDICIÓN: CAMBIA TUS TEXTOS AQUÍ FÁCILMENTE ✏️
+        // Nota: Ya asigné foto1.jpg hasta foto5.jpg en todos los elementos.
         // =====================================================================
         
         // 1. BIOGRAFÍA DEL PERFIL
@@ -257,31 +288,31 @@
             <span style="color: #e0f7fa;">@el_amor_de_mi_vida</span>
         `;
 
-        // 2. HISTORIAS DESTACADAS
+        // 2. HISTORIAS DESTACADAS (Usando tus fotos)
         const historiasData = {
-            h1: { titulo: "Cumpleaños", img: "historia1.jpg", texto: "Feliz cumpleaños mi niña hemocha... Hoy es un día tan especial, no solo para ti, sino para el universo entero que tuvo la suerte de verte nacer. Eres el regalo más grande que la vida pudo haberme dado. Amo cada pequeño detalle de ti... ¡Feliz día, amor de mi vida! ♥️" },
-            h2: { titulo: "Me gustas", img: "historia2.jpg", texto: "Lo que más me gusta de ti no es solo lo que todos pueden ver... Me gusta tu forma de ver el mundo, tu paciencia, tu inteligencia y esa fuerza que tienes. Lo que más me gusta de ti... es absolutamente todo. No le cambiaría ni una sola coma a tu forma de ser. ♥️" },
-            h3: { titulo: "Mi niña", img: "historia3.jpg", texto: "Mi niña hemocha... A veces me quedo mirándote y me pregunto qué hice tan bien para merecer a alguien como tú. Eres esa casualidad que yo no estaba buscando pero que necesitaba con urgencia. Eres mi niña consentida, la dueña de mis pensamientos. ♥️" },
-            h4: { titulo: "Mi motivación", img: "historia4.jpg", texto: "Eres la razón por la que me despierto con ganas de comerme el mundo. Gracias por ser mi mayor apoyo y mi porrista número uno. Te amo mi amor ♥️" },
-            h5: { titulo: "Tus ojitos", img: "historia5.jpg", texto: "Podría perderme en tus ojitos toda la vida. Son mi paisaje favorito y la luz que me guía. Solo quiero verte feliz siempre. ♥️" },
-            h6: { titulo: "Suerte", img: "historia6.jpg", texto: "A veces pienso que me gasté toda mi suerte al encontrarte. ¿Y sabes qué? Valió totalmente la pena. Eres mi tesoro más grande. ♥️" }
+            h1: { titulo: "Cumpleaños", img: "foto2.jpg", texto: "Feliz cumpleaños mi niña hemocha... Hoy es un día tan especial, no solo para ti, sino para el universo entero que tuvo la suerte de verte nacer. Eres el regalo más grande que la vida pudo haberme dado. Amo cada pequeño detalle de ti... ¡Feliz día, amor de mi vida! ♥️" },
+            h2: { titulo: "Me gustas", img: "foto3.jpg", texto: "Lo que más me gusta de ti no es solo lo que todos pueden ver... Me gusta tu forma de ver el mundo, tu paciencia, tu inteligencia y esa fuerza que tienes. Lo que más me gusta de ti... es absolutamente todo. No le cambiaría ni una sola coma a tu forma de ser. ♥️" },
+            h3: { titulo: "Mi niña", img: "foto4.jpg", texto: "Mi niña hemocha... A veces me quedo mirándote y me pregunto qué hice tan bien para merecer a alguien como tú. Eres esa casualidad que yo no estaba buscando pero que necesitaba con urgencia. Eres mi niña consentida, la dueña de mis pensamientos. ♥️" },
+            h4: { titulo: "Mi motivación", img: "foto5.jpg", texto: "Eres la razón por la que me despierto con ganas de comerme el mundo. Gracias por ser mi mayor apoyo y mi porrista número uno. Te amo mi amor ♥️" },
+            h5: { titulo: "Tus ojitos", img: "foto1.jpg", texto: "Podría perderme en tus ojitos toda la vida. Son mi paisaje favorito y la luz que me guía. Solo quiero verte feliz siempre. ♥️" },
+            h6: { titulo: "Suerte", img: "foto2.jpg", texto: "A veces pienso que me gasté toda mi suerte al encontrarte. ¿Y sabes qué? Valió totalmente la pena. Eres mi tesoro más grande. ♥️" }
         };
 
-        // 3. PUBLICACIONES (FEED)
+        // 3. PUBLICACIONES FEED (Usando tus fotos)
         const publicacionesData = {
-            p1: { caption: "Feliz cinco meses, mi amor. ♥️\n\nCinco meses… y todavía siento que las palabras se quedan pequeñas para todo lo que has significado en mi vida. Parece increíble cómo el tiempo pudo pasar tan rápido y, al mismo tiempo, dejar tantos recuerdos que parecen suficientes para llenar una vida entera. Han sido cinco meses de sonrisas, de abrazos que, aunque a veces solo existan en mis pensamientos, ya se sienten como mi lugar favorito...\n\n(Texto largo... puedes editarlo a tu gusto)", img: "post1-5meses.jpg", time: "Hace un momento" },
-            p2: { caption: "Mi lugar favorito en el mundo no aparece en ningún mapa... Mi lugar favorito tiene nombre, apellido, y una sonrisa que me vuelve loco. Mi lugar favorito son tus brazos. Eres mi refugio, mi paz, y ese rinconcito seguro donde siempre quiero volver. ♥️", img: "post2.jpg", time: "Hace 2 horas" },
-            p3: { caption: "Mi amor… pase lo que pase, vengan los días buenos o los malos, yo siempre estaré contigo. Te elijo hoy, te elegiré mañana, y te seguiré eligiendo todos los días de mi vida. Porque un amor como el nuestro no se encuentra dos veces. Te amo, mi futuro, mi todo. ♥️", img: "post3.jpg", time: "Ayer" },
-            p4: { caption: "No hay un solo día en el que no agradezca por tenerte en mi vida. Eres mi rayito de sol en los días nublados y la calma en mis tormentas. Nunca sueltes mi mano, mi Camii. ♥️", img: "post4.jpg", time: "Hace 3 días" },
-            p5: { caption: "Me encanta verte sonreír. Es mi deporte extremo favorito hacer cualquier tontería solo para escuchar tu risa. Tu felicidad es mi prioridad número uno. ♥️", img: "post5.jpg", time: "Hace 1 semana" },
-            p6: { caption: "Cinco meses construyendo recuerdos increíbles, pero siento que te conozco de toda la vida. Eres mi alma gemela, mi compañera de aventuras y el amor de mi vida. Te amo de aquí a la luna a pasitos de caracol. ♥️", img: "post6.jpg", time: "Hace 2 semanas" }
+            p1: { caption: "Feliz cinco meses, mi amor. ♥️\n\nCinco meses… y todavía siento que las palabras se quedan pequeñas para todo lo que has significado en mi vida. Parece increíble cómo el tiempo pudo pasar tan rápido y, al mismo tiempo, dejar tantos recuerdos que parecen suficientes para llenar una vida entera. Han sido cinco meses de sonrisas, de abrazos que, aunque a veces solo existan en mis pensamientos, ya se sienten como mi lugar favorito...\n\n(Texto largo... puedes editarlo a tu gusto)", img: "foto1.jpg", time: "Hace un momento" },
+            p2: { caption: "Mi lugar favorito en el mundo no aparece en ningún mapa... Mi lugar favorito tiene nombre, apellido, y una sonrisa que me vuelve loco. Mi lugar favorito son tus brazos. Eres mi refugio, mi paz, y ese rinconcito seguro donde siempre quiero volver. ♥️", img: "foto3.jpg", time: "Hace 2 horas" },
+            p3: { caption: "Mi amor… pase lo que pase, vengan los días buenos o los malos, yo siempre estaré contigo. Te elijo hoy, te elegiré mañana, y te seguiré eligiendo todos los días de mi vida. Porque un amor como el nuestro no se encuentra dos veces. Te amo, mi futuro, mi todo. ♥️", img: "foto4.jpg", time: "Ayer" },
+            p4: { caption: "No hay un solo día en el que no agradezca por tenerte en mi vida. Eres mi rayito de sol en los días nublados y la calma en mis tormentas. Nunca sueltes mi mano, mi Camii. ♥️", img: "foto5.jpg", time: "Hace 3 días" },
+            p5: { caption: "Me encanta verte sonreír. Es mi deporte extremo favorito hacer cualquier tontería solo para escuchar tu risa. Tu felicidad es mi prioridad número uno. ♥️", img: "foto2.jpg", time: "Hace 1 semana" },
+            p6: { caption: "Cinco meses construyendo recuerdos increíbles, pero siento que te conozco de toda la vida. Eres mi alma gemela, mi compañera de aventuras y el amor de mi vida. Te amo de aquí a la luna a pasitos de caracol. ♥️", img: "foto3.jpg", time: "Hace 2 semanas" }
         };
 
-        // 4. REELS (VIDEOS CORTOS FALSOS)
+        // 4. REELS (Usando tus fotos como portadas de los videos cortos)
         const reelsData = [
-            { title: "El inicio de todo ♥️", img: "foto-short1.jpg", desc: "Mi amorr… yo a veces me pongo a pensar en todo, en cómo era mi vida antes de ti y la verdad no sé cómo podía vivir sin conocerte. Eres todo para mí ♥️" },
-            { title: "Esa sonrisa tuya ♥️", img: "foto-short2.jpg", desc: "Mamorrr… esa sonrisa tuya no es normal, te lo juro. No es solo que sea linda, es que tiene el poder de alegrarme hasta el día más gris del mundo. Te amo ♥️" },
-            { title: "Mi lugar seguro ♥️", img: "foto-short3.jpg", desc: "Mi niña linda… tú te volviste mi lugar seguro sin avisar, sin hacer ruido, sin tocar la puerta de mi corazón...\n\n(Puedes editar todo este texto también ♥️)" }
+            { title: "El inicio de todo ♥️", img: "foto4.jpg", desc: "Mi amorr… yo a veces me pongo a pensar en todo, en cómo era mi vida antes de ti y la verdad no sé cómo podía vivir sin conocerte. Eres todo para mí ♥️" },
+            { title: "Esa sonrisa tuya ♥️", img: "foto5.jpg", desc: "Mamorrr… esa sonrisa tuya no es normal, te lo juro. No es solo que sea linda, es que tiene el poder de alegrarme hasta el día más gris del mundo. Te amo ♥️" },
+            { title: "Mi lugar seguro ♥️", img: "foto1.jpg", desc: "Mi niña linda… tú te volviste mi lugar seguro sin avisar, sin hacer ruido, sin tocar la puerta de mi corazón...\n\n(Puedes editar todo este texto también ♥️)" }
         ];
 
         // 5. BÚSQUEDAS SECRETAS (LUPITA)
@@ -291,7 +322,7 @@
         };
 
         // =====================================================================
-        // FIN DE LA ZONA DE EDICIÓN - (A partir de aquí es código funcional)
+        // FIN DE LA ZONA DE EDICIÓN - (CÓDIGO FUNCIONAL DEL SISTEMA)
         // =====================================================================
 
         const svgHeart = `<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.174.98 1.543 1.117 1.543s.277-.369 1.117-1.543a4.21 4.21 0 0 1 3.675-1.941z"></path></svg>`;
@@ -303,10 +334,8 @@
         let todosLosPosts = [];
 
         function renderizarContenido() {
-            // Cargar biografía
             document.getElementById('bio-dinamica').innerHTML = bioPerfil;
 
-            // Cargar historias
             let historiasHtml = "";
             for (let key in historiasData) {
                 let h = historiasData[key];
@@ -318,10 +347,10 @@
             }
             document.getElementById('stories-dinamicas').innerHTML = historiasHtml;
 
-            // Cargar posts
             let feedHtml = "";
             let perfilHtml = "";
             todosLosPosts = [];
+            
             let postsGuardados = JSON.parse(localStorage.getItem('ig_camii_posts') || '[]');
             postsGuardados.reverse().forEach((post) => {
                 todosLosPosts.push({ img: post.img, caption: post.caption, time: "Hace un momento" });
@@ -348,7 +377,7 @@
             return `
             <div class="post">
                 <div class="post-header">
-                    <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'">
+                    <img src="foto1.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'">
                     <div class="post-header-name">${username}</div>
                     <div style="margin-left: auto;">${svgDots}</div>
                 </div>
@@ -381,6 +410,18 @@
             }
         }
 
+        // Nueva función para el botón "mostrar más" de los Reels
+        function toggleReelText(btn) {
+            let content = btn.previousElementSibling;
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.innerText = '...más';
+            } else {
+                content.classList.add('expanded');
+                btn.innerText = 'ocultar';
+            }
+        }
+
         function verPostDetalle(index) {
             const post = todosLosPosts[index];
             document.getElementById('post-detalle-content').innerHTML = crearHTMLPost("mi_camii", post.img, post.caption, post.time);
@@ -394,22 +435,16 @@
             setTimeout(() => { svg.style.transform = "scale(1)"; }, 200);
         }
 
-        // Nueva función para Guardar/Bookmark
         function guardarPost(elemento) {
             let svg = elemento.querySelector('svg') || elemento;
             let path = svg.querySelector('path');
-            
-            // Si no está relleno, lo rellenamos de amarillo
             if (path.getAttribute('fill') === 'none') {
                 path.setAttribute('fill', '#feca57');
                 path.setAttribute('stroke', '#feca57');
             } else {
-                // Si ya estaba relleno, lo vaciamos
                 path.setAttribute('fill', 'none');
                 path.setAttribute('stroke', 'currentColor');
             }
-            
-            // Animación pequeña
             svg.style.transform = "scale(1.2)";
             svg.style.transition = "0.2s ease";
             setTimeout(() => { svg.style.transform = "scale(1)"; }, 200);
@@ -418,14 +453,16 @@
         function generarReels() {
             let html = "";
             reelsData.forEach(reel => {
+                let descFormat = reel.desc.replace(/\n/g, '<br>');
                 html += `
                 <div class="reel-item" style="background-image: url('${reel.img}'), url('https://placehold.co/400x800/111/fff?text=Reel');">
                     <div class="reel-overlay">
                         <div class="reel-user">
-                            <img src="persona-amada.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'"> <strong>mi_camii</strong>
+                            <img src="foto1.jpg" onerror="this.src='https://placehold.co/100x100/ff4757/fff?text=Perfil'"> <strong>mi_camii</strong>
                         </div>
-                        <div class="reel-desc" onclick="this.classList.toggle('expanded')">
-                            <strong>${reel.title}</strong><br>${reel.desc} <span style="color:#a8a8a8;">...más</span>
+                        <div class="reel-desc-container">
+                            <div class="reel-desc"><strong>${reel.title}</strong><br>${descFormat}</div>
+                            <span class="btn-mostrar-mas-reel" onclick="toggleReelText(this)">...más</span>
                         </div>
                     </div>
                     <div class="reel-actions">
