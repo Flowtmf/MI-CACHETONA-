@@ -25,8 +25,46 @@
     background-color: var(--bg-borde); 
     font-family: 'Montserrat', sans-serif; 
     color: white;
-    overflow: hidden; /* Evita que el usuario deslice la pantalla */
+    overflow: hidden; 
   }
+
+  /* --- PANTALLA DE CONTRASEÑA INICIAL --- */
+  #pantalla-password {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #000; z-index: 10000; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 0.8s ease;
+  }
+
+  .caja-password {
+    background: radial-gradient(circle at center, rgba(30, 22, 10, 0.95) 0%, rgba(10, 7, 2, 0.98) 100%);
+    border: 1px solid var(--color-glow-alt);
+    padding: 40px; border-radius: 10px; text-align: center;
+    box-shadow: 0 0 30px rgba(244, 197, 98, 0.1);
+    width: 85%; max-width: 400px;
+  }
+
+  .caja-password h2 {
+    font-family: 'Cinzel Decorative', serif; color: var(--color-glow); margin-top: 0;
+    font-size: 1.5rem; text-shadow: 0 0 10px rgba(244, 197, 98, 0.5);
+  }
+
+  .caja-password p { font-size: 0.9rem; color: #aaa; margin-bottom: 25px; }
+
+  #input-pass-puerta {
+    background: rgba(0,0,0,0.8); border: 1px solid var(--color-glow); color: var(--color-glow);
+    padding: 12px 20px; border-radius: 5px; outline: none; text-align: center;
+    font-family: 'Montserrat', sans-serif; font-size: 1rem; width: 100%;
+    margin-bottom: 20px; letter-spacing: 2px;
+  }
+  
+  #btn-entrar {
+    background: transparent; border: 1px solid var(--color-glow); color: var(--color-glow);
+    padding: 10px 30px; border-radius: 5px; font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem; letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
+    transition: 0.3s; width: 100%;
+  }
+  #btn-entrar:active { background: var(--color-glow); color: #000; }
 
   /* --- INTRO ARENA / LIBRO ANTIGUO --- */
   #arena-intro {
@@ -38,10 +76,9 @@
   
   #canvas-arena {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-    opacity: 0.6; z-index: 1; pointer-events: none;
+    opacity: 0.8; z-index: 1; pointer-events: none;
   }
   
-  /* Estilo de página de libro antiguo oscuro */
   #contenedor-poema {
     position: absolute; top: 5%; left: 5%; width: 90vw; height: 90vh;
     z-index: 2; padding: 10vh 5vw; 
@@ -50,31 +87,41 @@
     border: 2px solid rgba(244, 197, 98, 0.2);
     border-radius: 15px;
     box-shadow: inset 0 0 50px rgba(0,0,0,1), 0 0 30px rgba(244, 197, 98, 0.1);
-    overflow-y: auto;
+    overflow-y: auto; scroll-behavior: smooth;
   }
-  
-  /* Ocultar barra de scroll en el poema */
   #contenedor-poema::-webkit-scrollbar { width: 0px; }
 
+  /* ESTILOS MÁGICOS DE LAS LETRAS FORMÁNDOSE */
   #texto-poema {
-    font-family: 'Cinzel Decorative', serif; font-size: 1.3rem; line-height: 2.2;
+    font-family: 'Cinzel Decorative', serif; font-size: 1.15rem; line-height: 2.2;
     color: var(--texto-brillo); text-shadow: 0 0 10px rgba(244, 197, 98, 0.5);
-    white-space: pre-wrap; margin-bottom: 40px; max-width: 600px;
+    margin-bottom: 40px; max-width: 600px;
+    /* Evita que las palabras se rompan raro al aparecer letra por letra */
+    word-break: keep-all; 
+  }
+  
+  .char-oculto {
+    opacity: 0;
+    filter: blur(15px); /* Inicia borroso como arena */
   }
 
+  .char-visible {
+    opacity: 1;
+    filter: blur(0px);
+    transition: opacity 0.5s ease-out, filter 0.5s ease-out; /* Transición mágica de polvo a letra */
+  }
+
+  /* BOTONES Y INPUTS DEL POEMA */
   .btn-saltar {
     position: absolute; top: 25px; right: 25px; z-index: 10;
     background: transparent; border: 1px solid var(--color-glow-alt);
     color: var(--color-glow-alt); padding: 8px 15px; border-radius: 5px;
     font-family: 'Montserrat', sans-serif; font-size: 0.7rem;
-    letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
-    transition: 0.3s;
+    letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
   }
   .btn-saltar:active { background: var(--color-glow); color: #000; }
 
-  #input-continuar-box {
-    display: none; text-align: center; margin-top: auto; padding-bottom: 20px; width: 100%;
-  }
+  #input-continuar-box { display: none; text-align: center; margin-top: auto; padding-bottom: 20px; width: 100%; }
   #input-continuar {
     background: rgba(0,0,0,0.8); border: 1px solid var(--color-glow); color: var(--color-glow);
     padding: 15px 30px; border-radius: 10px; outline: none; text-align: center;
@@ -102,7 +149,6 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 20px; z-index: 100; backdrop-filter: blur(15px);
   }
-
   .controles-izq { display: flex; align-items: center; gap: 10px; }
   
   .btn-accion-top {
@@ -117,18 +163,16 @@
   .subtitulo-seccion { font-size: 0.65rem; color: var(--color-glow); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
 
   /* --- ÁREA DE CÁMARA Y MAPA --- */
-  /* Este contenedor funciona como la "lente" de la cámara */
   .camara-viewport {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: 10; pointer-events: none; /* Deja pasar los clics */
+    z-index: 10; pointer-events: none; 
   }
 
-  /* Este es el lienzo gigante que se mueve arriba y abajo */
   #lienzo-mapa {
     position: absolute; top: 0; left: 0; width: 100%;
     display: flex; flex-direction: column; align-items: center;
-    padding-top: 50vh; padding-bottom: 50vh; /* Margen para centrar el primero y el último */
-    pointer-events: auto; /* Reactiva los clics aquí */
+    padding-top: 50vh; padding-bottom: 50vh; 
+    pointer-events: auto; 
     transition: transform 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
   }
   
@@ -137,7 +181,7 @@
     pointer-events: none; z-index: 0;
   }
   
-  .camino-base { stroke: transparent; fill: none; } /* Camino base invisible */
+  .camino-base { stroke: transparent; fill: none; } 
   .camino-activo { 
     stroke: var(--color-glow); stroke-width: 4; fill: none; 
     filter: drop-shadow(0 0 8px var(--color-glow));
@@ -148,7 +192,7 @@
     display: flex; flex-direction: column; align-items: center; 
     margin-bottom: 90px; position: relative; z-index: 2;
     transition: all 1s ease; 
-    opacity: 0; visibility: hidden; pointer-events: none; /* Ocultos por defecto */
+    opacity: 0; visibility: hidden; pointer-events: none; 
     transform: scale(0.5);
   }
   
@@ -179,51 +223,64 @@
     text-transform: uppercase; font-family: 'Cinzel Decorative', serif; 
     text-shadow: 0 0 10px var(--color-glow);
   }
-
 </style>
 </head>
 <body>
 
   <!-- ============================================================== -->
-  <!-- 📝 ZONA EDITABLE 1: EL POEMA Y LA PALABRA CLAVE                -->
+  <!-- 📝 PANTALLA DE CONTRASEÑA -->
   <!-- ============================================================== -->
+  <div id="pantalla-password" style="display: none;">
+    <div class="caja-password">
+      <h2>Puerta Sellada</h2>
+      <p>Para ingresar a la Etapa 1, debes conocer la palabra.</p>
+      <input type="password" id="input-pass-puerta" placeholder="Contraseña..." autocomplete="off">
+      <button id="btn-entrar" onclick="verificarPassword()">Revelar Sendero</button>
+      <p id="error-pass-puerta" style="color: #ff4757; font-size: 0.85rem; display: none; margin-top: 15px; margin-bottom: 0;">La palabra es incorrecta...</p>
+    </div>
+  </div>
+
   <script>
-    // Poema ampliado
+    // 📖 POEMA NUEVO Y LARGO
     const poemaLargo = [
-      "Entre las sombras de la arena,",
-      "donde el viento guarda susurros,",
-      "encontramos nuestro refugio.",
+      "Más allá de las horas y el ruido del mundo,",
+      "donde el viento se cansa y el desierto calla,",
+      "hemos construido un imperio de instantes,",
+      "una fortaleza invisible a los ojos mortales.",
       "",
-      "Un santuario de tiempo detenido,",
-      "donde los secretos del mundo",
-      "se revelan solo para nosotros.",
+      "Cada grano de arena que cae en este reloj,",
+      "no marca un final, sino nuestro comienzo.",
+      "Aquí, las paredes guardan el eco de tus risas,",
+      "y los pasillos brillan con la luz de tus pasos.",
       "",
-      "Cada paso en esta cueva,",
-      "es un capítulo de nuestra historia,",
-      "escrita con polvo de oro y luz.",
+      "No es casualidad que nuestros destinos colisionaran,",
+      "éramos dos misterios buscando ser resueltos,",
+      "dos mitades de un mapa antiguo y sagrado,",
+      "que solo unidos revelan el tesoro escondido.",
       "",
-      "Tus ojos son mi faro,",
-      "tu risa, la melodía antigua",
-      "que despierta estos muros.",
+      "En esta cueva, el pasado no duele,",
+      "el futuro no asusta, el presente es eterno.",
+      "Tus manos son la brújula que siempre me guía,",
+      "tu mirada, el único cielo que quiero observar.",
       "",
-      "Este es nuestro camino,",
-      "nuestro lienzo en la eternidad.",
+      "Avanza, amor mío, sin miedo a la sombra,",
+      "que cada recuerdo que toques se hará luz.",
+      "Este es nuestro libro, nuestra obra maestra.",
       "",
-      "Te amo, porque eres tú.",
-      "Mi misterio favorito."
+      "Te amo, porque eres la magia que el mundo olvidó."
     ];
 
-    const palabraSecreta = "continuar";
+    const palabraSecretaPoema = "continuar";
+    const passwordDeEtapa = "paginas"; 
   </script>
-  <!-- ============================================================== -->
 
+  <!-- INTRO ARENA / LIBRO -->
   <div id="arena-intro" style="display: none;">
     <button class="btn-saltar" onclick="saltarPoema()">Saltar</button>
     <canvas id="canvas-arena"></canvas>
     
     <div id="contenedor-poema">
         <div id="texto-poema"></div>
-        
         <div id="input-continuar-box">
             <p style="margin-bottom: 15px; color: #f4c562; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">Escribe <b style="color:#fff; text-transform: uppercase;">continuar</b> para adentrarte...</p>
             <input type="text" id="input-continuar" placeholder="..." autocomplete="off">
@@ -257,12 +314,53 @@
 
 <script>
   // -----------------------------------------------------
-  // 1. LÓGICA DEL POEMA Y ARENA DORADA (ANIMACIÓN FONDO)
+  // 0. LÓGICA DE CONTRASEÑA PRINCIPAL ("Paginas")
+  // -----------------------------------------------------
+  function iniciarSistema() {
+      if (localStorage.getItem('acceso_concedido_etapa1') === 'true') {
+          arrancarEtapa();
+      } else {
+          document.getElementById('pantalla-password').style.display = 'flex';
+      }
+  }
+
+  function verificarPassword() {
+      const input = document.getElementById('input-pass-puerta').value.toLowerCase().trim();
+      if (input === passwordDeEtapa.toLowerCase()) {
+          localStorage.setItem('acceso_concedido_etapa1', 'true');
+          
+          document.getElementById('pantalla-password').style.opacity = '0';
+          setTimeout(() => {
+              document.getElementById('pantalla-password').style.display = 'none';
+              arrancarEtapa();
+          }, 800);
+      } else {
+          const err = document.getElementById('error-pass-puerta');
+          err.style.display = 'block';
+          setTimeout(() => { err.style.display = 'none'; }, 2000);
+      }
+  }
+
+  document.getElementById('input-pass-puerta').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') verificarPassword();
+  });
+
+
+  // -----------------------------------------------------
+  // 1. LÓGICA DE LA ARENA FORMANDO LAS LETRAS
   // -----------------------------------------------------
   let lineaIdx = 0;
   let charIdx = 0;
   let animacionArenaReq;
   let tipeoTimeout;
+  
+  // Arreglo para guardar las partículas mágicas de las letras
+  let particulasLetras = []; 
+
+  function arrancarEtapa() {
+      chequearIntro();
+      generarMapa();
+  }
 
   function iniciarArenaVisual() {
       const canvas = document.getElementById('canvas-arena');
@@ -270,25 +368,26 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       
-      const particulas = [];
-      const cantidad = window.innerWidth < 600 ? 50 : 120; // Menos partículas en móvil
+      const particulasFondo = [];
+      const cantidad = window.innerWidth < 600 ? 50 : 100;
       
       for(let i=0; i<cantidad; i++) {
-          particulas.push({
+          particulasFondo.push({
               x: Math.random() * canvas.width,
               y: Math.random() * canvas.height,
               r: Math.random() * 2 + 0.5,
               vx: (Math.random() * 1) - 0.5,
               vy: Math.random() * 1.5 + 0.5,
-              opacidad: Math.random() * 0.5 + 0.2
+              opacidad: Math.random() * 0.4 + 0.1
           });
       }
 
       function dibujarArena() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           
-          for(let i=0; i<particulas.length; i++) {
-              let p = particulas[i];
+          // Dibujar la arena de fondo que cae suave
+          for(let i=0; i<particulasFondo.length; i++) {
+              let p = particulasFondo[i];
               ctx.beginPath();
               ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
               ctx.fillStyle = `rgba(244, 197, 98, ${p.opacidad})`;
@@ -302,9 +401,46 @@
                   p.x = Math.random() * canvas.width;
               }
           }
+
+          // DIBUJAR LA ARENA MÁGICA QUE FORMA LAS LETRAS
+          for(let i = particulasLetras.length - 1; i >= 0; i--) {
+              let pM = particulasLetras[i];
+              
+              // Se acercan rápidamente al centro de la letra
+              pM.x += (pM.targetX - pM.x) * 0.25;
+              pM.y += (pM.targetY - pM.y) * 0.25;
+              pM.vida -= 0.08; // Desaparecen rápido al formar la letra
+
+              ctx.beginPath();
+              ctx.arc(pM.x, pM.y, pM.r, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(244, 197, 98, ${pM.vida})`;
+              ctx.fill();
+
+              if (pM.vida <= 0) {
+                  particulasLetras.splice(i, 1);
+              }
+          }
+
           animacionArenaReq = requestAnimationFrame(dibujarArena);
       }
       dibujarArena();
+  }
+
+  // Función para disparar partículas que convergen en la letra
+  function invocarArenaEnCoordenada(x, y) {
+      for(let i = 0; i < 12; i++) {
+          let angulo = Math.random() * Math.PI * 2;
+          let radioDistancia = Math.random() * 30 + 15; // Nacen en un círculo alrededor
+          
+          particulasLetras.push({
+              x: x + Math.cos(angulo) * radioDistancia,
+              y: y + Math.sin(angulo) * radioDistancia,
+              targetX: x,
+              targetY: y,
+              r: Math.random() * 2 + 1,
+              vida: 1
+          });
+      }
   }
 
   function escribirPoema() {
@@ -312,23 +448,51 @@
       const contenedor = document.getElementById('contenedor-poema');
       
       if (lineaIdx < poemaLargo.length) {
-          if (charIdx < poemaLargo[lineaIdx].length) {
-              textoPoema.innerHTML += poemaLargo[lineaIdx].charAt(charIdx);
+          let lineaActual = poemaLargo[lineaIdx];
+          
+          if (charIdx < lineaActual.length) {
+              let char = lineaActual.charAt(charIdx);
+              
+              // Creamos un <span> individual para cada letra
+              let spanLetra = document.createElement('span');
+              spanLetra.textContent = char === ' ' ? '\u00A0' : char; // Respetar espacios
+              spanLetra.className = 'char-oculto'; 
+              textoPoema.appendChild(spanLetra);
+
+              // Si no es un espacio, activamos la magia
+              if (char !== ' ') {
+                  // Obtenemos la posición exacta en la pantalla donde se dibujará esta letra
+                  let rect = spanLetra.getBoundingClientRect();
+                  let centroX = rect.left + (rect.width / 2);
+                  let centroY = rect.top + (rect.height / 2);
+                  
+                  // Lanzamos la arena hacia esas coordenadas
+                  invocarArenaEnCoordenada(centroX, centroY);
+                  
+                  // Justo cuando la arena choca en el centro, la letra se revela (quita el blur)
+                  setTimeout(() => {
+                      spanLetra.className = 'char-visible';
+                  }, 120);
+              } else {
+                  spanLetra.className = 'char-visible';
+              }
+
               charIdx++;
-              tipeoTimeout = setTimeout(escribirPoema, 45); 
+              tipeoTimeout = setTimeout(escribirPoema, 70); // Velocidad al formar letras
           } else {
-              textoPoema.innerHTML += '<br>';
+              textoPoema.appendChild(document.createElement('br'));
               charIdx = 0;
               lineaIdx++;
-              tipeoTimeout = setTimeout(escribirPoema, 600); 
+              tipeoTimeout = setTimeout(escribirPoema, 900); // Pausa dramática entre líneas
           }
       } else {
-          mostrarInput();
+          setTimeout(mostrarInputPoema, 1000);
       }
+      // Mantiene el scroll siempre abajo suavemente
       contenedor.scrollTop = contenedor.scrollHeight;
   }
 
-  function mostrarInput() {
+  function mostrarInputPoema() {
       document.getElementById('input-continuar-box').style.display = 'block';
       const contenedor = document.getElementById('contenedor-poema');
       contenedor.scrollTop = contenedor.scrollHeight;
@@ -338,14 +502,15 @@
   function saltarPoema() {
       clearTimeout(tipeoTimeout);
       const textoPoema = document.getElementById('texto-poema');
+      // Si salta, mostramos todo el poema de golpe, sin animaciones por letra para evitar lag
       textoPoema.innerHTML = poemaLargo.join('<br>'); 
-      mostrarInput();
+      mostrarInputPoema();
   }
 
   document.getElementById('input-continuar').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
           let valor = e.target.value.toLowerCase().trim();
-          if (valor === palabraSecreta) {
+          if (valor === palabraSecretaPoema) {
               localStorage.setItem('intro_cueva_vista', 'true');
               document.getElementById('arena-intro').style.opacity = '0';
               setTimeout(() => {
@@ -369,14 +534,14 @@
       if(localStorage.getItem('intro_cueva_vista') !== 'true') {
           document.getElementById('arena-intro').style.display = 'flex';
           iniciarArenaVisual();
-          setTimeout(escribirPoema, 1000); 
+          // Retrasamos un segundo antes de empezar a dibujar las letras
+          setTimeout(escribirPoema, 1500); 
       }
   }
 
   // -----------------------------------------------------
   // 2. LÓGICA DEL MAPA Y LA CÁMARA
   // -----------------------------------------------------
-  
   const nombresNiveles = [
       "( reloj )",       
       "( preguntas )",   
@@ -391,9 +556,6 @@
   ];
   const totalNiveles = 10;
   
-  // Variables de progreso
-  // 'progreso_camii_cueva' es el avance real (actualizado por los minijuegos)
-  // 'progreso_visual_cueva' es lo que la página ya animó.
   let nivelReal = parseInt(localStorage.getItem('progreso_camii_cueva')) || 1; 
   let nivelVisual = parseInt(localStorage.getItem('progreso_visual_cueva')) || nivelReal;
 
@@ -406,12 +568,10 @@
       wrapper.className = 'nodo-wrapper';
       wrapper.id = 'nodo-' + i;
       
-      // Solo mostramos los niveles que ya han sido animados/desbloqueados visualmente
       if (i <= nivelVisual) {
           wrapper.classList.add('desbloqueado');
       }
       
-      // Patrón en ZigZag 
       const desplazamientoX = Math.sin(i * 1.3) * 85; 
       wrapper.style.transform = wrapper.classList.contains('desbloqueado') 
         ? `translateX(${desplazamientoX}px) scale(1)` 
@@ -427,32 +587,25 @@
     }
 
     setTimeout(dibujarCaminos, 100);
-    setTimeout(() => enfocarCamara(nivelVisual, false), 200); // Enfocar sin animar al cargar
-    setTimeout(verificarAnimacionPendiente, 1000); // Revisar si hay un nivel nuevo que animar
+    setTimeout(() => enfocarCamara(nivelVisual, false), 200); 
+    setTimeout(verificarAnimacionPendiente, 1000); 
   }
 
-  // ENFOCAR CÁMARA EN UN NODO (Bloqueo de Scroll)
   function enfocarCamara(numNodo, animar = true) {
       const lienzo = document.getElementById('lienzo-mapa');
       const nodo = document.getElementById('nodo-' + numNodo);
       if(!nodo) return;
 
-      // Calcular el centro de la pantalla
       const centroPantalla = window.innerHeight / 2;
-      // Calcular la posición Y del nodo dentro del lienzo
       const centroNodo = nodo.offsetTop + (nodo.offsetHeight / 2);
-      
-      // Mover el lienzo entero para que el nodo quede en el centro
       const desplazamientoY = centroPantalla - centroNodo;
 
       lienzo.style.transition = animar ? 'transform 1.5s cubic-bezier(0.4, 0.0, 0.2, 1)' : 'none';
       lienzo.style.transform = `translateY(${desplazamientoY}px)`;
   }
 
-  // DIBUJAR LOS CAMINOS SVG
   function dibujarCaminos() {
       const svg = document.getElementById('svg-caminos');
-      const contenedorNodos = document.getElementById('nodos-contenedor');
       const lienzo = document.getElementById('lienzo-mapa');
       
       svg.setAttribute('height', lienzo.scrollHeight);
@@ -479,10 +632,9 @@
           caminoActivo.setAttribute("class", "camino-activo");
           caminoActivo.id = `camino-animado-${i}`;
           
-          const longitud = 500; // Valor aproximado fijo para asegurar la animación
+          const longitud = 500; 
           caminoActivo.style.strokeDasharray = longitud;
           
-          // Si ya está visualmente superado, lo mostramos lleno
           if (i < nivelVisual) {
               caminoActivo.style.strokeDashoffset = "0";
           } else {
@@ -493,31 +645,24 @@
       }
   }
 
-  // LÓGICA AUTOMÁTICA DE ANIMACIÓN AL COMPLETAR UN NIVEL
   function verificarAnimacionPendiente() {
       if (nivelReal > nivelVisual) {
-          // El usuario completó un nivel en otra página y regresó aquí
           const nodoSiguiente = nivelVisual + 1;
           const camino = document.getElementById(`camino-animado-${nivelVisual}`);
           const elementoSiguiente = document.getElementById(`nodo-${nodoSiguiente}`);
           
           if(camino && elementoSiguiente) {
-              // 1. Empezamos a llenar el camino dorado
               camino.style.strokeDashoffset = "0";
               
-              // 2. Movemos la cámara lentamente hacia el nuevo nodo
               setTimeout(() => {
                   enfocarCamara(nodoSiguiente, true);
               }, 500);
 
-              // 3. Encendemos el nuevo nodo cuando la cámara llega
               setTimeout(() => {
                   elementoSiguiente.classList.add('desbloqueado');
-                  // Actualizamos el progreso visual
                   nivelVisual = nodoSiguiente;
                   localStorage.setItem('progreso_visual_cueva', nivelVisual);
                   
-                  // Si por alguna razón completó varios niveles de golpe, animar el siguiente en cadena
                   setTimeout(verificarAnimacionPendiente, 1000);
               }, 2000); 
           }
@@ -526,10 +671,9 @@
 
   window.addEventListener('resize', () => {
       dibujarCaminos();
-      enfocarCamara(nivelVisual, false); // Re-centrar si cambia el tamaño de la pantalla
+      enfocarCamara(nivelVisual, false); 
   });
 
-  // ACCIÓN AL TOCAR UN NODO
   function tocarNivel(num) {
     if (num > nivelVisual) return;
 
@@ -544,8 +688,7 @@
   }
 
   window.onload = () => { 
-      chequearIntro();
-      generarMapa(); 
+      iniciarSistema();
   };
 </script>
 </body>
